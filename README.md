@@ -12,4 +12,6 @@ But that data and those relationships need to live somewhere and that's what thi
 
 ## Future plans
 
-To make it easier for people to contribute the data it is imagine there will be a simple web tool for editing, adding, questioning, discussing and resolving disputed data more easily.
+Add multiple maintainers to the repo to allow more than one objective reviewer to accept changes.
+To make it easier for people to contribute the data: build a web tool to simplify editing, adding, questioning, discussing and resolving disputed data more easily.
+Move to using the web tool for all changes to the repo.
