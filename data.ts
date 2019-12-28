@@ -12,7 +12,7 @@ const data: SCHEMA_0_1 = {
                                 {
                                    "values": [6500],
                                    "columns": ["hectare"],
-                                   "ref": "https://en.wikipedia.org/wiki/Wildorado_Wind_Ranch",
+                                   "reference": "https://en.wikipedia.org/wiki/Wildorado_Wind_Ranch",
                                    "data_sets": ["core@0.0.2"]
                                 }
                             ]
@@ -23,7 +23,7 @@ const data: SCHEMA_0_1 = {
                                     "value_refs": [
                                         {
                                            "values": [71],
-                                           "ref": "https://en.wikipedia.org/wiki/Wildorado_Wind_Ranch",
+                                           "reference": "https://en.wikipedia.org/wiki/Wildorado_Wind_Ranch",
                                            "data_sets": ["core@0.0.2"]
                                         }
                                     ]
@@ -33,7 +33,7 @@ const data: SCHEMA_0_1 = {
                                         {
                                            "values": [2.3],
                                            "columns": ["MW"],
-                                           "ref": "https://en.wikipedia.org/wiki/Wildorado_Wind_Ranch",
+                                           "reference": "https://en.wikipedia.org/wiki/Wildorado_Wind_Ranch",
                                            "data_sets": ["core@0.0.2"]
                                         }
                                     ]
@@ -75,7 +75,7 @@ const data: SCHEMA_0_1 = {
                         {
                             "values": [4.025],
                             "columns": ["W m^-2"],
-                            "ref": "https://en.wikipedia.org/wiki/Wildorado_Wind_Ranch",
+                            "reference": "https://en.wikipedia.org/wiki/Wildorado_Wind_Ranch",
                             "comment": "Quick guess from numbers of: 161 MW / (3.2 x 12.5 km).",
                             "data_sets": ["core@0.0.1"]
                         }
@@ -94,15 +94,15 @@ const data: SCHEMA_0_1 = {
             "si": "m^2",
             "conversion": {
                 "hectare": 10000,
-                "km^2": 0.000001,
+                "km^2": 0.000001
             }
         },
         "power": {
             "si": "W",
             "conversion": {
-                "MW": 0.000001,
+                "MW": 0.000001
             }
-        },
+        }
     },
     "data_sets": {
         "core": {

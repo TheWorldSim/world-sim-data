@@ -1,6 +1,6 @@
 
 export interface SCHEMA_0_1 {
-    schema_version: string
+    schema_version: "0.1"
     data: ATTRIBUTES
     units: {[unit_type: string]: UNIT}
     data_sets: {[data_set_name: string]: DATA_SET}
@@ -30,7 +30,7 @@ interface ATTRIBUTE {
 interface VALUE_REF {
     values: VALUE[]
     columns?: string[]
-    ref: string
+    reference: string
     sub_ref?: string
     comment?: string
     data_sets: string[]
