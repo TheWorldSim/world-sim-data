@@ -1,0 +1,27 @@
+{
+  "name": "world-sim-data",
+  "version": "0.1.0",
+  "description": "This data repo supports World Sim.",
+  "main": "./data/data.ts",
+  "dependencies": {
+    "@types/node": "13.1.6",
+    "ts-node": "8.6.0",
+    "tsc": "1.20150623.0",
+    "typescript": "3.7.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "update-data": "ts-node ./data/data.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheWorldSim/world-sim-data.git"
+  },
+  "author": "",
+  "license": "CC BY-NC 4.0",
+  "bugs": {
+    "url": "https://github.com/TheWorldSim/world-sim-data/issues"
+  },
+  "homepage": "https://github.com/TheWorldSim/world-sim-data#readme"
+}
