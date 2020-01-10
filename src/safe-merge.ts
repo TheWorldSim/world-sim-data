@@ -1,5 +1,5 @@
 // source: https://gist.github.com/AJamesPhillips/4b36d407d2824d8ba114a96122fd312f
-// awaiting answer from: https://stackoverflow.com/questions/59684256/type-safe-object-merge-in-typescript
+// awaiting answer from: https://stackoverflow.com/questions/59689060/type-safe-merge-of-index-signature-object-types-in-typescript
 
 // type UniqueObject<T, U> = { [K in keyof U]: K extends keyof T ? never : U[K] }
 

@@ -1,4 +1,4 @@
-import fs = require("fs");
+import fs = require("fs")
 
 import {
     SCHEMA,
@@ -16,31 +16,31 @@ import { safe_merge } from "../src/safe-merge"
 
 
 const data: SCHEMA = {
-    "schema_version": "0.2",
-    "data": safe_merge(
+    schema_version: "0.2",
+    data: safe_merge(
         regions_data,
         wind_farms_data,
     ),
-    "units": {
-        "area": {
-            "si": "m^2",
-            "conversion": {
+    units: {
+        area: {
+            si: "m^2",
+            conversion: {
                 "hectare": 10000,
                 "km^2": 0.000001
             }
         },
-        "power": {
-            "si": "W",
-            "conversion": {
+        power: {
+            si: "W",
+            conversion: {
                 "MW": 0.000001
             }
         }
     },
-    "data_sets": {
-        "core": {
-            "draft_version": "0.0.3-alpha",
-            "release_version": "0.0.2",
-            "_auto_versions": {
+    data_sets: {
+        core: {
+            draft_version: "0.0.3-alpha",
+            release_version: "0.0.2",
+            _auto_versions: {
                 "0.0.3-alpha": false,
                 "0.0.2": true,
                 "0.0.1": true
