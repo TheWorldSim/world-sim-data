@@ -4,7 +4,7 @@ export const regions_data: ATTRIBUTES = {
     regions: {
         attributes: {},
         instances: {
-            texas__offshore_core_0_0_3_alpha: {
+            texas__offshore: {
                 attributes: {
                     latlons: {
                         value_refs: [
@@ -29,7 +29,7 @@ export const regions_data: ATTRIBUTES = {
                     }
                 }
             },
-            texas_core_0_0_3_alpha: {
+            texas: {
                 attributes: {
                     latlons: {
                         value_refs: [
@@ -54,7 +54,7 @@ export const regions_data: ATTRIBUTES = {
                     }
                 }
             },
-            united_kingdom__offshore_core_0_0_3_alpha: {
+            united_kingdom__offshore: {
                 attributes: {
                     latlons: {
                         value_refs: [
@@ -79,7 +79,7 @@ export const regions_data: ATTRIBUTES = {
                     }
                 }
             },
-            united_kingdom_core_0_0_3_alpha: {
+            united_kingdom: {
                 attributes: {
                     latlons: {
                         value_refs: [
