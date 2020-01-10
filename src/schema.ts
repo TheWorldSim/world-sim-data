@@ -1,6 +1,6 @@
 
 export interface SCHEMA {
-    schema_version: "0.2"
+    schema_version: "0.3"
     data: ATTRIBUTES
     units: {[unit_type: string]: UNIT}
     data_sets: {[data_set_name: string]: DATA_SET}
@@ -38,8 +38,8 @@ interface COMMON_VALUE_DEF {
     columns?: (string | string[])[]
     created: string
     meta_data?: {
-        units: {[key: string]: VALUE}
-        params: {[key: string]: VALUE}
+        units: {[key: string]: string}
+        params: {[key: string]: number}
     }
     reference: string
     sub_ref?: string
@@ -64,7 +64,9 @@ interface DERIVED_VALUE_REF {
     comment?: undefined
 }
 
-export type VALUE = string | number | (string | number)[]
+// Limited from string | number | (string | number)[] because C# scripts to
+// convert from json won't copy with this level of polymorphism
+export type VALUE = number[]
 
 interface UNIT {
     si: string

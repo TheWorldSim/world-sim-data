@@ -8,12 +8,12 @@ export const wind_farms_data: ATTRIBUTES = {
                     {
                         calculation: "wind_farms.wildorado_wind_ranch.nameplate_watts_per_square_meter",
                         created: "2020-01-08 23:00:00 UTC",
-                        _auto_values: [2.5123076923076924],
+                        _auto_values: [[2.5123076923076924]],
                         _auto_columns: ["W m^-2"],
                         data_sets: ["core@0.0.2"]
                     },
                     {
-                        values: [4.025],
+                        values: [[4.025]],
                         columns: ["W m^-2"],
                         created: "2020-01-08 23:00:00 UTC",
                         reference: "https://en.wikipedia.org/wiki/Wildorado_Wind_Ranch",
@@ -34,7 +34,7 @@ export const wind_farms_data: ATTRIBUTES = {
                     area: {
                         value_refs: [
                             {
-                               values: [6500],
+                               values: [[6500]],
                                columns: ["hectare"],
                                created: "2020-01-08 23:00:00 UTC",
                                reference: "https://en.wikipedia.org/wiki/Wildorado_Wind_Ranch",
@@ -47,7 +47,7 @@ export const wind_farms_data: ATTRIBUTES = {
                             count: {
                                 value_refs: [
                                     {
-                                       values: [71],
+                                       values: [[71]],
                                        created: "2020-01-08 23:00:00 UTC",
                                        reference: "https://en.wikipedia.org/wiki/Wildorado_Wind_Ranch",
                                        data_sets: ["core@0.0.2"]
@@ -57,7 +57,7 @@ export const wind_farms_data: ATTRIBUTES = {
                             power: {
                                 value_refs: [
                                     {
-                                       values: [2.3],
+                                       values: [[2.3]],
                                        columns: ["MW"],
                                        created: "2020-01-08 23:00:00 UTC",
                                        reference: "https://en.wikipedia.org/wiki/Wildorado_Wind_Ranch",
@@ -72,7 +72,7 @@ export const wind_farms_data: ATTRIBUTES = {
                             {
                                 calculation: "wind_farms.wildorado_wind_ranch.turbines.count * wind_farms.wildorado_wind_ranch.turbines.power",
                                 created: "2020-01-08 23:00:00 UTC",
-                                _auto_values: [163300000],
+                                _auto_values: [[163300000]],
                                 _auto_columns: ["W"],
                                 data_sets: ["core@0.0.2"]
                             }
@@ -83,7 +83,7 @@ export const wind_farms_data: ATTRIBUTES = {
                             {
                                 calculation: "wind_farms.wildorado_wind_ranch.nameplate_generation / wind_farms.wildorado_wind_ranch.area",
                                 created: "2020-01-08 23:00:00 UTC",
-                                _auto_values: [2.5123076923076924],
+                                _auto_values: [[2.5123076923076924]],
                                 _auto_columns: ["W m^-2"],
                                 data_sets: ["core@0.0.2"]
                             }

@@ -16,7 +16,7 @@ import { safe_merge } from "../src/safe-merge"
 
 
 const data: SCHEMA = {
-    schema_version: "0.2",
+    schema_version: "0.3",
     data: safe_merge(
         regions_data,
         wind_farms_data,
@@ -119,7 +119,7 @@ function values_from_file (file_name: string, value_ref: VALUE_REF): VALUE[]
 
 function write_data ({ append_filename = "", indent = 0 }: { append_filename?: string, indent?: number })
 {
-    if (data.schema_version != "0.2") throw new Error("Unsupported schema version")
+    if (data.schema_version != "0.3") throw new Error("Unsupported schema version")
 
     process_data(data.data)
 
