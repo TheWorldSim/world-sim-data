@@ -1,6 +1,6 @@
 
-export interface SCHEMA_0_1 {
-    schema_version: "0.1"
+export interface SCHEMA {
+    schema_version: "0.2"
     data: ATTRIBUTES
     units: {[unit_type: string]: UNIT}
     data_sets: {[data_set_name: string]: DATA_SET}
@@ -12,24 +12,35 @@ interface DATA_SET {
     _auto_versions: {[unit_type: string]: boolean}
 }
 
-type ATTRIBUTES = {[attribute_name: string]: ATTRIBUTE | ABSTRACT_ATTRIBUTE | INSTANCE_ATTRIBUTE }
-interface ABSTRACT_ATTRIBUTE {
-    instances: ATTRIBUTES
-    attributes: ATTRIBUTES
-}
-interface INSTANCE_ATTRIBUTE {
+export type ATTRIBUTES = {[attribute_name: string]: ATTRIBUTE | PARENT_ATTRIBUTE }
+export interface PARENT_ATTRIBUTE {
+    instances?: ATTRIBUTES
     attributes: ATTRIBUTES
 }
 
-interface ATTRIBUTE {
-    value_refs: (VALUE_REF | DERIVED_VALUE)[]
+export interface ATTRIBUTE {
+    value_refs: VALUE_REF[]
     labels?: string[]
     description?: string
 }
 
-interface VALUE_REF {
+export type VALUE_REF = SIMPLE_VALUE_REF | DERIVED_VALUE_REF | REFERENCE_VALUE_REF
+
+export type SIMPLE_VALUE_REF = {
     values: VALUE[]
-    columns?: string[]
+} & COMMON_VALUE_DEF
+
+export type REFERENCE_VALUE_REF = {
+    value_file: string
+} & COMMON_VALUE_DEF
+
+interface COMMON_VALUE_DEF {
+    columns?: (string | string[])[]
+    created: string
+    meta_data?: {
+        units: {[key: string]: VALUE}
+        params: {[key: string]: VALUE}
+    }
     reference: string
     sub_ref?: string
     comment?: string
@@ -40,8 +51,9 @@ interface VALUE_REF {
     _auto_columns?: undefined
 }
 
-interface DERIVED_VALUE {
+interface DERIVED_VALUE_REF {
     calculation: string
+    created: string
     _auto_values: VALUE[]
     _auto_columns: string[]
     data_sets: string[]
@@ -52,7 +64,7 @@ interface DERIVED_VALUE {
     comment?: undefined
 }
 
-type VALUE = string | number | (string | number)[]
+export type VALUE = string | number | (string | number)[]
 
 interface UNIT {
     si: string

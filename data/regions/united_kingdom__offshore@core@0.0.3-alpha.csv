@@ -1,4 +1,3 @@
-# {"columns": ["lat", "lon"], "created": "2020-01-08 23:00:00 UTC", "comment": "data from WorldSim icosahedron grid", "parameters": {"grid_divisions": 200}, "units": {"lat": "degree", "lon": "degree"} }
 63.74211,-1.279686
 63.42006,-0.8430471
 63.41262,-1.68573
