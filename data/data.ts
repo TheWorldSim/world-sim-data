@@ -118,9 +118,7 @@ function process_value_ref (value_ref: VALUE_REF): VALUE_REF
     if ((value_ref as REFERENCE_VALUE_REF).value_file)
     {
         var value_file = (value_ref as REFERENCE_VALUE_REF).value_file
-        delete (value_ref as REFERENCE_VALUE_REF).value_file
-        const values: VALUES = values_from_file(value_file)
-        simple_value_ref.values = values
+        simple_value_ref.values = values_from_file(value_file)
     }
 
     if ((value_ref as DERIVED_VALUE_REF).calculation)
@@ -188,9 +186,11 @@ function write_data ({ processed_data_container, append_filename = "", indent = 
     fs.writeFileSync(`./data/data${append_filename}.json`, JSON.stringify(processed_data_container, null, indent))
 }
 
+
 const processed_data_container = {
     ...data_container,
     data: process_data(data_container.data)
 }
+
 write_data({ processed_data_container, indent: 2 })
 write_data({ processed_data_container, append_filename: "-compact" })
