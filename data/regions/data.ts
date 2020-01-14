@@ -24,7 +24,7 @@ export const regions_data: ATTRIBUTES = {
                                         grid_divisions: 200
                                     }
                                 },
-                                data_sets: ["core@0.0.3-alpha.csv"]
+                                data_sets: ["core@0.0.3-alpha"]
                             }
                         ]
                     }
@@ -50,7 +50,7 @@ export const regions_data: ATTRIBUTES = {
                                         grid_divisions: 200
                                     }
                                 },
-                                data_sets: ["core@0.0.3-alpha.csv"]
+                                data_sets: ["core@0.0.3-alpha"]
                             }
                         ]
                     }
@@ -76,7 +76,7 @@ export const regions_data: ATTRIBUTES = {
                                         grid_divisions: 200
                                     }
                                 },
-                                data_sets: ["core@0.0.3-alpha.csv"]
+                                data_sets: ["core@0.0.3-alpha"]
                             }
                         ]
                     }
@@ -102,7 +102,7 @@ export const regions_data: ATTRIBUTES = {
                                         grid_divisions: 200
                                     }
                                 },
-                                data_sets: ["core@0.0.3-alpha.csv"]
+                                data_sets: ["core@0.0.3-alpha"]
                             }
                         ]
                     }

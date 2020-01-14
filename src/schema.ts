@@ -1,15 +1,16 @@
 
 export interface SCHEMA {
-    schema_version: "0.4"
+    schema_version: "0.5"
     data: ATTRIBUTES
     units: {[unit_type: string]: UNIT}
-    data_sets: {[data_set_name: string]: DATA_SET}
+    data_sets: DATA_SET_CONFIG[]
 }
 
-interface DATA_SET {
+export interface DATA_SET_CONFIG {
+    name: string
     draft_version: string
     release_version: string
-    _auto_versions: {[unit_type: string]: boolean}
+    versions: string[]
 }
 
 export type ATTRIBUTES = {[attribute_name: string]: ATTRIBUTE | PARENT_ATTRIBUTE }
