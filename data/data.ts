@@ -32,10 +32,11 @@ const data_container: SCHEMA = {
     [
         {
             name: "core",
-            draft_version: "0.0.3-alpha",
-            release_version: "0.0.2",
+            draft_version: "0.0.4-alpha",
+            release_version: "0.0.3",
             versions:
             [
+                "0.0.3",
                 "0.0.2",
                 "0.0.1",
             ]
