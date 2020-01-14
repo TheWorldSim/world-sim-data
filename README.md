@@ -69,3 +69,8 @@ Then later you or someone else goes to the source data and copies the data direc
             }
         }
     }
+
+
+## Updating built data
+
+    npm run update-data

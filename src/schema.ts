@@ -1,6 +1,6 @@
 
 export interface SCHEMA {
-    schema_version: "0.3"
+    schema_version: "0.4"
     data: ATTRIBUTES
     units: {[unit_type: string]: UNIT}
     data_sets: {[data_set_name: string]: DATA_SET}
@@ -27,7 +27,7 @@ export interface ATTRIBUTE {
 export type VALUE_REF = SIMPLE_VALUE_REF | DERIVED_VALUE_REF | REFERENCE_VALUE_REF
 
 export type SIMPLE_VALUE_REF = {
-    values: VALUE[]
+    values: VALUES
 } & COMMON_VALUE_DEF
 
 export type REFERENCE_VALUE_REF = {
@@ -35,38 +35,41 @@ export type REFERENCE_VALUE_REF = {
 } & COMMON_VALUE_DEF
 
 interface COMMON_VALUE_DEF {
-    columns?: (string | string[])[]
-    created: string
-    meta_data?: {
+    columns: COLUMNS
+    meta_data: {
         units: {[key: string]: string}
         params: {[key: string]: number}
     }
+    created: string
     reference: string
+    sub_ref: string
+    comment: string
+    data_sets: string[]
+    //
+    calculation?: undefined
+}
+
+export interface DERIVED_VALUE_REF {
+    calculation: string
+    // temporary fields before we implement the calculation automatically
+    _manual_values: VALUES
+    _manual_columns: COLUMNS
+
+    created: string
+    ref?: string
     sub_ref?: string
     comment?: string
     data_sets: string[]
     //
-    calculation?: undefined
-    _auto_values?: undefined
-    _auto_columns?: undefined
-}
-
-interface DERIVED_VALUE_REF {
-    calculation: string
-    created: string
-    _auto_values: VALUE[]
-    _auto_columns: string[]
-    data_sets: string[]
-    //
+    values?: undefined
     columns?: undefined
-    ref?: undefined
-    sub_ref?: undefined
-    comment?: undefined
 }
 
 // Limited from string | number | (string | number)[] because C# scripts to
 // convert from json won't copy with this level of polymorphism
-export type VALUE = number[]
+export type VALUES = number[][]
+
+export type COLUMNS = (string | string[])[]
 
 interface UNIT {
     si: string

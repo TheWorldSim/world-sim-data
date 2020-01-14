@@ -13,6 +13,7 @@ export const regions_data: ATTRIBUTES = {
                                 columns: ["lat", "lon"],
                                 created: "2020-01-08 23:00:00 UTC",
                                 reference: "",
+                                sub_ref: "",
                                 comment: "Data from WorldSim icosahedron grid.  A rough area offshore from Texas, USA.",
                                 meta_data: {
                                     units: {
@@ -38,6 +39,7 @@ export const regions_data: ATTRIBUTES = {
                                 columns: ["lat", "lon"],
                                 created: "2020-01-08 23:00:00 UTC",
                                 reference: "",
+                                sub_ref: "",
                                 comment: "Data from WorldSim icosahedron grid.  A rough area of Texas, USA.",
                                 meta_data: {
                                     units: {
@@ -63,6 +65,7 @@ export const regions_data: ATTRIBUTES = {
                                 columns: ["lat", "lon"],
                                 created: "2020-01-08 23:00:00 UTC",
                                 reference: "",
+                                sub_ref: "",
                                 comment: "Data from WorldSim icosahedron grid.  A rough area offshore from UK.",
                                 meta_data: {
                                     units: {
@@ -88,6 +91,7 @@ export const regions_data: ATTRIBUTES = {
                                 columns: ["lat", "lon"],
                                 created: "2020-01-08 23:00:00 UTC",
                                 reference: "",
+                                sub_ref: "",
                                 comment: "Data from WorldSim icosahedron grid.  A rough area of UK.",
                                 meta_data: {
                                     units: {
