@@ -1,6 +1,6 @@
 
 export interface SCHEMA {
-    schema_version: "0.5"
+    schema_version: "0.6"
     data: ATTRIBUTES
     units: {[unit_type: string]: UNIT}
     data_sets: DATA_SET_CONFIG[]
@@ -39,7 +39,7 @@ interface COMMON_VALUE_DEF {
     columns: COLUMNS
     meta_data: {
         units: {[key: string]: string}
-        params: {[key: string]: number}
+        params: {[key: string]: number | string}
     }
     created: string
     reference: string
@@ -70,7 +70,11 @@ export interface DERIVED_VALUE_REF {
 // convert from json won't copy with this level of polymorphism
 export type VALUES = number[][]
 
-export type COLUMNS = (string | string[])[]
+export type COLUMNS = (string | COLUMNS_REFERENCE)[]
+export interface COLUMNS_REFERENCE {
+    property: string
+    values_file: string
+}
 
 interface UNIT {
     si: string

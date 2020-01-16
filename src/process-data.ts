@@ -76,7 +76,7 @@ function process_value_ref (value_ref: VALUE_REF): VALUE_REF
     if ((value_ref as REFERENCE_VALUE_REF).value_file)
     {
         var value_file = (value_ref as REFERENCE_VALUE_REF).value_file
-        simple_value_ref.values = values_from_file(value_file)
+        simple_value_ref.values = values_from_file(value_file, value_ref)
     }
 
     if ((value_ref as DERIVED_VALUE_REF).calculation)
@@ -94,10 +94,17 @@ function process_value_ref (value_ref: VALUE_REF): VALUE_REF
 }
 
 
-function values_from_file (file_name: string): VALUES
+function values_from_file (file_name: string, value_ref: VALUE_REF): VALUES
 {
     const contents = fs.readFileSync("./data/" + file_name).toString()
-    return contents.split("\n")
+    let lines = contents.split("\n")
+
+    if (value_ref.columns)
+    {
+        lines = lines.slice(1)
+    }
+
+    return lines
         .map(line => line.trim())
         .map(line => line.split(",").map(parseFloat))
 }

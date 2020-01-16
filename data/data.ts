@@ -8,7 +8,7 @@ import { process_data_container } from "../src/process-data-container"
 
 
 const data_container: SCHEMA = {
-    schema_version: "0.5",
+    schema_version: "0.6",
     data: safe_merge(
         regions_data,
         wind_farms_data,
@@ -45,10 +45,9 @@ const data_container: SCHEMA = {
 }
 
 
-
 function write_data ({ processed_data_container, append_filename = "", indent = 0 }: { processed_data_container: SCHEMA, append_filename?: string, indent?: number })
 {
-    if (processed_data_container.schema_version != "0.5") throw new Error("Unsupported schema version")
+    if (processed_data_container.schema_version != "0.6") throw new Error("Unsupported schema version")
 
     fs.writeFileSync(`./data/data${append_filename}.json`, JSON.stringify(processed_data_container, null, indent))
 }
