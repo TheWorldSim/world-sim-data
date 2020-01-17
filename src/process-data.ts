@@ -110,6 +110,7 @@ function values_from_file (file_name: string, value_ref: VALUE_REF): VALUES
 }
 
 
+// TODO move this out and into the validate-data-container script?
 function validate_values (value_ref: SIMPLE_VALUE_REF)
 {
     const column_number = expected_column_number(value_ref.columns);
