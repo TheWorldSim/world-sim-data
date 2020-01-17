@@ -25,13 +25,13 @@ export interface ATTRIBUTE {
     description?: string
 }
 
-export type VALUE_REF = SIMPLE_VALUE_REF | DERIVED_VALUE_REF | REFERENCE_VALUE_REF
+export type VALUE_REF = SIMPLE_VALUE_REF | DERIVED_VALUE_REF | FILE_VALUE_REF
 
 export type SIMPLE_VALUE_REF = {
     values: VALUES
 } & COMMON_VALUE_DEF
 
-export type REFERENCE_VALUE_REF = {
+export type FILE_VALUE_REF = {
     value_file: string
 } & COMMON_VALUE_DEF
 
