@@ -1,51 +1,39 @@
 import { ATTRIBUTES } from "../../src/schema"
-import { aggregate_all_capacity_factor_data } from "./aggregate_data"
+import { aggregate_all_capacity_factor_data } from "../../src/aggregate_data"
 
 
-const instances: ATTRIBUTES = {}
+const wind_turbine_capacity_instances: ATTRIBUTES = {}
 
 const wind_turbine_capacity_data: ATTRIBUTES = {
     wind_turbine_capacity: {
         attributes: {},
-        instances,
+        instances: wind_turbine_capacity_instances,
     },
 }
 
 
-;[
-    {
-        "region": "texas__offshore",
-        "year": 2018,
-        "hub_height": 80,
-        "turbine_model_name": "Vestas V90 2000"
-    },
-    {
-        "region": "texas",
-        "year": 2018,
-        "hub_height": 80,
-        "turbine_model_name": "Vestas V90 2000"
-    },
-    {
-        "region": "united_kingdom__offshore",
-        "year": 2018,
-        "hub_height": 80,
-        "turbine_model_name": "Vestas V90 2000"
-    },
-    {
-        "region": "united_kingdom",
-        "year": 2018,
-        "hub_height": 80,
-        "turbine_model_name": "Vestas V90 2000"
-    },
-].forEach(params => {
+const wind_turbine_capacity_params = [
+    "texas__offshore",
+    "texas",
+    "united_kingdom__offshore",
+    "united_kingdom",
+].map(region => ({
+    region, year: "2018", hub_height: 80, turbine_model_name: "Vestas V90 2000"
+}))
+
+
+wind_turbine_capacity_params.forEach(params => {
     const { region, year, hub_height, turbine_model_name } = params
 
-    const version = "core@0.0.4-alpha.csv"
+    const instance_id = `${year}_${region}_${hub_height}_${turbine_model_name.replace(/ /g, "_")}`
+    const version = "core@0.0.4"
+    const value_file = `wind_turbine_capacity/data/${instance_id}@${version}.csv`
 
-    instances[`${region}_${year}_${hub_height}_${turbine_model_name.replace(/ /g, "_")}`] = {
+    wind_turbine_capacity_instances[instance_id] = {
         value_refs: [
             {
-                value_file: `wind_turbine_capacity/data/${year}_${region}_${hub_height}_${turbine_model_name.replace(/ /g, "-")}@${version}`,
+                value_file,
+                bundles: ["regional"],
                 columns: [
                     "datetime",
                     {
@@ -55,6 +43,7 @@ const wind_turbine_capacity_data: ATTRIBUTES = {
                 ],
                 meta_data: {
                     units: {
+                        "datetime": "seconds since 1970",
                         "latlon": "degree,degree",
                         "hub_height": "m",
                     },
@@ -72,7 +61,7 @@ const wind_turbine_capacity_data: ATTRIBUTES = {
 
 
 if (require.main === module) {
-    aggregate_all_capacity_factor_data(instances)
+    aggregate_all_capacity_factor_data(wind_turbine_capacity_instances)
 }
 
 

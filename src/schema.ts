@@ -33,6 +33,7 @@ export type SIMPLE_VALUE_REF = {
 
 export type FILE_VALUE_REF = {
     value_file: string
+    bundles: string[]
 } & COMMON_VALUE_DEF
 
 interface COMMON_VALUE_DEF {

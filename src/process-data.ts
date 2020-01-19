@@ -74,7 +74,7 @@ function process_value_ref (value_ref: VALUE_REF): VALUE_REF
         ...value_ref as SIMPLE_VALUE_REF
     }
 
-    if ((value_ref as FILE_VALUE_REF).value_file)
+    if ((value_ref as FILE_VALUE_REF).value_file && (value_ref as FILE_VALUE_REF).bundles.includes("main"))
     {
         simple_value_ref.values = values_from_file_value_ref(value_ref as FILE_VALUE_REF)
     }
@@ -86,7 +86,7 @@ function process_value_ref (value_ref: VALUE_REF): VALUE_REF
         simple_value_ref.columns = (value_ref as DERIVED_VALUE_REF)._manual_columns;
     }
 
-    validate_values(simple_value_ref)
+    // validate_values(simple_value_ref)
 
     simple_value_ref = flatten_values(simple_value_ref)
 
@@ -120,45 +120,46 @@ function value_strings_from_file (file_name: string, value_ref: VALUE_REF): stri
 }
 
 
-// TODO move this out and into the validate-data-container script?
-function validate_values (value_ref: SIMPLE_VALUE_REF)
-{
-    const column_number = expected_column_number(value_ref.columns, value_ref);
+// // TODO move this out and into the validate-data-container script?
+// function validate_values (value_ref: SIMPLE_VALUE_REF)
+// {
+//     const column_number = expected_column_number(value_ref.columns, value_ref);
 
-    value_ref.values.forEach(line_values => {
-        // Will want to do something more advanced later based on value_ref.columns
-        if (line_values.length !== column_number)
-        {
-            // console.log("line_values", line_values)
-            throw new Error(`Expected ${column_number} columns but got: ${line_values.length}`);
-        }
-    })
-}
+//     value_ref.values.forEach(line_values => {
+//         // Will want to do something more advanced later based on value_ref.columns
+//         if (line_values.length !== column_number)
+//         {
+//             console.log("line_values", line_values)
+//             // console.log("value_ref", value_ref)
+//             throw new Error(`Expected ${column_number} columns but got: ${line_values.length}`);
+//         }
+//     })
+// }
 
 
-function expected_column_number (columns: COLUMNS, value_ref: VALUE_REF): number
-{
-    let expected_count = 0
+// function expected_column_number (columns: COLUMNS, value_ref: VALUE_REF): number
+// {
+//     let expected_count = 0
 
-    const complex_columns = columns.filter(column => typeof column !== "string")
-    expected_count += (columns.length - complex_columns.length)
+//     const complex_columns = columns.filter(column => typeof column !== "string")
+//     expected_count += (columns.length - complex_columns.length)
 
-    const count_per_complex_column = complex_columns.map(column => {
-        const filename = (column as COLUMNS_REFERENCE).values_file
-        const values = values_from_file(filename, value_ref)
-        // We take number of rows instead of columns (i.e. not values[0].length)
-        // because these rows are used as column headers
-        return values.length
-    })
+//     complex_columns.forEach(column => {
+//         const filename = (column as COLUMNS_REFERENCE).values_file
+//         const values = values_from_file(filename, value_ref)
+//         // We take number of rows instead of columns (i.e. not values[0].length)
+//         // because these rows are used as column headers
+//         expected_count += values.length
+//     })
 
-    expected_count += count_per_complex_column.reduce((accum, v) => accum + v, 0)
-
-    return expected_count
-}
+//     return expected_count
+// }
 
 
 function flatten_values (value_ref: SIMPLE_VALUE_REF): SIMPLE_VALUE_REF
 {
+    if(!value_ref.values) return value_ref
+
     const processed_values = value_ref.values.reduce((accum, line_values) => accum.concat(line_values), [])
 
     const processed_value_ref: SIMPLE_VALUE_REF = {
