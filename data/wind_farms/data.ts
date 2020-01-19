@@ -53,7 +53,7 @@ export const wind_farms_data: ATTRIBUTES = {
                                 value_refs: [
                                     {
                                        values: [[71]],
-                                       columns: [""],
+                                       columns: [],
                                        meta_data: { units: {}, params: {} },
                                        created: "2020-01-08 23:00:00 UTC",
                                        reference: "https://en.wikipedia.org/wiki/Wildorado_Wind_Ranch",

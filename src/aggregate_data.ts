@@ -4,8 +4,8 @@ import {
     ATTRIBUTE,
     COLUMNS_REFERENCE,
     FILE_VALUE_REF,
-} from "../../src/schema"
-import { value_strings_from_file } from "../../src/process-data"
+} from "./schema"
+import { value_strings_from_file } from "./process-data"
 
 
 const BASE_PATH = "../world-sim-data-tools/scraping/renewables-ninja-data/"
@@ -16,9 +16,11 @@ function read_wind_capacity_lines_from_file (filename: string)
 
     const lines = contents.toString()
         .split("\n")
+        .map(line => line.trim())
+
+    const license = extract_license(lines[0])
 
     const no_metadata_lines = lines
-        .map(line => line.trim())
         .filter(line => !line.startsWith("#"))
     
     const expected_headers = "time,electricity,wind_speed"
@@ -32,7 +34,24 @@ function read_wind_capacity_lines_from_file (filename: string)
 
     const processed_lines = only_data_lines.map(parse_line)
 
-    return processed_lines
+    return { license, processed_lines }
+}
+
+
+function extract_license (line: string)
+{
+    const license_regex = /# Renewables\.ninja [^(]+\(Point API\) - (-?[\d.]+, -?[\d.]+ -) .+/g
+    const match = license_regex.exec(line)
+    
+    if (!match)
+    {
+        throw new Error(`Unsupported license header line: ${line}`)
+    }
+
+    const latlon = match[1]
+    const license = line.replace(latlon, "")
+
+    return license
 }
 
 
@@ -40,14 +59,15 @@ function parse_line (line: string)
 {
     const values = line.split(",")
     // We only care about the electricity value which also because it is
-    // in kW and the data set the capacity to 1 kW it means we can use
-    // as the capacity factor
+    // in kW and the generator capacity is set to 1 kW it means we can use
+    // it directly as the capacity factor
     // We also times by 1000 as this removes the 0. and drops the file size
-    // from 3.7 Mb to 2.4 Mb
+    // from 3.7 Mb to 2.4 Mb for texas__offshore wind
     return [values[0], (parseFloat(values[1]) * 1000).toString()]
 }
 
 
+// copied and translated from ../world-sim-data-tools/scraping/renewables_ninja.py
 function wind_capacity_data_file_name (latlon: string[], value_ref: FILE_VALUE_REF)
 {
     const region = value_ref.meta_data.params["region"]
@@ -79,7 +99,7 @@ function aggregate_capacity_factor_data (latlons: string[][], value_ref: FILE_VA
     // Add first two columns and record expected_datetimes
     const expected_datetimes: string[] = []
     const first_file_name = wind_capacity_data_file_name(latlons[0], value_ref)
-    const first_wind_capacity = read_wind_capacity_lines_from_file(first_file_name)
+    const { license: first_license, processed_lines: first_wind_capacity } = read_wind_capacity_lines_from_file(first_file_name)
     first_wind_capacity.forEach(row => {
         const [datetime, capacity_factor] = row
         expected_datetimes.push(datetime)
@@ -90,7 +110,10 @@ function aggregate_capacity_factor_data (latlons: string[][], value_ref: FILE_VA
     // Add remaining columns
     latlons.slice(1).forEach(latlon => {
         const file_name = wind_capacity_data_file_name(latlon, value_ref)
-        const wind_capacity = read_wind_capacity_lines_from_file(file_name)
+        const { license: other_license, processed_lines: wind_capacity } = read_wind_capacity_lines_from_file(file_name)
+
+        if (other_license !== first_license) throw new Error(`Different license at latlon: ${latlon} : "${other_license}" from expected "${first_license}"`)
+
         wind_capacity.forEach((row, index) => {
             // check the first datetime stamps are the same
             const expected_datetime = expected_datetimes[index]
@@ -103,9 +126,9 @@ function aggregate_capacity_factor_data (latlons: string[][], value_ref: FILE_VA
         })
     })
 
-    // Add header
+    // Add license and header
     const latlon_headers = latlons.map(latlon => `"${latlon.join(",")}"`)
-    all_data.unshift([`"datetime"`, ...latlon_headers])
+    all_data.unshift([first_license], [`"datetime"`, ...latlon_headers])
   
     return all_data
 }
