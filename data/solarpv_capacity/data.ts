@@ -24,7 +24,7 @@ solarpv_capacity_params.forEach(params => {
     const { region, year } = params
 
     const instance_id = `${year}_${region}_loss10percent_tracking1_tilt35_azim180`
-    const version = "core@0.0.5-alpha"
+    const version = "core@0.0.5"
     const value_file = `solarpv_capacity/data/${instance_id}@${version}.csv`
 
     solarpv_capacity_instances[instance_id] = {
