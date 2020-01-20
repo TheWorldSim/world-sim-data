@@ -16,7 +16,8 @@ const solarpv_capacity_params = [
     "texas",
     "united_kingdom",
 ].map(region => {
-    return [ { region, year: "2017" }, { region, year: "2018" }]
+    const years = ["2017", "2018"]
+    return years.map(year => ({ region, year}))
 }).reduce((accum, params) => accum.concat(params), [])
 
 
@@ -42,7 +43,6 @@ solarpv_capacity_params.forEach(params => {
                 meta_data: {
                     units: {
                         "latlon": "degree,degree",
-                        // "hub_height": "m",
                     },
                     params
                 },
