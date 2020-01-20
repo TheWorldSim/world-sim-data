@@ -1,5 +1,5 @@
 import { ATTRIBUTES } from "../../src/schema"
-import { aggregate_all_capacity_factor_data } from "../../src/aggregate_data"
+import { aggregate_all_wind_capacity_factor_data } from "../../src/aggregate_data"
 
 
 const wind_turbine_capacity_instances: ATTRIBUTES = {}
@@ -61,7 +61,7 @@ wind_turbine_capacity_params.forEach(params => {
 
 
 if (require.main === module) {
-    aggregate_all_capacity_factor_data(wind_turbine_capacity_instances)
+    aggregate_all_wind_capacity_factor_data(wind_turbine_capacity_instances)
 }
 
 
