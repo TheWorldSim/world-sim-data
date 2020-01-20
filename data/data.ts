@@ -1,19 +1,22 @@
 import fs = require("fs")
 
 import { SCHEMA } from "../src/schema"
-import { regions_data } from "./regions/data"
-import { wind_turbine_capacity_data } from "./wind_turbine_capacity/data"
-import { wind_farms_data } from "./wind_farms/data"
 import { safe_merge } from "../src/safe-merge"
 import { process_data_container } from "../src/process-data-container"
+
+import { regions_data } from "./regions/data"
+import { solarpv_capacity_data } from "./solarpv_capacity/data"
+import { wind_farms_data } from "./wind_farms/data"
+import { wind_turbine_capacity_data } from "./wind_turbine_capacity/data"
 
 
 const data_container: SCHEMA = {
     schema_version: "0.6",
     data: safe_merge(
         regions_data,
-        wind_turbine_capacity_data,
+        solarpv_capacity_data,
         wind_farms_data,
+        wind_turbine_capacity_data,
     ),
     units: {
         area: {

@@ -6,3 +6,7 @@
 /data/wind_turbine_capacity/data/2018_texas__offshore_80_Vestas_V90_2000@core@0.0.4.csv filter=lfs diff=lfs merge=lfs -text
 /data/wind_turbine_capacity/data/2018_united_kingdom_80_Vestas_V90_2000@core@0.0.4.csv filter=lfs diff=lfs merge=lfs -text
 /data/wind_turbine_capacity/data/2018_united_kingdom__offshore_80_Vestas_V90_2000@core@0.0.4.csv filter=lfs diff=lfs merge=lfs -text
+/data/solarpv_capacity/data/2017_texas_loss10percent_tracking1_tilt35_azim180@core@0.0.5-alpha.csv filter=lfs diff=lfs merge=lfs -text
+/data/solarpv_capacity/data/2017_united_kingdom_loss10percent_tracking1_tilt35_azim180@core@0.0.5-alpha.csv filter=lfs diff=lfs merge=lfs -text
+/data/solarpv_capacity/data/2018_texas_loss10percent_tracking1_tilt35_azim180@core@0.0.5-alpha.csv filter=lfs diff=lfs merge=lfs -text
+/data/solarpv_capacity/data/2018_united_kingdom_loss10percent_tracking1_tilt35_azim180@core@0.0.5-alpha.csv filter=lfs diff=lfs merge=lfs -text
