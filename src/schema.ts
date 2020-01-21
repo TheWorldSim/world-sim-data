@@ -40,7 +40,7 @@ interface COMMON_VALUE_DEF {
     columns: COLUMNS
     meta_data: {
         units: {[key: string]: string}
-        params: {[key: string]: number | string}
+        params: {[key: string]: number | string | boolean}
     }
     created: string
     reference: string

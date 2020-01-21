@@ -50,7 +50,7 @@ solarpv_capacity_params.forEach(params => {
                 created: "2020-01-16 11:00:00 UTC",
                 reference: "https://www.renewables.ninja",
                 sub_ref: "",
-                comment: "A combined data set of renewables ninja solar pv data with region latlons",
+                comment: "A combined data set of renewables ninja solar pv data with region latlons.  These data are at a single latlon point, so we need to assess how useful they are.  For example, if there's a hill near the point, the capacity factor might be much higher or lower than the area this is intended to represent.",
                 data_sets: [version]
             }
         ]

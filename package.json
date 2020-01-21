@@ -15,6 +15,7 @@
     "update-electricity-demand-data": "ts-node ./data/electricity_demand/process_data.ts",
     "update-solarpv-capacity-data": "ts-node ./data/solarpv_capacity/data.ts",
     "update-wind-capacity-data": "ts-node ./data/wind_turbine_capacity/data.ts",
+    "update-wind-capacity-summary-data": "ts-node ./data/wind_turbine_capacity_summary/data.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
