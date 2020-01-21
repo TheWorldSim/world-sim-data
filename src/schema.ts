@@ -1,9 +1,9 @@
 
 export interface SCHEMA {
-    schema_version: "0.6"
+    schema_version: "0.7"
     data: ATTRIBUTES
     units: {[unit_type: string]: UNIT}
-    data_sets: DATA_SET_CONFIG[]
+    data_set_configs: DATA_SET_CONFIG[]
 }
 
 export interface DATA_SET_CONFIG {

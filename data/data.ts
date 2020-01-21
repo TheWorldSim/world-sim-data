@@ -1,8 +1,8 @@
 import fs = require("fs")
 
 import { SCHEMA } from "../src/schema"
-import { safe_merge } from "../src/safe-merge"
-import { process_data_container } from "../src/process-data-container"
+import { safe_merge } from "../src/safe_merge"
+import { process_data_container } from "../src/process_data_container"
 
 import { regions_data } from "./regions/data"
 import { solarpv_capacity_data } from "./solarpv_capacity/data"
@@ -11,7 +11,7 @@ import { wind_turbine_capacity_data } from "./wind_turbine_capacity/data"
 
 
 const data_container: SCHEMA = {
-    schema_version: "0.6",
+    schema_version: "0.7",
     data: safe_merge(
         regions_data,
         solarpv_capacity_data,
@@ -33,7 +33,7 @@ const data_container: SCHEMA = {
             }
         }
     },
-    data_sets:
+    data_set_configs:
     [
         {
             name: "core",
@@ -54,7 +54,7 @@ const data_container: SCHEMA = {
 
 function write_data ({ processed_data_container, append_filename = "", indent = 0 }: { processed_data_container: SCHEMA, append_filename?: string, indent?: number })
 {
-    if (processed_data_container.schema_version != "0.6") throw new Error("Unsupported schema version")
+    if (processed_data_container.schema_version != "0.7") throw new Error("Unsupported schema version")
 
     fs.writeFileSync(`./data/data${append_filename}.json`, JSON.stringify(processed_data_container, null, indent))
 }

@@ -5,7 +5,7 @@ import {
     COLUMNS_REFERENCE,
     FILE_VALUE_REF,
 } from "./schema"
-import { value_strings_from_file } from "./process-data"
+import { value_strings_from_file } from "./process_data"
 
 
 const BASE_PATH = "../world-sim-data-tools/scraping/renewables-ninja-data/"
