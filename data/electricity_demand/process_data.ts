@@ -29,7 +29,7 @@ function process_files (file_names: string[])
             converted_lines.push(converted_line)
         })
 
-        converted_lines.unshift("datetime,ercot_electricity_demand")
+        converted_lines.unshift(`"datetime","ercot_electricity_demand"`)
 
         const new_contents = converted_lines.join("\n")
 

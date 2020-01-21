@@ -9,6 +9,7 @@ import { regions_data } from "./regions/data"
 import { solarpv_capacity_data } from "./solarpv_capacity/data"
 import { wind_farms_data } from "./wind_farms/data"
 import { wind_turbine_capacity_data } from "./wind_turbine_capacity/data"
+import { wind_turbine_capacity_summary_data } from "./wind_turbine_capacity_summary/data"
 
 
 const data_container: SCHEMA = {
@@ -19,6 +20,7 @@ const data_container: SCHEMA = {
         solarpv_capacity_data,
         wind_farms_data,
         wind_turbine_capacity_data,
+        wind_turbine_capacity_summary_data,
     ),
     units: {
         area: {
@@ -39,10 +41,11 @@ const data_container: SCHEMA = {
     [
         {
             name: "core",
-            draft_version: "0.0.7-alpha",
-            release_version: "0.0.6",
+            draft_version: "0.0.8-alpha",
+            release_version: "0.0.7",
             versions:
             [
+                "0.0.7",
                 "0.0.6",
                 "0.0.5",
                 "0.0.4",
