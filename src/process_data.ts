@@ -8,9 +8,7 @@ import {
     SIMPLE_VALUE_REF,
     FILE_VALUE_REF,
     VALUES,
-    COLUMNS,
     DERIVED_VALUE_REF,
-    COLUMNS_REFERENCE,
 } from "./schema"
 
 
@@ -96,19 +94,19 @@ function process_value_ref (value_ref: VALUE_REF): VALUE_REF
 
 function values_from_file_value_ref (value_ref: FILE_VALUE_REF): VALUES
 {
-    const file_name = value_ref.value_file
-    return values_from_file(file_name, value_ref)
+    return values_from_file(value_ref.value_file, value_ref)
 }
 
-function values_from_file (file_name: string, value_ref: VALUE_REF): VALUES
+function values_from_file (value_file: string, value_ref: VALUE_REF): VALUES
 {
-    return value_strings_from_file(file_name, value_ref)
+    return value_strings_from_file(value_file, value_ref)
         .map(line => line.map(parseFloat))
 }
 
-function value_strings_from_file (file_name: string, value_ref: VALUE_REF): string[][]
+function value_strings_from_file (value_file: string, value_ref: VALUE_REF): string[][]
 {
-    const contents = fs.readFileSync("./data/" + file_name).toString()
+    const file_path =  value_file_to_file_path(value_file)
+    const contents = fs.readFileSync(file_path).toString()
     let lines = contents.split("\n")
 
     if (value_ref.columns)
@@ -171,7 +169,14 @@ function flatten_values (value_ref: SIMPLE_VALUE_REF): SIMPLE_VALUE_REF
 }
 
 
+function value_file_to_file_path (value_file: string)
+{
+    return "./data/" + value_file
+}
+
+
 export {
     process_data,
     value_strings_from_file,
+    value_file_to_file_path,
 }
