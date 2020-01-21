@@ -42,6 +42,7 @@ solarpv_capacity_params.forEach(params => {
                 ],
                 meta_data: {
                     units: {
+                        "datetime": "seconds since 1970",
                         "latlon": "degree,degree",
                     },
                     params
