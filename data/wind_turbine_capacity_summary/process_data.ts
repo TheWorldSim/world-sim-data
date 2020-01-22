@@ -52,8 +52,10 @@ function parse_capacity_data (capacity_data: string)
 {
     const lines = capacity_data.split("\n").map(line => line.trim())
 
-    const header = lines[1].split(`","`) // header should be on line 1
-    if (header[0] !== `"datetime`) throw new Error(`Expecting first header value to be datetime but was: ${header[0]}`)
+    const header = lines[1] // header should be on line 1
+        .slice(1, -1) // drop the first and last " character
+        .split(`","`)
+    if (header[0] !== `datetime`) throw new Error(`Expecting first header value to be datetime but was: ${header[0]}`)
     const latlons = header.slice(1)
     
     const lines_no_header: DataLine[] = lines.slice(2)
@@ -110,8 +112,11 @@ function get_summaries_of_data_by_period (should_segment: (data_line: Date) => b
     })
 
     for (let index = 0; index < latlon_count; ++index) {
-        const progress = base_progress + ((index / latlon_count) * max_progress)
-        console.log(`get_summaries_of_data ${(progress * 100).toFixed(2)}%`)
+        if (index % 20 === 0)
+        {
+            const progress = base_progress + ((index / latlon_count) * max_progress)
+            console.log(`get_summaries_of_data ${(progress * 100).toFixed(0)}%`)
+        }
 
         let current_data_line_index = 0
         let count = 0
