@@ -16,20 +16,20 @@ const wind_turbine_capacity_summary_data: ATTRIBUTES = {
 const capacity_summaries: CAPACITY_SUMMARY[] = [
     { bucket_size: "year", subdivide_by_hour: false },
     { bucket_size: "month", subdivide_by_hour: false },
-    // { bucket_size: "year", subdivide_by_hour: true },
-    // { bucket_size: "month", subdivide_by_hour: true },
+    { bucket_size: "year", subdivide_by_hour: true },
+    { bucket_size: "month", subdivide_by_hour: true },
 ]
 
 
 wind_turbine_capacity_params.forEach(params => {
     const { region } = params
     const instance_id = get_instance_id(params)
-    
+
     const attributes: ATTRIBUTES = {}
     wind_turbine_capacity_summary_instances[instance_id] = { attributes }
 
-    const version = "core@0.0.7"
-    
+    const version = "core@0.0.8-alpha"
+
     capacity_summaries.forEach(capacity_summary => {
         const capacity_summary_name = get_capacity_summary_name(capacity_summary)
         const value_file = `wind_turbine_capacity_summary/data/${instance_id}_${capacity_summary_name}@${version}.csv`
