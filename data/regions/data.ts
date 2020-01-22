@@ -1,117 +1,72 @@
-import { ATTRIBUTES } from "../../src/schema";
+import { ATTRIBUTES, VALUE_REF } from "../../src/schema"
 
-export const regions_data: ATTRIBUTES = {
+
+const regions = [
+    {
+        name: "texas__offshore",
+        comment: "Data from WorldSim icosahedral grid.  A rough area offshore from Texas, USA.",
+    },
+    {
+        name: "texas",
+        comment: "Data from WorldSim icosahedral grid.  A rough area of Texas, USA.",
+    },
+    {
+        name: "united_kingdom__offshore",
+        comment: "Data from WorldSim icosahedral grid.  A rough area offshore from UK.",
+    },
+    {
+        name: "united_kingdom",
+        comment: "Data from WorldSim icosahedral grid.  A rough area of UK.",
+    },
+]
+
+
+const versions = [
+    { value: "core@0.0.3", created: "2020-01-08 23:00:00 UTC" },
+    { value: "core@0.0.8-alpha", created: "2020-01-22 12:00:00 UTC" },
+]
+
+
+const region_instances: ATTRIBUTES = {}
+
+regions.forEach(region => {
+    const value_refs: VALUE_REF[] = versions.map(version => ({
+        value_file: `regions/data/${region.name}@${version.value}.csv`,
+        bundles: ["main"],
+        columns: ["lat", "lon"],
+        created: version.created,
+        reference: "",
+        sub_ref: "",
+        comment: region.comment,
+        meta_data: {
+            units: {
+                lat: "degree",
+                lon: "degree"
+            },
+            params: {
+                grid_divisions: 200
+            }
+        },
+        data_sets: [version.value]
+    }))
+
+    region_instances[region.name] = {
+        attributes: {
+            latlons: {
+                value_refs
+            }
+        }
+    };
+})
+
+
+const regions_data: ATTRIBUTES = {
     regions: {
         attributes: {},
-        instances: {
-            texas__offshore: {
-                attributes: {
-                    latlons: {
-                        value_refs: [
-                            {
-                                value_file: "regions/texas__offshore@core@0.0.3.csv",
-                                bundles: ["main"],
-                                columns: ["lat", "lon"],
-                                created: "2020-01-08 23:00:00 UTC",
-                                reference: "",
-                                sub_ref: "",
-                                comment: "Data from WorldSim icosahedral grid.  A rough area offshore from Texas, USA.",
-                                meta_data: {
-                                    units: {
-                                        lat: "degree",
-                                        lon: "degree"
-                                    },
-                                    params: {
-                                        grid_divisions: 200
-                                    }
-                                },
-                                data_sets: ["core@0.0.3"]
-                            }
-                        ]
-                    }
-                }
-            },
-            texas: {
-                attributes: {
-                    latlons: {
-                        value_refs: [
-                            {
-                                value_file: "regions/texas@core@0.0.3.csv",
-                                bundles: ["main"],
-                                columns: ["lat", "lon"],
-                                created: "2020-01-08 23:00:00 UTC",
-                                reference: "",
-                                sub_ref: "",
-                                comment: "Data from WorldSim icosahedral grid.  A rough area of Texas, USA.",
-                                meta_data: {
-                                    units: {
-                                        lat: "degree",
-                                        lon: "degree"
-                                    },
-                                    params: {
-                                        grid_divisions: 200
-                                    }
-                                },
-                                data_sets: ["core@0.0.3"]
-                            }
-                        ]
-                    }
-                }
-            },
-            united_kingdom__offshore: {
-                attributes: {
-                    latlons: {
-                        value_refs: [
-                            {
-                                value_file: "regions/united_kingdom__offshore@core@0.0.3.csv",
-                                bundles: ["main"],
-                                columns: ["lat", "lon"],
-                                created: "2020-01-08 23:00:00 UTC",
-                                reference: "",
-                                sub_ref: "",
-                                comment: "Data from WorldSim icosahedral grid.  A rough area offshore from UK.",
-                                meta_data: {
-                                    units: {
-                                        lat: "degree",
-                                        lon: "degree"
-                                    },
-                                    params: {
-                                        grid_divisions: 200
-                                    }
-                                },
-                                data_sets: ["core@0.0.3"]
-                            }
-                        ]
-                    }
-                }
-            },
-            united_kingdom: {
-                attributes: {
-                    latlons: {
-                        value_refs: [
-                            {
-                                value_file: "regions/united_kingdom@core@0.0.3.csv",
-                                bundles: ["main"],
-                                columns: ["lat", "lon"],
-                                created: "2020-01-08 23:00:00 UTC",
-                                reference: "",
-                                sub_ref: "",
-                                comment: "Data from WorldSim icosahedral grid.  A rough area of UK.",
-                                meta_data: {
-                                    units: {
-                                        lat: "degree",
-                                        lon: "degree"
-                                    },
-                                    params: {
-                                        grid_divisions: 200
-                                    }
-                                },
-                                data_sets: ["core@0.0.3"]
-                            }
-                        ]
-                    }
-                }
-            },
-        }
+        instances: region_instances,
     }
+}
+
+export {
+    regions_data
 }
