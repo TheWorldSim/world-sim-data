@@ -57,7 +57,7 @@ function parse_capacity_data (capacity_data: string)
         .split(`","`)
     if (header[0] !== `datetime`) throw new Error(`Expecting first header value to be datetime but was: ${header[0]}`)
     const latlons = header.slice(1)
-    
+
     const lines_no_header: DataLine[] = lines.slice(2)
         .map(line => {
             const line_of_ints = line.split(",").map(v => parseInt(v, 10))
@@ -79,7 +79,7 @@ function get_summaries_of_data (
 )
 {
     const max_progress = (1 / summaries.length) * (1 / progress_outer_total)
-    
+
     const summaried_data: {[summary_name: string]: DataLine[]} = {}
     summaries.forEach((summary, summary_index) => {
         const base_progress = (summary_index * max_progress) + (progress_outer_current / progress_outer_total)
@@ -87,7 +87,8 @@ function get_summaries_of_data (
 
         if (summary.subdivide_by_hour)
         {
-            console.error("not implemented summary.subdivide_by_hour")
+            const get_bucket = factory_period_hourly_bucket(summary)
+            summaried_data[summary_name] = get_summaries_of_data_by_period_hourly(get_bucket, latlon_count, data, base_progress, max_progress)
         }
         else
         {
@@ -98,6 +99,97 @@ function get_summaries_of_data (
     })
 
     return summaried_data
+}
+
+
+function factory_period_hourly_bucket (summary: CAPACITY_SUMMARY): (datetime: Date) => Date
+{
+    if (!summary.subdivide_by_hour) throw new Error("factory_period_hourly_bucket only supports subdivide_by_hour")
+
+    if (summary.bucket_size === "year")
+    {
+        return (datetime: Date) => {
+            const d = new Date(datetime.getUTCFullYear().toString())
+            d.setUTCHours(datetime.getUTCHours())
+            return d
+        }
+    }
+    else if (summary.bucket_size === "month")
+    {
+        return (datetime: Date) => {
+            const d = new Date(`${datetime.getUTCFullYear()} ${datetime.getUTCMonth() + 1}`)
+            d.setUTCHours(datetime.getUTCHours())
+            return d
+        }
+    }
+    else
+    {
+        throw new Error("factory_segment_predicate does not support bucket_size " + summary.bucket_size)
+    }
+}
+
+
+function factory_segment_predicate (summary: CAPACITY_SUMMARY): (datetime: Date) => boolean
+{
+    if (summary.subdivide_by_hour) throw new Error("factory_segment_predicate does not support subdivide_by_hour")
+
+    if (summary.bucket_size === "year")
+    {
+        return (datetime: Date) => (datetime.getUTCMonth() + datetime.getUTCDate() - 1 + datetime.getUTCHours() + datetime.getUTCMinutes() + datetime.getUTCSeconds()) === 0
+    }
+    else if (summary.bucket_size === "month")
+    {
+        return (datetime: Date) => (datetime.getUTCDate() - 1 + datetime.getUTCHours() + datetime.getUTCMinutes() + datetime.getUTCSeconds()) === 0
+    }
+    else
+    {
+        throw new Error("factory_segment_predicate does not support bucket_size " + summary.bucket_size)
+    }
+}
+
+
+function get_summaries_of_data_by_period_hourly (get_bucket: (data_line: Date) => Date, latlon_count: number, data: DataLine[], base_progress: number, max_progress: number)
+{
+    const summary_data_lines: DataLine[] = []
+    const buckets = new Set<number>()
+    data.forEach(data_line => {
+        const bucket = get_bucket(data_line[0])
+        if (!buckets.has(bucket.getTime()))
+        {
+            summary_data_lines.push([bucket])
+            buckets.add(bucket.getTime())
+        }
+    })
+
+    for (let index = 0; index < latlon_count; ++index) {
+        if (index % 20 === 0)
+        {
+            const progress = base_progress + ((index / latlon_count) * max_progress)
+            console.log(`get_summaries_of_data ${(progress * 100).toFixed(0)}%`)
+        }
+
+        const data_for_bucket = Array.from(buckets)
+            .reduce((accum, bucket) => {
+                accum[bucket] = []
+                return accum
+            }, {} as {[bucket: number]: number[]})
+
+        data.forEach(data_line => {
+            const bucket = get_bucket(data_line[0])
+            data_for_bucket[bucket.getTime()].push(data_line[index + 1] as number)
+        })
+
+        summary_data_lines.forEach(summary_data_line => {
+            const bucket = summary_data_line[0].getTime()
+            const data = data_for_bucket[bucket]
+            const count = data.length
+            const total = data.reduce((accum, v) => accum + v, 0)
+            const average = total / count
+            summary_data_line.push(average)
+        })
+    }
+
+    return summary_data_lines
 }
 
 
@@ -145,26 +237,7 @@ function get_summaries_of_data_by_period (should_segment: (data_line: Date) => b
 }
 
 
-function factory_segment_predicate (summary: CAPACITY_SUMMARY): (datetime: Date) => boolean
-{
-    if (summary.subdivide_by_hour) throw new Error("factory_segment_predicate does not support subdivide_by_hour")
-
-    if (summary.bucket_size === "year")
-    {
-        return (datetime: Date) => (datetime.getUTCMonth() + datetime.getUTCDate() - 1 + datetime.getUTCHours() + datetime.getUTCMinutes() + datetime.getUTCSeconds()) === 0
-    }
-    else if (summary.bucket_size === "month")
-    {
-        return (datetime: Date) => (datetime.getUTCDate() - 1 + datetime.getUTCHours() + datetime.getUTCMinutes() + datetime.getUTCSeconds()) === 0
-    } 
-    else
-    {
-        throw new Error("factory_segment_predicate does not support bucket_size " + summary.bucket_size)
-    }
-}
-
-
-function format_summaried_data (latlons: string[], summaried_data: DataLine[]) 
+function format_summaried_data (latlons: string[], summaried_data: DataLine[])
 {
     const lines = [["datetime", ...latlons].map(v =>  `"${v}"`).join(",")]
 
