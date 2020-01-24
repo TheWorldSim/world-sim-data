@@ -56,7 +56,7 @@ regions.forEach(region => {
                 value_refs
             }
         }
-    };
+    }
 })
 
 

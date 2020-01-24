@@ -46,7 +46,7 @@ wind_turbine_capacity_params.forEach(params => {
                     "datetime",
                     {
                         "property": "latlon",
-                        "values_file": `regions/${region}@core@0.0.3.csv`,
+                        "values_file": `regions/data/${region}@core@0.0.3.csv`,
                     }
                 ],
                 meta_data: {
@@ -71,7 +71,7 @@ wind_turbine_capacity_params.forEach(params => {
 function get_instance_id (params: WindTurbineParams)
 {
     const { year, region, hub_height, turbine_model_name } = params
-    return `${year}_${region}_${hub_height}_${turbine_model_name.replace(/ /g, "_")}`
+    return `_${year}_${region}_${hub_height}_${turbine_model_name.replace(/ /g, "_")}`
 }
 
 function get_data_file_path (instance_id: string)

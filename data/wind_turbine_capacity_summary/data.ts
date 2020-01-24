@@ -43,7 +43,7 @@ wind_turbine_capacity_params.forEach(params => {
                         "temporal-id",
                         {
                             "property": "latlon",
-                            "values_file": `regions/${region}@core@0.0.3.csv`,
+                            "values_file": `regions/data/${region}@core@0.0.3.csv`,
                         }
                     ],
                     meta_data: {
