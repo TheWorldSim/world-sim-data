@@ -1,6 +1,5 @@
 import fs = require("fs")
-import { ATTRIBUTE, PARENT_ATTRIBUTE, SIMPLE_VALUE_REF, ATTRIBUTES, FILE_VALUE_REF } from "../../src/schema"
-import { get_data_file_path } from "../wind_turbine_capacity/data"
+import { ATTRIBUTE, PARENT_ATTRIBUTE, ATTRIBUTES, FILE_VALUE_REF } from "./schema"
 
 
 export interface CAPACITY_SUMMARY {
@@ -16,9 +15,9 @@ function get_capacity_summary_name (summary: CAPACITY_SUMMARY)
 }
 
 
-function representative_wind_capacity_factor_data (wind_turbine_representative_capacity_instances: ATTRIBUTES, summaries: CAPACITY_SUMMARY[])
+function summarise_capacity_factor_data (get_data_file_path: (instance_id: string) => string, capacity_instances_to_summarise: ATTRIBUTES, summaries: CAPACITY_SUMMARY[])
 {
-    const instance_ids = Object.keys(wind_turbine_representative_capacity_instances)
+    const instance_ids = Object.keys(capacity_instances_to_summarise)
 
     instance_ids.forEach((instance_id, capacity_index) => {
         const data_source_file_path = "./data/" + get_data_file_path(instance_id)
@@ -27,7 +26,7 @@ function representative_wind_capacity_factor_data (wind_turbine_representative_c
         const summaried_data = get_summaries_of_data(summaries, latlons.length, data, capacity_index, instance_ids.length)
         //console.log("summaried_data...", summaried_data)
 
-        const instance = wind_turbine_representative_capacity_instances[instance_id] as PARENT_ATTRIBUTE
+        const instance = capacity_instances_to_summarise[instance_id] as PARENT_ATTRIBUTE
 
         summaries.forEach(summary => {
             const summary_name = get_capacity_summary_name(summary)
@@ -253,5 +252,5 @@ function format_summaried_data (latlons: string[], summaried_data: DataLine[])
 
 export {
     get_capacity_summary_name,
-    representative_wind_capacity_factor_data,
+    summarise_capacity_factor_data,
 }

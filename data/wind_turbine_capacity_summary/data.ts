@@ -1,6 +1,7 @@
 import { ATTRIBUTES } from "../../src/schema"
+import { CAPACITY_SUMMARY, get_capacity_summary_name, summarise_capacity_factor_data } from "../../src/summarise_data"
 import { wind_turbine_capacity_params, get_instance_id } from "../wind_turbine_capacity/data"
-import { CAPACITY_SUMMARY, get_capacity_summary_name, representative_wind_capacity_factor_data } from "./process_data"
+import { get_data_file_path } from "../wind_turbine_capacity/data"
 
 
 const wind_turbine_capacity_summary_instances: ATTRIBUTES = {}
@@ -70,7 +71,7 @@ wind_turbine_capacity_params.forEach(params => {
 
 
 if (require.main === module) {
-    representative_wind_capacity_factor_data(wind_turbine_capacity_summary_instances, capacity_summaries)
+    summarise_capacity_factor_data(get_data_file_path, wind_turbine_capacity_summary_instances, capacity_summaries)
 }
 
 

@@ -127,7 +127,7 @@ function parse_line (line: string)
     // We only care about the electricity value which also because it is
     // in kW and the generator capacity is set to 1 kW it means we can use
     // it directly as the capacity factor
-    // We also times by 1000 as this removes the 0. and drops the file size
+    // We also times by 1000 as this removes the `0.` and drops the file size
     // from 3.7 Mb to 2.4 Mb for texas__offshore wind
     return [values[0], (parseFloat(values[1]) * 1000).toString()]
 }
