@@ -7,6 +7,7 @@ import { process_data_container } from "../src/process_data_container"
 import { electricity_demand_data } from "./electricity_demand/data"
 import { regions_data } from "./regions/data"
 import { solarpv_capacity_data } from "./solarpv_capacity/data"
+import { solarpv_capacity_summary_data } from "./solarpv_capacity_summary/data"
 import { wind_farms_data } from "./wind_farms/data"
 import { wind_turbine_capacity_data } from "./wind_turbine_capacity/data"
 import { wind_turbine_capacity_summary_data } from "./wind_turbine_capacity_summary/data"
@@ -18,6 +19,7 @@ const data_container: SCHEMA = {
         electricity_demand_data,
         regions_data,
         solarpv_capacity_data,
+        solarpv_capacity_summary_data,
         wind_farms_data,
         wind_turbine_capacity_data,
         wind_turbine_capacity_summary_data,
