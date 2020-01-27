@@ -23,7 +23,7 @@ const regions = [
 
 const versions = [
     { value: "core@0.0.3", created: "2020-01-08 23:00:00 UTC", bundle: "main" },
-    { value: "core@0.0.8-alpha", created: "2020-01-22 12:00:00 UTC", bundle: "regional" },
+    { value: "core@0.0.8", created: "2020-01-22 12:00:00 UTC", bundle: "regional" },
 ]
 
 
