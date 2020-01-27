@@ -8,7 +8,7 @@ import {
 import { value_strings_from_file } from "./process_data"
 
 
-const BASE_PATH = "../world-sim-data-tools/scraping/renewables-ninja-data/"
+const BASE_PATH = "../world-sim-data-tools/renewables-ninja/data/"
 const read_wind_capacity_by_datetime_from_filename = factory_read_capacity_by_datetime_from_filename(
     BASE_PATH, "time,electricity,wind_speed")
 const read_solarpv_capacity_by_datetime_from_filename = factory_read_capacity_by_datetime_from_filename(
@@ -27,14 +27,14 @@ function factory_read_capacity_by_datetime_from_filename (base_path: string, exp
         const filepath = base_path + filename
         const contents_buffer = fs.readFileSync(filepath)
         const contents_string = contents_buffer.toString()
-    
+
         const { header, license, processed_lines } = parse_capacity_by_datetime_from_file_contents(contents_string, filepath)
-    
+
         if (header !== expected_header)
         {
             throw new Error(`Expecting header: ${expected_header} but got ${header}`)
         }
-    
+
         return { license, processed_lines }
     }
 }
@@ -98,7 +98,7 @@ function parse_capacity_by_datetime_from_file_contents(file_contents: string, fi
     const only_data_lines = no_metadata_lines.slice(1, -1)
 
     const processed_lines = only_data_lines.map(parse_line)
-    
+
     return { header, license, processed_lines }
 }
 
@@ -107,7 +107,7 @@ function extract_license (line: string, filepath?: string)
 {
     const license_regex = /# Renewables\.ninja [^(]+\(Point API\) - (-?[\d.]+, -?[\d.]+ -) .+/g
     const match = license_regex.exec(line)
-    
+
     if (!match)
     {
         const filepath_debug = filepath ? `(in filepath "${filepath}")` : `(no filepath given)`
@@ -182,7 +182,7 @@ function aggregate_capacity_factor_data (capacity_by_datetime_for_latlon: Capaci
     // Add license and header
     const latlon_headers = latlons.map(latlon => `"${latlon.join(",")}"`)
     all_data.unshift([first_license], [`"datetime"`, ...latlon_headers])
-  
+
     return all_data
 }
 
