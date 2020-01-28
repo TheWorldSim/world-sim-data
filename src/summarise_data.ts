@@ -116,8 +116,7 @@ function factory_period_hourly_bucket (summary: CAPACITY_SUMMARY): (datetime: Da
     else if (summary.bucket_size === "month")
     {
         return (datetime: Date) => {
-            const d = new Date(`${datetime.getUTCFullYear()} ${datetime.getUTCMonth() + 1}`)
-            d.setUTCHours(datetime.getUTCHours())
+            const d = new Date(Date.UTC(datetime.getUTCFullYear(), datetime.getUTCMonth(), 1, datetime.getUTCHours()))
             return d
         }
     }

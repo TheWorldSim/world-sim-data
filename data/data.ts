@@ -43,10 +43,11 @@ const data_container: SCHEMA = {
     [
         {
             name: "core",
-            draft_version: "0.0.9-alpha",
-            release_version: "0.0.8",
+            draft_version: "0.0.10-alpha",
+            release_version: "0.0.9",
             versions:
             [
+                "0.0.9",
                 "0.0.8",
                 "0.0.7",
                 "0.0.6",
