@@ -20,7 +20,7 @@ export interface WindTurbineParams
     [key: string]: string | number | boolean
 }
 
-const wind_turbine_capacity_params: WindTurbineParams[] = [
+const capacity_params_by_region_windturbine_and_year: WindTurbineParams[] = [
     "texas__offshore",
     "texas",
     "united_kingdom__offshore",
@@ -31,7 +31,7 @@ const wind_turbine_capacity_params: WindTurbineParams[] = [
 
 
 const version = "core@0.0.4"
-wind_turbine_capacity_params.forEach(params => {
+capacity_params_by_region_windturbine_and_year.forEach(params => {
     const { region } = params
 
     const instance_id = get_instance_id(params)
@@ -86,7 +86,7 @@ if (require.main === module) {
 
 
 export {
-    wind_turbine_capacity_params,
+    capacity_params_by_region_windturbine_and_year,
     wind_turbine_capacity_data,
     get_instance_id,
     get_data_file_path,

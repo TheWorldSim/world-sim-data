@@ -1,6 +1,6 @@
 import { ATTRIBUTES } from "../../src/schema"
 import { CAPACITY_SUMMARY, get_capacity_summary_name, summarise_capacity_factor_data } from "../../src/summarise_data"
-import { wind_turbine_capacity_params, get_instance_id, get_data_file_path } from "../wind_turbine_capacity/data"
+import { capacity_params_by_region_windturbine_and_year, get_instance_id, get_data_file_path } from "../wind_turbine_capacity/data"
 
 
 const wind_turbine_capacity_summary_instances: ATTRIBUTES = {}
@@ -21,14 +21,14 @@ const capacity_summaries: CAPACITY_SUMMARY[] = [
 ]
 
 
-wind_turbine_capacity_params.forEach(params => {
+capacity_params_by_region_windturbine_and_year.forEach(params => {
     const { region } = params
     const instance_id = get_instance_id(params)
 
     const attributes: ATTRIBUTES = {}
     wind_turbine_capacity_summary_instances[instance_id] = { attributes }
 
-    const version = "core@0.0.8"
+    const version = "core@0.0.9"
 
     capacity_summaries.forEach(capacity_summary => {
         const capacity_summary_name = get_capacity_summary_name(capacity_summary)
