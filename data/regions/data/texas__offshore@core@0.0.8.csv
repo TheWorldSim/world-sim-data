@@ -1,4 +1,4 @@
-lat,lon,vertex_indices1,vertex_indices2,vertex_indices3,vertex_indices4,vertex_indices5,vertex_indices6
+lat,lon,vertex1_lat,vertex1_lon,vertex2_lat,vertex2_lon,vertex3_lat,vertex3_lon,vertex4_lat,vertex4_lon,vertex5_lat,vertex5_lon,vertex6_lat,vertex6_lon
 29.4348,-93.6550,29.3339,-93.4379,29.2214,-93.6494,29.3222,-93.8664,29.5358,-93.8724,29.6486,-93.6607,29.5476,-93.4432
 29.4224,-94.0836,29.3222,-93.8664,29.2091,-94.0774,29.3092,-94.2945,29.5227,-94.3011,29.6361,-94.0899,29.5358,-93.8724
 29.1082,-93.8604,29.0074,-93.6438,28.8944,-93.8545,28.9952,-94.0711,29.2091,-94.0774,29.3222,-93.8664,29.2214,-93.6494
