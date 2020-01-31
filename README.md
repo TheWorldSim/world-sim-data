@@ -20,6 +20,15 @@ But that data and those relationships need to live somewhere and that's what thi
 
 Add more
 
+### Versioning when correcting function vs data
+
+Increase the version number if:
+
+* the data values are changed.  Wven if it was thought the data was never being used in a simulation this can't be known for certain.
+* the data values are not changed but the meta data was wrong in a way that effects the interpretation of the values.
+
+Otherwise no need to increase the version number.
+
 ### Add towards source
 
 For example: you read an article and extract the data from a graph in the article:
