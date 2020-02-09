@@ -30,7 +30,7 @@ const capacity_params_by_region_windturbine_and_year: WindTurbineParams[] = [
 }))
 
 
-const version = "core@0.0.4"
+const version = "core@0.0.10"
 capacity_params_by_region_windturbine_and_year.forEach(params => {
     const { region } = params
 

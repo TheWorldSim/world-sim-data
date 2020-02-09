@@ -24,7 +24,7 @@ Add more
 
 Increase the version number if:
 
-* the data values are changed.  Wven if it was thought the data was never being used in a simulation this can't be known for certain.
+* the data values are changed.  Even if it was thought the data was never being used in a simulation this can't be known for certain.
 * the data values are not changed but the meta data was wrong in a way that effects the interpretation of the values.
 
 Otherwise no need to increase the version number.
