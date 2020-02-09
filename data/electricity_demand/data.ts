@@ -22,8 +22,8 @@ const demand_regions_params = [
 demand_regions_params.forEach(params => {
     const { region, year } = params
 
-    const instance_id = `${year}_${region}_gw_electricity_demand`
-    const version = "core@0.0.6"
+    const instance_id = `${year}_${region}_mw_electricity_demand`
+    const version = "core@0.0.10"
     const value_file = `electricity_demand/data/${instance_id}@${version}.csv`
 
     electricity_demand_instances[instance_id] = {
@@ -38,7 +38,7 @@ demand_regions_params.forEach(params => {
                 meta_data: {
                     units: {
                         "datetime": "seconds since 1970",
-                        "ercot_electricity_demand": "GW",
+                        "ercot_electricity_demand": "MW",
                     },
                     params
                 },

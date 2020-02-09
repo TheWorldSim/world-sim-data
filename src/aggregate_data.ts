@@ -157,7 +157,7 @@ function aggregate_capacity_factor_data (capacity_by_datetime_for_latlon: Capaci
     first_capacity.forEach(row => {
         const [datetime, capacity_factor] = row
         expected_datetimes.push(datetime)
-        const datetime_in_seconds = (new Date(datetime).getTime() / 1000).toString()
+        const datetime_in_seconds = (new Date(datetime + "Z+0").getTime() / 1000).toString()
         all_data.push([datetime_in_seconds, capacity_factor])
     })
 

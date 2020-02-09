@@ -1,7 +1,7 @@
 import fs = require("fs")
 
 const files_to_process = [
-    "2018_texas_gw_electricity_demand@core@0.0.6"
+    "2018_texas_mw_electricity_demand@core@0.0.10"
 ]
 
 const BASE_PATH = "./data/electricity_demand/data/"
@@ -23,9 +23,11 @@ function process_files (file_names: string[])
                 .map(part => part.replace(",", ""))
 
             // convert the datetime to seconds since 1970
-            // And subtract one hour to make it mark the beginning of the time period
-            const seconds_since_1970 = (new Date(parts[0]).getTime() / 1000) - 3600
-            const converted_line = `${seconds_since_1970},${parts[parts.length - 1]}`
+            const date_str = parts[0] + "Z+0"
+            const seconds_since_1970 = new Date(date_str).getTime() / 1000
+            const seconds_since_1970_at_time_period_start = seconds_since_1970 - 3600
+            const MW = parseInt(parts[parts.length - 1], 10) // drops the two DP precision
+            const converted_line = `${seconds_since_1970_at_time_period_start},${MW}`
             converted_lines.push(converted_line)
         })
 

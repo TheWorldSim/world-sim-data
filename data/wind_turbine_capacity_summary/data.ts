@@ -28,7 +28,7 @@ capacity_params_by_region_windturbine_and_year.forEach(params => {
     const attributes: ATTRIBUTES = {}
     wind_turbine_capacity_summary_instances[instance_id] = { attributes }
 
-    const version = "core@0.0.9"
+    const version = "core@0.0.10"
 
     capacity_summaries.forEach(capacity_summary => {
         const capacity_summary_name = get_capacity_summary_name(capacity_summary)

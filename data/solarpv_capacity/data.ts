@@ -29,7 +29,7 @@ const solarpv_capacity_params: SolarPVParams[] = [
 }).reduce((accum, params) => accum.concat(params), [])
 
 
-const version = "core@0.0.5"
+const version = "core@0.0.10"
 solarpv_capacity_params.forEach(params => {
     const { region } = params
 

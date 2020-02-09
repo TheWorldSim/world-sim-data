@@ -43,10 +43,11 @@ const data_container: SCHEMA = {
     [
         {
             name: "core",
-            draft_version: "0.0.10-alpha",
-            release_version: "0.0.9",
+            draft_version: "0.0.11-alpha",
+            release_version: "0.0.10",
             versions:
             [
+                "0.0.10",
                 "0.0.9",
                 "0.0.8",
                 "0.0.7",
@@ -71,7 +72,7 @@ function write_data (params: { processed_data_container: SCHEMA, append_filename
         data_keys_seperate_lines = false,
     } = params
 
-    if (processed_data_container.schema_version != "0.7") throw new Error("Unsupported schema version")
+    if (processed_data_container.schema_version !== "0.7") throw new Error("Unsupported schema version")
 
     let contents = ""
 
