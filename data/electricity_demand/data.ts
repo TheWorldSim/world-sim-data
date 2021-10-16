@@ -45,7 +45,7 @@ demand_regions_params.forEach(params => {
                 created: "2019-12-30 12:06:00 UTC",
                 reference: "http://www.ercot.com/gridinfo/load/load_hist",
                 sub_ref: "",
-                comment: "This is only ERCOT, not the whole of or only Texas.  Downloaded excel file and saved as CSV with underscore seperated variables",
+                comment: "This is only ERCOT, not the whole of or only Texas.  Downloaded excel file and saved as CSV with underscore seperated variables.  Access to ercot.com must be from IP address in USA.",
                 data_sets: [version]
             }
         ]
