@@ -1,6 +1,6 @@
 # World Sim data
 
-This data repo supports World Sim.
+This data repo supports World Sim.  It's paired with the [data importer repo](https://github.com/TheWorldSim/world-sim-data-importer/)
 
 The World Sim is a collaborative project where you can learn about our complex world through games.
 
