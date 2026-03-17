@@ -1,16 +1,17 @@
-from datetime import datetime
-
 # Note that you need to perform a few manual changes to the text copied from:
 # https://www.consumercouncil.org.uk/home-heating/price-checker/archive
 #
-# 1. find and replace all tabs with commas
-# 2. remove £ signs
-# 3. add "date" as the first column header
+# 1. add "date" as the first column header
+# 2. lowercase the column headers
+# 3. find and replace all tabs with commas
+# 4. remove £ signs
 #
 # Then you can run this script to convert the date strings into ISO format
 
 
-input_filename = "heating_oil_uk.txt"
+from datetime import datetime
+
+input_filename = "heating_oil_uk_input.csv"
 output_filename = "heating_oil_uk.csv"
 
 processed_csv = ""
@@ -18,11 +19,14 @@ processed_csv = ""
 with open(input_filename, "r") as f:
     lines = f.readlines()
 
-for line in lines:
+# Add the header line
+processed_csv += lines[0].strip() + "\n"
+
+data_lines = lines[1:]
+data_lines.reverse()
+
+for line in data_lines:
     line = line.strip()
-    if line.startswith("date"):
-        processed_csv += line + "\n"
-        continue
     if line == "":
         continue
     parts = line.split(",")
