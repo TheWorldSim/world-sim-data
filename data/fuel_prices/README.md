@@ -7,4 +7,4 @@ After processing, the data can be uploaded to: [wikisim.org/wiki/1233](https://w
 
 # Gas price (UK)
 
-Follow the insructions in [gas_price_uk.js](gas_price_uk.js)
+Follow the insructions in [gas_price_uk/README.md](gas_price_uk/README.md)
