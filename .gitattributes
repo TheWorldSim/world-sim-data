@@ -30,3 +30,4 @@
 /data/wind_turbine_capacity/data/_2018_texas__offshore_80_Vestas_V90_2000@core@0.0.10.csv filter=lfs diff=lfs merge=lfs -text
 /data/wind_turbine_capacity/data/_2018_united_kingdom_80_Vestas_V90_2000@core@0.0.10.csv filter=lfs diff=lfs merge=lfs -text
 /data/wind_turbine_capacity/data/_2018_united_kingdom__offshore_80_Vestas_V90_2000@core@0.0.10.csv filter=lfs diff=lfs merge=lfs -text
+/data/electricity_demand/uk/cleaned_national_grid_energy_consumption.csv filter=lfs diff=lfs merge=lfs -text
