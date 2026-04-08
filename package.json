@@ -4,12 +4,12 @@
   "description": "This data repo supports World Sim.",
   "main": "./data/data.ts",
   "dependencies": {
-    "@types/node": "13.1.6",
-    "ts-node": "8.6.0",
-    "tsc": "1.20150623.0",
-    "typescript": "3.7.4"
+    "ts-node": "10.9.2",
+    "typescript": "6.0.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/node": "25.5.2"
+  },
   "scripts": {
     "update-data": "ts-node ./data/data.ts",
     "update-electricity-demand-data": "ts-node ./data/electricity_demand/process_data.ts",
