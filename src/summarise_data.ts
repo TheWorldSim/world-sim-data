@@ -47,7 +47,8 @@ function summarise_capacity_factor_data (get_data_file_path: (instance_id: strin
 
             //console.log(output_file_path)
             if (!summaried_data[summary_name]) throw new Error(`No summaried data found for summary_name ${summary_name}`)
-            const contents = format_summaried_data(latlons, summaried_data[summary_name])
+            const latlons_to_use = summary.average_by_location ? ["average"] : latlons
+            const contents = format_summaried_data(latlons_to_use, summaried_data[summary_name])
             fs.writeFileSync(output_file_path, contents)
         })
     })
