@@ -1,3 +1,9 @@
+// To run this file and re-generate the summarised data:
+// world-sim-data/$  pnpm install
+// world-sim-data/$  pnpm ts-node data/solarpv_capacity_summary/data.ts
+//
+// Or use the launch.json config "Run TS file"
+
 import { ATTRIBUTES } from "../../src/schema"
 import { CAPACITY_SUMMARY, get_capacity_summary_name, summarise_capacity_factor_data } from "../../src/summarise_data"
 import { solarpv_capacity_params, get_instance_id, get_data_file_path } from "../solarpv_capacity/data"
@@ -18,6 +24,7 @@ const capacity_summaries: CAPACITY_SUMMARY[] = [
     { bucket_size: "month", subdivide_by_hour: false },
     { bucket_size: "year", subdivide_by_hour: true },
     { bucket_size: "month", subdivide_by_hour: true },
+    { bucket_size: "month", subdivide_by_hour: true, average_by_location: true },
 ]
 
 
