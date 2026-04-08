@@ -5,13 +5,20 @@ import { ATTRIBUTE, PARENT_ATTRIBUTE, ATTRIBUTES, FILE_VALUE_REF } from "./schem
 export interface CAPACITY_SUMMARY {
     bucket_size: "year" | "month"
     subdivide_by_hour: boolean
+    /**
+     * When true, the summarised data will be an average of the values over all
+     * locations rather than a value for each location.
+     */
+    average_by_location?: boolean
 }
 
 
 function get_capacity_summary_name (summary: CAPACITY_SUMMARY)
 {
     const hourly = summary.subdivide_by_hour ? "_hourly" : ""
-    return `${summary.bucket_size}${hourly}_average`
+    const location = summary.average_by_location ? "_location" : ""
+    const and = (hourly && location) ? "_and" : ""
+    return `${summary.bucket_size}${hourly}${and}${location}_average`
 }
 
 
@@ -22,8 +29,9 @@ function summarise_capacity_factor_data (get_data_file_path: (instance_id: strin
     instance_ids.forEach((instance_id, capacity_index) => {
         const data_source_file_path = "./data/" + get_data_file_path(instance_id)
         const raw_capacity_data = fs.readFileSync(data_source_file_path).toString()
-        const { latlons, data } = parse_capacity_data(raw_capacity_data)
-        const summaried_data = get_summaries_of_data(summaries, latlons.length, data, capacity_index, instance_ids.length)
+        const { latlons, data: data_by_location } = parse_capacity_data(raw_capacity_data)
+        const data_averaged_by_location = get_data_averaged_by_location(data_by_location)
+        const summaried_data = get_summaries_of_data(summaries, latlons.length, { data_by_location, data_averaged_by_location }, capacity_index, instance_ids.length)
         //console.log("summaried_data...", summaried_data)
 
         const instance = capacity_instances_to_summarise[instance_id] as PARENT_ATTRIBUTE
@@ -38,7 +46,7 @@ function summarise_capacity_factor_data (get_data_file_path: (instance_id: strin
             const output_file_path = "./data/" + summary_value_ref.value_file
 
             //console.log(output_file_path)
-            if (!summaried_data[summary_name]) return
+            if (!summaried_data[summary_name]) throw new Error(`No summaried data found for summary_name ${summary_name}`)
             const contents = format_summaried_data(latlons, summaried_data[summary_name])
             fs.writeFileSync(output_file_path, contents)
         })
@@ -69,10 +77,25 @@ function parse_capacity_data (capacity_data: string)
 }
 
 
+function get_data_averaged_by_location (data: DataLine[]): [Date, number][]
+{
+    return data.map(data_line =>
+    {
+        const values = data_line.slice(1) as number[]
+        const total = values.reduce((accum, v) => accum + v, 0)
+        const average = total / values.length
+        return [data_line[0], average]
+    })
+}
+
+
 function get_summaries_of_data (
     summaries: CAPACITY_SUMMARY[],
     latlon_count: number,
-    data: DataLine[],
+    data: {
+        data_by_location: DataLine[],
+        data_averaged_by_location: [Date, number][],
+    },
     progress_outer_current: number,
     progress_outer_total: number
 )
@@ -84,15 +107,17 @@ function get_summaries_of_data (
         const base_progress = (summary_index * max_progress) + (progress_outer_current / progress_outer_total)
         const summary_name = get_capacity_summary_name(summary)
 
+        const data_to_use = summary.average_by_location ? data.data_averaged_by_location : data.data_by_location
+
         if (summary.subdivide_by_hour)
         {
             const get_bucket = factory_period_hourly_bucket(summary)
-            summaried_data[summary_name] = get_summaries_of_data_by_period_hourly(get_bucket, latlon_count, data, base_progress, max_progress)
+            summaried_data[summary_name] = get_summaries_of_data_by_period_hourly({ get_bucket, data: data_to_use, base_progress, max_progress })
         }
         else
         {
             const segment_predicate = factory_segment_predicate(summary)
-            summaried_data[summary_name] = get_summaries_of_data_by_period(segment_predicate, latlon_count, data, base_progress, max_progress)
+            summaried_data[summary_name] = get_summaries_of_data_by_period({ segment_predicate, data: data_to_use, base_progress, max_progress })
         }
 
     })
@@ -146,8 +171,18 @@ function factory_segment_predicate (summary: CAPACITY_SUMMARY): (datetime: Date)
 }
 
 
-function get_summaries_of_data_by_period_hourly (get_bucket: (data_line: Date) => Date, latlon_count: number, data: DataLine[], base_progress: number, max_progress: number)
+interface GetSummariesOfDataByPeriodHourlyArgs
 {
+    get_bucket: (data_line: Date) => Date
+    // latlon_count: number
+    data: DataLine[]
+    base_progress: number,
+    max_progress: number
+}
+function get_summaries_of_data_by_period_hourly (args: GetSummariesOfDataByPeriodHourlyArgs)
+{
+    const { get_bucket, data, base_progress, max_progress } = args
+
     const summary_data_lines: DataLine[] = []
     const buckets = new Set<number>()
     data.forEach(data_line => {
@@ -158,6 +193,8 @@ function get_summaries_of_data_by_period_hourly (get_bucket: (data_line: Date) =
             buckets.add(bucket.getTime())
         }
     })
+
+    const latlon_count = data[0].length - 1
 
     for (let index = 0; index < latlon_count; ++index) {
         if (index % 20 === 0)
@@ -191,8 +228,17 @@ function get_summaries_of_data_by_period_hourly (get_bucket: (data_line: Date) =
 }
 
 
-function get_summaries_of_data_by_period (should_segment: (data_line: Date) => boolean, latlon_count: number, data: DataLine[], base_progress: number, max_progress: number)
+interface GetSummariesOfDataByPeriodArgs
 {
+    segment_predicate: (data_line: Date) => boolean
+    data: DataLine[]
+    base_progress: number,
+    max_progress: number
+}
+function get_summaries_of_data_by_period (args: GetSummariesOfDataByPeriodArgs)
+{
+    const { segment_predicate: should_segment, data, base_progress, max_progress } = args
+
     const summary_data_lines: DataLine[] = []
     data.forEach(data_line => {
         if (should_segment(data_line[0]))
@@ -200,6 +246,8 @@ function get_summaries_of_data_by_period (should_segment: (data_line: Date) => b
             summary_data_lines.push([data_line[0]])
         }
     })
+
+    const latlon_count = data[0].length - 1
 
     for (let index = 0; index < latlon_count; ++index) {
         if (index % 20 === 0)
