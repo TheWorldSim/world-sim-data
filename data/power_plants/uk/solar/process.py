@@ -33,6 +33,8 @@ def process_solar_df(solar_df: pd.DataFrame):
 
     filter_solar_df(solar_df)
 
+    bucket_by_year(solar_df)
+
 
 def filter_solar_df(df):
     filtered_df = df[[
@@ -47,3 +49,27 @@ def filter_solar_df(df):
 
     filtered_df.to_csv(output_file_path("solar"), index=False)
     print(f"Output written to: {output_file_path("solar")}")
+
+
+def bucket_by_year(df: pd.DataFrame):
+    df["year"] = df[field_operational_date].dt.year
+
+    # Count the number of solar farms that became operational each year
+    solar_farms_by_year = df.groupby("year")
+    # Total installed capacity by year
+    capacity_by_year = solar_farms_by_year[field_installed_capacity].sum().round(1)
+    area_by_year = solar_farms_by_year[new_field_area].sum()
+
+    # Make a new dataframe with the results
+    yearly_df = pd.DataFrame({
+        "year": capacity_by_year.index.astype(int).values,
+        "number of solar farms": solar_farms_by_year.size().values,
+        "total installed capacity": capacity_by_year.values,
+        "total area (km^2)": (pd.to_numeric(area_by_year) / 1e6).round(1).values,
+        "average area (m^2)": (pd.to_numeric(area_by_year) / solar_farms_by_year.size()).astype(int).values,
+        "max area (m^2)": solar_farms_by_year[new_field_area].max().astype(int).values,
+    })
+
+    file_path = output_file_path("solar_yearly")
+    yearly_df.to_csv(file_path, index=False)
+    print(f"Yearly output written to: {file_path}")
