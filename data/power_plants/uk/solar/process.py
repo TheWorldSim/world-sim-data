@@ -64,7 +64,7 @@ def bucket_by_year(df: pd.DataFrame):
     yearly_df = pd.DataFrame({
         "year": capacity_by_year.index.astype(int).values,
         "number of solar farms": solar_farms_by_year.size().values,
-        "total installed capacity": capacity_by_year.values,
+        "total installed capacity (MWelec)": capacity_by_year.values,
         "total area (km^2)": (pd.to_numeric(area_by_year) / 1e6).round(1).values,
         "average area (m^2)": (pd.to_numeric(area_by_year) / solar_farms_by_year.size()).astype(int).values,
         "max area (m^2)": solar_farms_by_year[new_field_area].max().astype(int).values,
