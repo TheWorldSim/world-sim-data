@@ -22,7 +22,7 @@ def set_new_field_power_density_initial(df):
     df[new_field_power_density_initial] = (fdf[field_installed_capacity] * 1_000_000 / fdf[field_solar_site_area])
 
 
-def get_average_solar_farm_power_density(df: pd.DataFrame):
+def get_solar_farm_power_to_area_model(df: pd.DataFrame):
     solar_df = df[df[field_technology_type] == "Solar Photovoltaics"]
     # Plot a log log scatter plot of capacity vs area for Solar PV rows with valid power density
     solar_df = solar_df[[field_installed_capacity, field_solar_site_area, new_field_power_density_initial]].dropna()
@@ -37,13 +37,15 @@ def get_average_solar_farm_power_density(df: pd.DataFrame):
     model1 = fit_log_log(x, y)
     y_pred1 = model1.predict(x).flatten()
 
-    fig, ax = plt.subplots()
-    ax.scatter(x, y, alpha=0.7, label="Data")
-    # Plot a straight line for the initial best fit (red)
-    min_x, max_x = x.min(), x.max()
-    x_fit = np.array([min_x, max_x]).reshape(-1, 1)
-    y_fit = model1.predict(x_fit)
-    ax.loglog(x_fit, y_fit, color="blue", label="Initial best fit using all data")
+    ax = False  # change to True to show the graph
+    if ax:
+        fig, ax = plt.subplots()
+        ax.scatter(x, y, alpha=0.7, label="Data")
+        # Plot a straight line for the initial best fit (red)
+        min_x, max_x = x.min(), x.max()
+        x_fit = np.array([min_x, max_x]).reshape(-1, 1)
+        y_fit = model1.predict(x_fit)
+        ax.loglog(x_fit, y_fit, color="blue", label="Initial best fit using all data")
 
     # 2. Identify outliers (N% from fit line)
     n_percent = 50
@@ -51,9 +53,10 @@ def get_average_solar_farm_power_density(df: pd.DataFrame):
     residual_ratios = residuals / y_pred1
     outlier_indices = residual_ratios > (n_percent / 100)
 
-    # Label outliers in red
-    ax.scatter(x[outlier_indices], y[outlier_indices],
-               color="red", edgecolor="black", label=f"Outliers ({n_percent}%)")
+    if ax:
+        # Label outliers in red
+        ax.scatter(x[outlier_indices], y[outlier_indices],
+                color="red", edgecolor="black", label=f"Outliers ({n_percent}%)")
 
     # 3. Refit without outliers and plot new best fit (green)
     mask = np.ones(len(x), dtype=bool)
@@ -63,23 +66,25 @@ def get_average_solar_farm_power_density(df: pd.DataFrame):
 
     model2 = fit_log_log(x_inliers, y_inliers)
     y_pred2 = model2.predict(x)
-    ax.plot(x, y_pred2, color="green", label="Best fit (no outliers)")
 
-    ax.set_xlabel(field_installed_capacity)
-    ax.set_ylabel(field_solar_site_area)
-    ax.set_title("Solar PV: Capacity vs Area (log-log)")
-    ax.legend()
-    plt.tight_layout()
+    if ax:
+        ax.plot(x, y_pred2, color="green", label="Best fit (no outliers)")
 
-    # Add the slope of the fit without outliers to the plot as an annotation in
-    # the bottom right corner
-    slope = model2.coef_[0][0]
-    y_intercept = model2.intercept_[0] # type: ignore
-    ax.annotate(f"Slope (no outliers): {slope:.2f}+{y_intercept:.2f}",
-                xy=(0.95, 0.05), xycoords="axes fraction",
-                ha="right", va="bottom", fontsize=10, color="green")
+        ax.set_xlabel(field_installed_capacity)
+        ax.set_ylabel(field_solar_site_area)
+        ax.set_title("Solar PV: Capacity vs Area (log-log)")
+        ax.legend()
+        plt.tight_layout()
 
-    # plt.show()
+        # Add the slope of the fit without outliers to the plot as an annotation in
+        # the bottom right corner
+        slope = model2.coef_[0][0]
+        y_intercept = model2.intercept_[0] # type: ignore
+        ax.annotate(f"Slope (no outliers): {slope:.2f}+{y_intercept:.2f}",
+                    xy=(0.95, 0.05), xycoords="axes fraction",
+                    ha="right", va="bottom", fontsize=10, color="green")
+
+        plt.show()
 
     return model2
 
