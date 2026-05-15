@@ -28,3 +28,8 @@ almost certainly a more robust statistical approach to this but this seems well
 enough for now.
 
 <img src="./fig2_all_solar_farms.png" />
+
+This plot shows the extreme outliers more clearly in terms of their deviation from
+the majority of the rest of the solar farm power densities:
+
+<img src="./fig3_deviation_from_prediction.png" />
