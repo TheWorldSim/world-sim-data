@@ -15,7 +15,10 @@ field_y_coord = "Y-coordinate"
 new_field_power_density_initial = "Power density (W/sqm) initial"
 new_field_use_orig_power_density = "Use original Power density"
 new_field_power_density_3 = "Power density (W/sqm) corrected"
+new_field_predicted_area = "predicted area (sqm)"
 new_field_area = "area (sqm)"
+new_field_lon_coord = "lon"
+new_field_lat_coord = "lat"
 
 technology_types = {
     "ACT": "Advanced Conversion Technologies",
