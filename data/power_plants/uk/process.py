@@ -2,6 +2,7 @@ import math
 import os
 
 import ipdb
+import numpy as np
 import pandas as pd
 import pyproj
 
@@ -51,11 +52,6 @@ def process_data():
     # Filter down to only those entries with a development status in the specified list.
     df = df[df[field_development_status].isin(development_status_to_include)]
 
-    # Step 1: initial power density where both capacity and area are present and > 0
-    # Convert columns to numeric in-place for safe math operations
-    df[field_installed_capacity] = pd.to_numeric(df[field_installed_capacity], errors="coerce")
-    df[field_solar_site_area] = pd.to_numeric(df[field_solar_site_area], errors="coerce")
-
     solar_df = df[df[field_technology_type] == technology_types["PV"]].copy()
     # Used for development and debugging
     # solar_df = solar_df.head(100)
@@ -74,7 +70,7 @@ def process_data():
     filter_solar_df(solar_df)
 
 
-def clean_data(df):
+def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     # parse_dates=True does not seem to work with the "Operational" column, so parse it manually
     df[field_operational_date] = df[field_operational_date].map(parse_date)
 
@@ -82,6 +78,10 @@ def clean_data(df):
     # to work with the data.
     df["Address"] = df["Address"].str.replace("\r\n", ", ").replace("\n", ", ").replace("\r", ", ")
     df = df.map(lambda x: x.replace("\r\n", " ").replace("\n", " ").replace("\r", " ") if isinstance(x, str) else x)
+
+    # Convert numeric fields as float or integer depending on the data in them.
+    df[field_installed_capacity] = pd.to_numeric(df[field_installed_capacity], errors="coerce")
+    df[field_solar_site_area] = pd.to_numeric(df[field_solar_site_area], errors="coerce", downcast="integer")
 
     # parse integer values in X-coordinate and Y-coordinate with bad values in
     # them like "431746�"
@@ -92,9 +92,12 @@ def clean_data(df):
     transformer = pyproj.Transformer.from_crs("EPSG:27700", "EPSG:4326", always_xy=True)
     x = df[field_x_coord].values
     y = df[field_y_coord].values
+    lon: np.ndarray
+    lat: np.ndarray
     lon, lat = transformer.transform(x, y)
-    df[new_field_lon_coord] = lon
-    df[new_field_lat_coord] = lat
+    # Round to 3 decimal places https://xkcd.com/2170/
+    df[new_field_lon_coord] = lon.round(3)
+    df[new_field_lat_coord] = lat.round(3)
 
     return df
 
