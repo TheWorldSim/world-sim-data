@@ -1,4 +1,4 @@
-year,number of solar farms,total installed capacity,total area (km^2),average area (m^2),max area (m^2)
+year,number of solar farms,total installed capacity (MWelec),total area (km^2),average area (m^2),max area (m^2)
 2011,43,145.9,3.4,78766,147600
 2012,31,116.1,2.7,85632,299536
 2013,115,615.9,13.5,117235,754600
