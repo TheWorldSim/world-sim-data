@@ -63,7 +63,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
     # Convert numeric fields as float or integer depending on the data in them.
     df[field_installed_capacity] = pd.to_numeric(df[field_installed_capacity], errors="coerce")
-    df[field_solar_site_area] = pd.to_numeric(df[field_solar_site_area], errors="coerce", downcast="integer")
+    df[field_solar_site_area] = pd.to_numeric(df[field_solar_site_area], errors="coerce").round(0).astype("Int64")
 
     # parse integer values in X-coordinate and Y-coordinate with bad values in
     # them like "431746�"
