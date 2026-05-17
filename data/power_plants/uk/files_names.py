@@ -2,7 +2,8 @@ import os
 
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
-data_directory = os.path.join(current_directory, "../data")
+data_directory = os.path.join(current_directory, "data")
+input_file_path = os.path.join(data_directory, "REPD_publication_Q1_2026.csv")
 
 
 def ouput_intermeditate_file_path(sub):

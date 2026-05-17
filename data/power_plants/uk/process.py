@@ -21,12 +21,9 @@ from constants import (
     technology_types,
     development_status_to_include,
 )
+from files_names import input_file_path
 from solar.process import process_solar_df
-
-
-current_directory = os.path.dirname(os.path.abspath(__file__))
-data_directory = os.path.join(current_directory, "data")
-input_file_path = os.path.join(data_directory, "REPD_publication_Q1_2026.csv")
+from wind.process import process_wind_df
 
 
 
@@ -45,6 +42,14 @@ def process_data():
     # Used for development and debugging
     # solar_df = solar_df.head(100)
     process_solar_df(solar_df)
+
+    wind_df = df[
+        (df[field_technology_type] == technology_types["wind_offshore"])
+        | (df[field_technology_type] == technology_types["wind_onshore"])
+    ].copy()
+    # Used for development and debugging
+    # wind_df = wind_df.head(100)
+    process_wind_df(wind_df)
 
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:

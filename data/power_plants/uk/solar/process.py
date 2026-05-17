@@ -2,6 +2,7 @@ import ipdb
 import pandas as pd
 
 from constants import (
+    field_id,
     field_installed_capacity,
     field_development_status,
     field_operational_date,
@@ -11,7 +12,7 @@ from constants import (
     new_field_lat_coord,
 )
 from apply_solar_farm_model import apply_solar_farm_model
-from files import ouput_intermeditate_file_path, output_file_path
+from files_names import ouput_intermeditate_file_path, output_file_path
 from get_average_solar_farm_power_density import (
     get_solar_farm_power_to_area_model,
     set_new_field_power_density_initial,
@@ -38,6 +39,7 @@ def process_solar_df(solar_df: pd.DataFrame):
 
 def filter_solar_df(df):
     filtered_df = df[[
+        field_id,
         field_development_status,
         field_installed_capacity,
         field_operational_date,
