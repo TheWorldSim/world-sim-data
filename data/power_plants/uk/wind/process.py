@@ -44,8 +44,12 @@ def process_wind_df(wind_df: pd.DataFrame) -> None:
 
     save_to_csv(offshore, "wind_offshore")
     save_to_csv(onshore, "wind_onshore")
-    bucket_by_year(offshore, "wind_offshore")
-    bucket_by_year(onshore, "wind_onshore")
+
+    # Find the earliest and latest operational date for all wind farms
+    earliest_year = wind_df[field_operational_date].min().date().year
+    latest_year = wind_df[field_operational_date].max().date().year
+    bucket_by_year(offshore, "wind_offshore", earliest_year, latest_year)
+    bucket_by_year(onshore, "wind_onshore", earliest_year, latest_year)
 
 
 def save_to_csv(df: pd.DataFrame, name: str):
@@ -97,7 +101,7 @@ def save_to_csv(df: pd.DataFrame, name: str):
     print(f"Output written to: {file_path}")
 
 
-def bucket_by_year(df: pd.DataFrame, name: str):
+def bucket_by_year(df: pd.DataFrame, name: str, earliest_year: int, latest_year: int) -> None:
     df = df.copy()
     df["year"] = df[field_operational_date].dt.year
 
@@ -119,6 +123,15 @@ def bucket_by_year(df: pd.DataFrame, name: str):
         # "average area (m^2)": (pd.to_numeric(area_by_year) / df_rows_by_year.size()).astype(int).values,
         # "max area (m^2)": df_rows_by_year[new_field_area].max().astype(int).values,
     })
+
+    # Ensure that all years from earliest to latest are included, even if there are no wind farms in some years
+    all_years = pd.DataFrame({"year": range(earliest_year, latest_year + 1)})
+    yearly_df = all_years.merge(yearly_df, on="year", how="left").fillna(0)
+    # Convert numeric columns back to int
+    yearly_df["number of wind farms"] = yearly_df["number of wind farms"].astype(int)
+    yearly_df["total number of turbines"] = yearly_df["total number of turbines"].astype(int)
+    # Sort by year
+    yearly_df = yearly_df.sort_values("year")
 
     file_path = output_file_path(name + "_yearly")
     yearly_df.to_csv(file_path, index=False)
