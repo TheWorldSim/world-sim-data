@@ -5,7 +5,7 @@ import pandas as pd
 from shapely.geometry import Point
 
 import __init__  # ensures the sys.path is set up correctly to import modules
-from files import output_file_path
+from files_names import output_file_path
 from constants import (
     field_development_status,
     new_field_area,

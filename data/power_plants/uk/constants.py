@@ -1,5 +1,6 @@
 
 
+field_id = "Ref ID"
 field_technology_type = "Technology Type"
 field_installed_capacity = "Installed Capacity (MWelec)"
 field_solar_site_area = "Solar Site Area (sqm)"
