@@ -4,9 +4,15 @@ field_id = "Ref ID"
 field_technology_type = "Technology Type"
 field_installed_capacity = "Installed Capacity (MWelec)"
 field_solar_site_area = "Solar Site Area (sqm)"
+
+field_RO_banding = "RO Banding (ROC/MWh)"
+field_FiT_tariff = "FiT Tariff (p/kWh)"
+field_CfD_capacity = "CfD Capacity (MW)"
+
 field_turbine_capacity = "Turbine Capacity (MW)"
 field_number_of_turbines = "No. of Turbines"
 field_height_of_turbines = "Height of Turbines (m)"
+
 field_development_status = "Development Status (short)"
 field_operational_date = "Operational"
 field_x_coord = "X-coordinate"

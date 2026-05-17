@@ -32,13 +32,13 @@ def process_solar_df(solar_df: pd.DataFrame):
     solar_df.to_csv(solar_output_file_name, index=False)
     print(f"Intermediate written to: {solar_output_file_name}")
 
-    filter_solar_df(solar_df)
+    save_to_csv(solar_df)
 
     bucket_by_year(solar_df)
 
 
-def filter_solar_df(df):
-    filtered_df = df[[
+def save_to_csv(df):
+    subset_df = df[[
         field_id,
         field_development_status,
         field_installed_capacity,
@@ -49,7 +49,7 @@ def filter_solar_df(df):
         new_field_area,
     ]].copy()
 
-    filtered_df.to_csv(output_file_path("solar"), index=False)
+    subset_df.to_csv(output_file_path("solar"), index=False)
     print(f"Output written to: {output_file_path("solar")}")
 
 

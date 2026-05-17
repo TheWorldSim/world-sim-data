@@ -8,6 +8,7 @@ import pyproj
 from constants import (
     field_technology_type,
     field_installed_capacity,
+    field_number_of_turbines,
     field_solar_site_area,
     field_development_status,
 
@@ -64,11 +65,12 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     # Convert numeric fields as float or integer depending on the data in them.
     df[field_installed_capacity] = pd.to_numeric(df[field_installed_capacity], errors="coerce")
     df[field_solar_site_area] = pd.to_numeric(df[field_solar_site_area], errors="coerce").round(0).astype("Int64")
+    df[field_number_of_turbines] = pd.to_numeric(df[field_number_of_turbines], errors="coerce").round(0).astype("Int64")
 
     # parse integer values in X-coordinate and Y-coordinate with bad values in
     # them like "431746�"
-    df[field_x_coord] = pd.to_numeric(df[field_x_coord].replace({r"[^\d.]": ""}, regex=True), downcast="integer")
-    df[field_y_coord] = pd.to_numeric(df[field_y_coord].replace({r"[^\d.]": ""}, regex=True), downcast="integer")
+    df[field_x_coord] = pd.to_numeric(df[field_x_coord].replace({r"[^\d.]": ""}, regex=True)).round(0)
+    df[field_y_coord] = pd.to_numeric(df[field_y_coord].replace({r"[^\d.]": ""}, regex=True)).round(0)
 
     # Use pyproj.Transformer for fast, vectorized coordinate transformation
     transformer = pyproj.Transformer.from_crs("EPSG:27700", "EPSG:4326", always_xy=True)
