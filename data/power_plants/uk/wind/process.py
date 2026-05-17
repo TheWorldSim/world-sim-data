@@ -118,6 +118,8 @@ def bucket_by_year(df: pd.DataFrame, name: str, earliest_year: int, latest_year:
         "total installed capacity (MWelec)": capacity_by_year.values,
 
         "total number of turbines": df_rows_by_year[field_number_of_turbines].sum().values.astype(int),
+        "average turbine capacity (MWelec)": df_rows_by_year[field_turbine_capacity].mean().round(1).values,
+        "max turbine capacity (MWelec)": df_rows_by_year[field_turbine_capacity].max().round(1).values,
 
         # "total area (km^2)": (pd.to_numeric(area_by_year) / 1e6).round(1).values,
         # "average area (m^2)": (pd.to_numeric(area_by_year) / df_rows_by_year.size()).astype(int).values,
