@@ -92,7 +92,7 @@ def get_solar_farm_power_to_area_model(df: pd.DataFrame):
 def is_valid_row(row):
     # return True to keep the row, False to drop it
     return (
-        not math.isnan(row[field_installed_capacity]) and not math.isnan(row[field_solar_site_area])
+        not math.isnan(row[field_installed_capacity]) and not pd.isna(row[field_solar_site_area])
         and row[field_installed_capacity] > 0 and row[field_solar_site_area] > 0
     )
 

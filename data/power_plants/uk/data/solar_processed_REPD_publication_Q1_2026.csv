@@ -36,7 +36,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 1065,Operational,1.1,2013-03-30,-4.958,50.373,20330
 1067,Operational,3.0,2013-03-31,-4.428,50.452,55934
 1070,Operational,4.0,2011-07-01,-2.923,50.79,126000
-1073,Revised,49.0,,-1.197,50.831,917911
+1073,Revised,49.0,,-1.197,50.831,917912
 1074,Revised,11.4,,-4.362,50.424,238000
 1076,Operational,5.0,2011-09-29,-2.673,51.105,128000
 1078,Operational,1.7,2011-07-21,1.596,52.438,31573
@@ -77,7 +77,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 1176,Operational,5.2,2013-03-25,-3.785,50.424,97159
 1177,Revised,5.0,,-3.734,50.439,93411
 1184,Operational,7.0,2013-03-30,-0.864,52.017,130888
-1193,Revised,6.8,,-2.515,51.334,127140
+1193,Revised,6.8,,-2.515,51.334,127141
 1198,Operational,4.9,2015-12-16,0.055,50.916,91537
 1203,Operational,7.2,2015-03-27,-2.855,51.332,148000
 1207,Revised,5.0,,-3.129,50.925,93411
@@ -141,7 +141,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 1332,Operational,18.7,2014-03-31,1.124,51.913,350130
 1333,Operational,5.0,2014-03-31,-1.536,51.161,93411
 1335,Operational,49.6,2016-03-31,-2.09,51.373,805000
-1338,Operational,20.9,2014-03-31,0.611,52.289,391355
+1338,Operational,20.9,2014-03-31,0.611,52.289,391356
 1339,Operational,5.0,2012-04-17,-0.561,52.406,93411
 1340,Operational,1.8,2012-10-04,0.388,52.77,31200
 1341,Operational,3.2,2013-03-21,-4.13,50.817,86300
@@ -219,7 +219,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 1489,Operational,5.0,2014-05-19,-2.507,51.729,150200
 1490,Operational,1.7,2015-12-23,-1.031,53.541,31573
 1491,Operational,5.8,2014-03-31,-2.141,52.633,108402
-1494,Operational,12.0,2014-03-28,0.063,53.02,224581
+1494,Operational,12.0,2014-03-28,0.063,53.02,224582
 1497,Operational,14.3,2014-03-31,-0.993,53.304,273500
 1498,Operational,12.4,2014-03-28,-0.832,52.966,232077
 1500,Operational,1.8,2014-07-28,-1.024,52.36,33447
@@ -234,7 +234,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 1513,Operational,1.4,2011-09-29,-2.485,51.868,25952
 1515,Operational,11.0,2016-03-31,-0.95,51.142,222000
 1516,Operational,10.0,2015-03-30,1.124,51.325,210000
-1518,Operational,8.3,2015-03-29,-2.861,51.345,155248
+1518,Operational,8.3,2015-03-29,-2.861,51.345,155249
 1519,Operational,4.1,2014-11-27,-1.556,52.251,82000
 1520,Operational,3.0,2015-06-15,-3.059,53.032,55934
 1521,Operational,2.2,2016-03-16,-3.517,51.498,55000
@@ -247,7 +247,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 1530,Revised,10.0,,-1.208,52.055,220000
 1531,Operational,10.0,2016-02-29,-0.322,50.943,282800
 1536,Operational,7.6,2016-01-20,-0.342,50.946,142131
-1537,Operational,32.0,2015-03-31,1.357,52.755,599354
+1537,Operational,32.0,2015-03-31,1.357,52.755,599355
 1538,Operational,5.0,2013-12-31,-1.367,51.188,93411
 1540,Operational,3.1,2013-03-28,-4.892,50.503,57808
 1541,Operational,5.0,2013-03-30,-4.844,50.504,144900
@@ -375,7 +375,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 1744,Operational,1.7,2014-04-15,-1.417,52.079,31573
 1746,Operational,10.5,2016-06-23,-2.925,51.835,270000
 1747,Operational,1.0,2013-11-04,-2.822,51.229,22700
-1748,Operational,6.8,2013-11-09,-2.02,51.178,127140
+1748,Operational,6.8,2013-11-09,-2.02,51.178,127141
 1750,Operational,4.8,2013-12-15,-3.201,51.007,104700
 1751,Operational,3.9,2015-03-15,1.647,52.34,107000
 1752,Operational,30.0,2016-01-13,-0.735,53.022,523000
@@ -421,7 +421,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 1818,Operational,5.1,2015-01-12,-0.927,53.223,88000
 1820,Operational,6.0,2014-03-31,0.544,52.543,135200
 1823,Operational,7.5,2014-03-04,-3.327,51.419,191100
-1824,Operational,8.3,2015-03-17,-4.876,50.351,155248
+1824,Operational,8.3,2015-03-17,-4.876,50.351,155249
 1826,Operational,11.4,2016-03-25,0.202,53.143,307800
 1827,Operational,8.0,2015-02-26,-4.524,52.108,168000
 1828,Operational,7.3,2014-07-29,-4.138,51.146,136510
@@ -443,7 +443,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 1865,Operational,6.8,2015-03-14,-0.077,52.356,112900
 1872,Operational,9.5,2015-06-01,-4.379,50.402,177735
 1873,Revised,49.0,,-1.53,51.108,776000
-1874,Operational,8.3,2014-12-02,-2.228,50.838,155248
+1874,Operational,8.3,2014-12-02,-2.228,50.838,155249
 1875,Operational,13.1,2014-11-01,-0.029,52.119,333000
 1876,Operational,4.0,2014-03-31,-1.861,52.07,74672
 1878,Operational,5.0,2014-09-25,-0.757,52.147,110000
@@ -612,7 +612,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 2079,Operational,7.2,2015-03-30,-2.918,52.945,213200
 2080,Operational,30.0,2016-03-23,-2.121,51.959,410100
 2081,Operational,16.7,2014-12-19,-1.105,52.033,350400
-2082,Operational,12.0,2015-03-30,-1.1,51.172,224581
+2082,Operational,12.0,2015-03-30,-1.1,51.172,224582
 2083,Operational,7.7,2016-01-16,-2.406,51.644,129000
 2084,Operational,1.8,2015-03-31,-1.364,52.8,33447
 2085,Operational,34.8,2015-03-25,-1.818,51.643,607500
@@ -698,7 +698,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 2194,Revised,30.0,,-0.207,52.21,629000
 2196,Operational,18.7,2015-03-31,-1.685,52.84,350130
 2197,Revised,30.5,,-2.375,52.707,473000
-2198,Revised,12.0,,-2.764,51.226,224581
+2198,Revised,12.0,,-2.764,51.226,224582
 2200,Operational,16.0,2015-03-21,-1.499,52.757,283000
 2201,Operational,3.0,2015-06-08,-2.912,51.222,50500
 2202,Operational,5.0,2016-01-29,-0.022,52.065,93411
@@ -769,13 +769,13 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 2288,Operational,5.0,2015-03-31,-4.451,50.751,120000
 2290,Revised,10.2,,-4.301,50.755,190852
 2291,Revised,12.8,,1.305,51.271,239572
-2292,Revised,8.3,,-3.328,51.151,155248
+2292,Revised,8.3,,-3.328,51.151,155249
 2296,Operational,5.0,2016-03-07,-0.683,50.815,93411
 2298,Operational,5.0,2015-12-10,-2.516,51.348,93411
 2299,Operational,15.0,2015-10-17,-0.423,52.268,280797
 2300,Operational,5.2,2015-02-19,1.03,52.603,117000
 2305,Revised,6.0,,-4.283,51.83,112150
-2306,Revised,12.0,,-1.1,52.787,224581
+2306,Revised,12.0,,-1.1,52.787,224582
 2307,Operational,8.0,2015-03-28,-1.132,51.854,141600
 2308,Operational,18.0,2015-03-27,-1.75,50.755,450000
 2309,Operational,8.1,2015-11-12,0.019,53.407,168000
@@ -799,7 +799,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 2336,Operational,5.0,2015-02-04,-4.347,50.976,121500
 2338,Operational,7.0,2016-03-02,-3.308,51.418,179017
 2339,Revised,8.8,,-2.556,50.821,164618
-2342,Operational,6.8,2015-03-19,-3.36,51.173,127140
+2342,Operational,6.8,2015-03-19,-3.36,51.173,127141
 2343,Operational,20.0,2015-03-26,-2.224,51.332,423800
 2344,Operational,8.0,2015-07-15,-1.899,51.605,180000
 2345,Operational,12.3,2015-03-31,-1.738,51.151,242000
@@ -823,11 +823,11 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 2366,Operational,12.7,2015-03-30,0.051,52.746,237699
 2367,Operational,18.0,2015-03-31,1.085,51.357,337013
 2368,Operational,11.5,2015-03-31,0.427,50.873,180000
-2369,Operational,12.0,2015-03-31,-0.429,53.244,224581
+2369,Operational,12.0,2015-03-31,-0.429,53.244,224582
 2370,Operational,13.4,2015-03-01,-3.276,51.674,282700
 2372,Operational,24.0,2014-12-19,0.002,52.08,449445
 2373,Operational,9.1,2015-03-14,-2.186,51.342,170239
-2375,Operational,6.8,2015-03-31,-2.904,51.256,127140
+2375,Operational,6.8,2015-03-31,-2.904,51.256,127141
 2376,Operational,6.1,2015-03-26,-5.007,51.81,114023
 2377,Operational,5.7,2015-03-15,-1.083,52.99,145300
 2378,Operational,4.8,2014-11-18,-1.025,53.142,89663
@@ -973,7 +973,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 5117,Operational,5.0,2015-11-15,1.307,51.277,93411
 5118,Operational,22.0,2015-03-01,-0.429,53.244,688000
 5119,Operational,6.2,2016-06-01,-1.364,52.8,195400
-5125,Operational,10.5,2015-01-30,1.005,51.861,196473
+5125,Operational,10.5,2015-01-30,1.005,51.861,196474
 5128,Operational,5.0,2015-09-30,-1.374,53.227,93411
 5131,Operational,5.0,2017-03-15,-2.959,50.812,95000
 5132,Operational,4.2,2016-03-28,-2.62,53.792,120000
@@ -1004,7 +1004,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 5182,Operational,5.0,2015-12-23,0.805,51.843,93411
 5183,Operational,2.3,2016-02-26,0.805,51.845,42817
 5190,Operational,4.4,2016-03-29,-4.334,52.907,142200
-5199,Operational,17.9,2016-03-29,1.357,52.755,335139
+5199,Operational,17.9,2016-03-29,1.357,52.755,335140
 5202,Operational,6.5,2017-03-29,-4.786,50.363,121519
 5204,Operational,5.0,2017-03-01,-0.695,53.62,129000
 5207,Operational,3.5,2016-03-31,-2.658,51.561,65303
@@ -1021,7 +1021,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 5231,Operational,8.0,2015-03-31,0.991,52.433,149627
 5232,Operational,5.3,2015-03-17,-5.021,51.669,99033
 5233,Operational,6.4,2015-03-25,-4.621,52.092,119645
-5234,Operational,12.0,2015-03-31,-3.635,50.507,224581
+5234,Operational,12.0,2015-03-31,-3.635,50.507,224582
 5241,Operational,6.4,2017-03-31,-1.84,52.896,98000
 5242,Operational,5.0,2016-08-31,-1.506,50.99,135000
 5243,Operational,5.0,2015-12-18,-2.536,51.746,157000
@@ -1136,7 +1136,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 5472,Operational,4.2,2016-12-15,-1.458,51.156,78420
 5477,Operational,5.0,2017-03-17,-3.314,51.416,115000
 5478,Operational,3.5,2016-04-26,-0.938,52.778,89778
-5480,Operational,32.0,2021-03-01,-2.15,52.069,599354
+5480,Operational,32.0,2021-03-01,-2.15,52.069,599355
 5482,Operational,34.7,2019-12-18,-1.228,54.144,740000
 5483,Operational,5.0,2016-03-07,-0.02,53.106,82600
 5485,Operational,5.0,2016-03-31,-4.356,50.402,69400
@@ -1295,8 +1295,8 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 6231,Operational,1.7,2016-03-31,-2.807,53.772,33600
 6244,Operational,7.5,2018-10-25,-0.743,50.847,158800
 6246,Operational,2.9,2018-08-01,-2.472,53.106,54060
-6248,Operational,14.2,2021-03-23,0.711,52.319,265806
-6282,Awaiting Construction,12.0,,-0.896,51.748,224581
+6248,Operational,14.2,2021-03-23,0.711,52.319,265807
+6282,Awaiting Construction,12.0,,-0.896,51.748,224582
 6314,Operational,1.0,2017-01-10,-2.009,52.507,18456
 6320,Operational,1.0,2017-01-24,-0.007,51.522,18456
 6321,Operational,4.0,2016-10-18,-1.378,54.591,92000
@@ -1320,7 +1320,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 6485,Operational,5.0,2016-01-20,-0.525,54.179,93411
 6486,Operational,1.5,2016-04-01,-3.118,51.5,27826
 6493,Operational,5.7,2017-03-30,-2.721,51.611,157500
-6502,Operational,373.0,2025-07-01,0.914,51.339,6989233
+6502,Operational,373.0,2025-07-01,0.914,51.339,6989235
 6506,Operational,18.0,2017-04-06,-6.515,54.959,337013
 6513,Operational,2.5,2019-04-16,-2.825,53.569,87000
 6515,Awaiting Construction,40.0,,-1.244,52.604,801700
@@ -1363,9 +1363,9 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 6816,Operational,0.38,2019-09-13,-2.111,51.999,6838
 6829,Awaiting Construction,39.5,,-6.234,54.694,798000
 6834,Operational,10.0,2023-01-01,-3.911,51.632,191300
-7188,Awaiting Construction,500.0,,0.483,52.325,9369041
+7188,Awaiting Construction,500.0,,0.483,52.325,9369043
 7191,Revised,62.5,,-3.045,51.531,1550000
-7194,Appeal Lodged,75.0,,-2.848,51.552,1405116
+7194,Appeal Lodged,75.0,,-2.848,51.552,1405117
 7210,Operational,4.9,2020-07-31,-1.485,54.918,91537
 7220,Awaiting Construction,0.6,,0.261,51.489,10961
 7222,Under Construction,3.0,,-3.196,55.869,57700
@@ -1443,7 +1443,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 7539,Under Construction,19.8,,-2.859,51.353,399900
 7541,Operational,0.4,2020-07-01,1.389,51.378,7213
 7542,Operational,0.4,,0.916,51.141,7213
-7546,Revised,32.0,,-1.39,54.608,599354
+7546,Revised,32.0,,-1.39,54.608,599355
 7553,Awaiting Construction,17.0,,-2.442,53.131,264000
 7557,Awaiting Construction,25.0,,-2.161,52.05,666600
 7559,Operational,0.4,2021-05-18,-0.219,54.063,7213
@@ -1565,7 +1565,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 8068,Awaiting Construction,49.9,,-0.963,51.128,934776
 8069,Under Construction,5.0,,-1.359,51.848,112500
 8071,Awaiting Construction,3.0,,-2.828,54.056,43000
-8079,Awaiting Construction,12.0,,-0.957,51.996,224581
+8079,Awaiting Construction,12.0,,-0.957,51.996,224582
 8088,Awaiting Construction,21.0,,-3.231,51.465,393229
 8089,Awaiting Construction,49.9,,-1.069,51.339,850000
 8091,Revised,49.9,,-1.403,54.634,934776
@@ -1584,7 +1584,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 8146,Operational,40.0,2023-03-28,-2.726,52.976,651100
 8148,Under Construction,28.5,,1.212,52.562,533769
 8149,Under Construction,49.9,,-0.956,51.3,700900
-8162,Awaiting Construction,500.0,,0.545,51.783,9369041
+8162,Awaiting Construction,500.0,,0.545,51.783,9369043
 8165,Operational,0.5,2021-10-10,-2.8,53.559,9087
 8167,Under Construction,40.0,,-1.365,53.757,877600
 8174,Awaiting Construction,0.5,,1.301,51.152,9087
@@ -1647,7 +1647,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 8413,Awaiting Construction,,,-4.143,50.37,1320
 8417,Awaiting Construction,,,-4.538,55.605,2608
 8421,Operational,,2021-04-21,-4.109,55.679,450
-8424,Under Construction,,,0.798,52.358,105
+8424,Under Construction,,,0.798,52.358,106
 8429,Awaiting Construction,,,-2.964,53.385,
 8432,Operational,,2021-12-02,-4.492,55.609,13252
 8433,Awaiting Construction,,,-4.237,55.859,3844
@@ -1688,7 +1688,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 8517,Awaiting Construction,49.9,,-0.223,52.931,804600
 8520,Awaiting Construction,0.47,,-1.094,51.853,8525
 8522,Awaiting Construction,5.0,,-2.416,53.112,122000
-8525,Awaiting Construction,49.0,,-2.515,52.805,917911
+8525,Awaiting Construction,49.0,,-2.515,52.805,917912
 8526,Awaiting Construction,49.9,,-2.77,55.002,915500
 8528,Awaiting Construction,49.9,2025-12-01,-2.206,52.293,634100
 8529,Under Construction,49.9,,-1.575,54.543,934776
@@ -1775,7 +1775,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 9102,Awaiting Construction,10.0,,-1.533,54.063,192700
 9104,Application Submitted,41.5,,1.032,52.073,600000
 9110,Operational,0.22,2022-06-24,-2.649,50.942,3840
-9114,Awaiting Construction,15.7,,-2.504,51.852,293914
+9114,Awaiting Construction,15.7,,-2.504,51.852,293915
 9116,Awaiting Construction,49.9,,-1.382,54.588,870000
 9119,Awaiting Construction,16.0,,-2.245,52.635,303600
 9126,Awaiting Construction,15.0,,-1.598,51.243,277800
@@ -1989,9 +1989,9 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 9797,Awaiting Construction,0.32,,-1.827,54.864,5714
 9799,Awaiting Construction,49.9,,-1.405,54.81,934776
 9802,Under Construction,30.0,,0.598,51.581,452000
-9806,Awaiting Construction,500.0,,-0.208,52.977,9369041
+9806,Awaiting Construction,500.0,,-0.208,52.977,9369043
 9808,Awaiting Construction,49.9,,0.707,51.614,983500
-9809,Awaiting Construction,531.0,,-0.743,53.336,9949939
+9809,Awaiting Construction,531.0,,-0.743,53.336,9949942
 9815,Awaiting Construction,49.9,,-0.822,53.383,1547000
 9817,Awaiting Construction,2.0,,-3.069,56.456,37195
 9820,Application Submitted,45.5,,-0.592,52.114,796400
@@ -2104,7 +2104,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 10199,Awaiting Construction,49.9,,-1.59,53.655,753100
 10205,Awaiting Construction,0.23,,-3.016,51.824,4028
 10245,Awaiting Construction,,,-1.151,52.607,2563
-10247,Awaiting Construction,,,-3.928,56.141,519
+10247,Awaiting Construction,,,-3.928,56.141,520
 10255,Operational,,2022-01-01,-1.603,54.959,
 10258,Operational,,2022-04-14,-2.503,50.617,
 10269,Awaiting Construction,15.0,,-3.216,58.615,280797
@@ -2133,7 +2133,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 10372,Awaiting Construction,0.25,,-1.375,54.815,4402
 10382,Awaiting Construction,0.24,,-2.228,51.706,4215
 10391,Awaiting Construction,0.15,,-1.336,54.757,2528
-10409,Awaiting Construction,12.0,,-3.84,55.6,224581
+10409,Awaiting Construction,12.0,,-3.84,55.6,224582
 10410,Awaiting Construction,0.23,,-1.213,51.924,3100
 10411,Awaiting Construction,0.18,,-1.8,51.07,3091
 10412,Operational,0.15,2022-05-01,-4.193,51.011,2528
@@ -2178,7 +2178,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 10530,Awaiting Construction,22.5,,0.645,51.838,311000
 10532,Application Submitted,49.9,,-4.104,54.823,934776
 10534,No Application Required,,,-0.018,51.504,
-10541,Awaiting Construction,63.0,,-4.648,55.683,1180252
+10541,Awaiting Construction,63.0,,-4.648,55.683,1180253
 10549,Under Construction,19.9,,-4.428,55.864,299000
 10576,Awaiting Construction,0.18,,-2.357,53.766,3091
 10577,Under Construction,49.9,,0.435,51.149,692300
@@ -2270,7 +2270,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 10799,Awaiting Construction,0.39,,-2.223,53.068,7026
 10800,Awaiting Construction,49.9,,-5.004,50.389,1131200
 10809,Under Construction,2.5,,-2.348,53.272,46564
-10810,Awaiting Construction,35.0,,-3.363,51.398,655570
+10810,Awaiting Construction,35.0,,-3.363,51.398,655571
 10811,Awaiting Construction,0.2,,0.418,52.745,3465
 10813,Awaiting Construction,25.77,,-1.017,51.387,482613
 10818,Awaiting Construction,0.45,,-2.293,53.388,8150
@@ -2633,7 +2633,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 11883,Awaiting Construction,45.9,,-1.464,51.177,859822
 11885,Awaiting Construction,20.0,,-1.323,52.528,417500
 11887,Awaiting Construction,0.29,,-2.03,57.692,5152
-11888,Awaiting Construction,2.2,,-2.636,53.503,81357
+11888,Awaiting Construction,2.2,,-2.636,53.503,81358
 11891,Under Construction,,,-3.01,56.456,
 11896,Awaiting Construction,13.0,,-1.199,52.347,240000
 11899,Awaiting Construction,,,-1.238,54.579,
@@ -2648,7 +2648,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 11912,Awaiting Construction,0.8,,-2.31,55.927,14709
 11913,Awaiting Construction,0.68,,0.774,51.335,12460
 11921,Awaiting Construction,0.18,,-0.062,51.509,3091
-11923,Awaiting Construction,10.5,,-0.587,52.261,196473
+11923,Awaiting Construction,10.5,,-0.587,52.261,196474
 11925,Awaiting Construction,0.86,,-3.976,50.742,15833
 11926,Awaiting Construction,,,-0.03,51.381,
 11927,Application Submitted,49.95,,0.727,51.622,696000
@@ -3155,7 +3155,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 13114,Awaiting Construction,0.23,,1.32,51.351,4028
 13115,Awaiting Construction,0.2,,-4.639,55.599,2399
 13119,Awaiting Construction,0.22,,-0.996,52.083,4500
-13120,Awaiting Construction,35.0,,0.493,52.067,655570
+13120,Awaiting Construction,35.0,,0.493,52.067,655571
 13122,Revised,0.51,,-2.029,50.72,9274
 13130,Awaiting Construction,0.15,,-4.148,50.366,2528
 13131,Operational,0.8,2023-10-01,-3.387,54.705,14709
@@ -3302,7 +3302,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 13397,Awaiting Construction,0.22,,-4.184,51.685,3840
 13398,Awaiting Construction,0.23,,1.025,51.8,4028
 13400,Awaiting Construction,0.19,,-2.096,57.158,2577
-13403,Awaiting Construction,27.5,,-2.562,55.894,515030
+13403,Awaiting Construction,27.5,,-2.562,55.894,515031
 13405,Awaiting Construction,0.67,,-0.288,54.185,12273
 13406,Awaiting Construction,0.46,,-1.109,53.957,8337
 13408,Awaiting Construction,,,-0.078,52.789,26503
@@ -3427,7 +3427,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 13656,Awaiting Construction,0.18,,-4.16,55.746,3425
 13657,Awaiting Construction,0.24,,-2.916,55.419,4215
 13662,Operational,,2023-04-01,-2.278,51.832,
-13664,Awaiting Construction,0.25,,-5.13,50.385,5931
+13664,Awaiting Construction,0.25,,-5.13,50.385,5932
 13671,Awaiting Construction,0.29,,-0.038,51.409,5152
 13676,Application Submitted,0.16,,-1.452,52.902,2716
 13677,Awaiting Construction,24.6,,0.547,51.62,660600
@@ -3607,7 +3607,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 14022,Application Submitted,1.0,,-4.302,51.729,14500
 14024,Awaiting Construction,0.18,,0.867,51.132,3091
 14025,Awaiting Construction,4.97,,-2.465,51.259,65400
-14027,Awaiting Construction,4.29,,-1.411,53.407,80106
+14027,Awaiting Construction,4.29,,-1.411,53.407,80107
 14028,Awaiting Construction,0.22,,-1.244,50.878,3840
 14029,Awaiting Construction,0.38,,-0.278,53.924,6838
 14030,Awaiting Construction,0.76,,-3.627,55.075,13959
@@ -3838,7 +3838,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 14476,Awaiting Construction,0.21,,-1.165,52.264,3653
 14477,Awaiting Construction,0.61,,-2.185,53.476,11148
 14478,Awaiting Construction,0.45,,-2.98,53.423,8150
-14480,Awaiting Construction,0.3,,-4.315,55.857,5126
+14480,Awaiting Construction,0.3,,-4.315,55.857,5127
 14481,Awaiting Construction,0.25,,-0.47,52.091,4402
 14483,Awaiting Construction,0.39,,-0.456,51.455,7026
 14494,Awaiting Construction,0.33,,-4.663,55.588,4110
@@ -3970,7 +3970,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 14757,Application Submitted,,,-4.167,55.783,5911
 14758,Awaiting Construction,0.72,,0.212,51.123,13210
 14765,Application Submitted,20.0,,-4.095,54.933,374491
-14773,Application Submitted,35.0,,inf,inf,655570
+14773,Application Submitted,35.0,,inf,inf,655571
 14774,Operational,3.0,2023-09-05,-0.27,51.658,59000
 14775,Awaiting Construction,0.7,,-2.447,52.677,12835
 14777,Awaiting Construction,0.6,,-1.55,53.844,10961
@@ -4040,7 +4040,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 14917,Awaiting Construction,0.17,,-1.09,52.658,2903
 14918,Awaiting Construction,0.29,,-2.118,53.263,5152
 14920,Awaiting Construction,,,-2.179,53.468,
-14923,Awaiting Construction,12.0,,-1.153,51.416,224581
+14923,Awaiting Construction,12.0,,-1.153,51.416,224582
 14928,Awaiting Construction,0.24,,-0.493,51.66,4215
 14930,Under Construction,9.89,,0.378,51.863,185043
 14931,Awaiting Construction,0.26,,-2.138,52.635,4590
@@ -4097,7 +4097,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 15056,Awaiting Construction,0.3,,-1.762,51.889,5339
 15057,Awaiting Construction,0.26,,-1.309,54.563,4100
 15058,Awaiting Construction,0.39,,-2.031,53.07,7026
-15060,Awaiting Construction,35.0,,-1.937,52.056,655570
+15060,Awaiting Construction,35.0,,-1.937,52.056,655571
 15062,Awaiting Construction,0.18,,-4.493,55.609,3091
 15065,Awaiting Construction,0.64,,-1.76,52.818,11710
 15066,Awaiting Construction,0.2,,-3.952,50.387,3465
@@ -4248,7 +4248,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 15443,Awaiting Construction,49.9,,-1.191,51.666,881000
 15448,Awaiting Construction,4.3,,-1.634,53.096,80294
 15449,Awaiting Construction,0.33,,-0.174,51.606,5901
-15451,Under Construction,12.0,,0.029,51.332,224581
+15451,Under Construction,12.0,,0.029,51.332,224582
 15452,Awaiting Construction,49.99,,-1.294,54.148,944300
 15453,Awaiting Construction,0.61,,-2.969,53.635,11148
 15454,Awaiting Construction,0.27,,-2.932,53.247,4777
@@ -4334,7 +4334,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 15649,Application Submitted,2.02,,-3.093,51.146,37570
 15650,Awaiting Construction,0.23,,-3.817,54.917,4028
 15651,Awaiting Construction,0.76,,-1.79,51.044,13959
-15653,Application Submitted,31.2,,-1.299,53.365,584363
+15653,Application Submitted,31.2,,-1.299,53.365,584364
 15655,Awaiting Construction,0.38,,-1.811,51.558,6838
 15656,Awaiting Construction,1.3,,0.761,51.351,24078
 15658,Awaiting Construction,,,-1.219,51.764,
@@ -4411,7 +4411,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 15778,Awaiting Construction,1.12,,-1.347,53.09,20705
 15780,Awaiting Construction,1.47,,-0.585,51.325,27264
 15782,Awaiting Construction,2.0,,-1.809,51.598,37195
-15793,Application Submitted,600.0,,-0.768,52.291,11242906
+15793,Application Submitted,600.0,,-0.768,52.291,11242909
 15800,Awaiting Construction,1.88,,-3.446,50.703,30100
 15801,Awaiting Construction,0.44,,-2.453,53.099,7963
 15804,Awaiting Construction,0.16,,-5.493,50.203,2716
@@ -4690,7 +4690,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 16380,Awaiting Construction,0.21,,0.728,51.554,3653
 16385,Awaiting Construction,1.56,,-4.64,55.58,28950
 16390,Awaiting Construction,21.0,,0.626,51.69,332300
-16393,Under Construction,120.0,,-1.392,54.612,2248355
+16393,Under Construction,120.0,,-1.392,54.612,2248356
 16398,Awaiting Construction,0.15,,-2.631,53.54,2528
 16399,Awaiting Construction,0.6,,-1.339,51.046,10961
 16400,Awaiting Construction,0.47,,0.806,50.932,8525
@@ -4791,7 +4791,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 16616,Awaiting Construction,0.53,,-0.026,51.665,9649
 16617,Awaiting Construction,1.0,,-4.115,51.759,18456
 16620,Awaiting Construction,0.3,,-6.77,54.504,9000
-16625,Awaiting Construction,0.19,,-3.182,51.49,2221
+16625,Awaiting Construction,0.19,,-3.182,51.49,2222
 16627,Awaiting Construction,0.28,,-4.635,54.208,4965
 16630,Application Submitted,29.9,,-3.058,56.323,587000
 16631,Awaiting Construction,0.73,,-0.385,53.042,13397
@@ -4895,7 +4895,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 16907,Awaiting Construction,0.63,,-0.605,51.186,11523
 16908,Awaiting Construction,0.27,,0.091,52.566,4777
 16911,Awaiting Construction,1.37,,-1.326,50.858,25390
-16914,Application Submitted,12.0,,-2.199,51.016,224581
+16914,Application Submitted,12.0,,-2.199,51.016,224582
 16915,Awaiting Construction,0.25,,-2.238,53.837,4402
 16922,Application Submitted,4.83,,-4.438,52.931,90225
 16923,Awaiting Construction,0.34,,-2.057,51.393,6089
@@ -5128,7 +5128,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 17546,Awaiting Construction,0.58,,-1.25,52.46,10586
 17547,Awaiting Construction,0.3,,-1.393,53.704,5339
 17565,Awaiting Construction,0.17,,-1.519,52.29,2903
-17566,Application Submitted,0.58,,-2.259,52.204,8922
+17566,Application Submitted,0.58,,-2.259,52.204,8923
 17567,Awaiting Construction,0.19,,-0.33,52.237,3278
 17570,Awaiting Construction,0.41,,-0.611,51.482,7401
 17571,Awaiting Construction,0.19,,-2.601,53.419,3278
@@ -5187,7 +5187,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 17753,Awaiting Construction,0.3,,-1.125,53.365,5339
 17755,Awaiting Construction,0.29,,-2.292,53.358,5152
 17757,Application Submitted,49.95,,0.311,52.294,935713
-17759,Awaiting Construction,35.0,,-2.553,57.578,655570
+17759,Awaiting Construction,35.0,,-2.553,57.578,655571
 17762,Awaiting Construction,0.3,,-1.274,54.56,5339
 17764,Awaiting Construction,0.18,,-0.263,51.337,3091
 17765,Awaiting Construction,0.19,,-2.501,51.294,3278
@@ -5200,7 +5200,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 17775,Awaiting Construction,1.23,,-2.732,51.147,40000
 17777,Awaiting Construction,0.6,,-3.946,51.844,10961
 17778,Awaiting Construction,0.23,,-0.071,51.474,4028
-17779,Application Submitted,165.0,,-2.359,55.892,3091594
+17779,Application Submitted,165.0,,-2.359,55.892,3091595
 17782,Operational,0.29,2025-03-01,-0.393,51.695,5152
 17783,Awaiting Construction,0.42,,-1.939,52.313,7588
 17784,Awaiting Construction,0.33,,-2.528,53.425,5901
@@ -5531,7 +5531,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 18597,Awaiting Construction,0.39,,-0.393,51.908,7026
 18598,Awaiting Construction,,,-2.9,51.789,4700
 18600,Awaiting Construction,0.8,,-0.075,53.576,14709
-18603,Application Submitted,16.14,,-1.268,52.962,302159
+18603,Application Submitted,16.14,,-1.268,52.962,302160
 18606,Awaiting Construction,0.18,,1.081,51.285,3091
 18607,Awaiting Construction,1.5,,-0.067,53.575,27826
 18608,Revised,0.26,,-1.061,52.954,4590
@@ -5623,7 +5623,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 18810,Awaiting Construction,0.36,,0.571,51.87,6464
 18812,Application Submitted,44.0,,-1.557,52.774,824218
 18813,Awaiting Construction,0.19,,-1.634,54.954,3278
-18815,Awaiting Construction,6.8,,-2.66,53.412,127140
+18815,Awaiting Construction,6.8,,-2.66,53.412,127141
 18817,Awaiting Construction,0.22,,-2.944,53.869,3840
 18818,Revised,,,-3.668,56.011,
 18820,Awaiting Construction,0.16,,-1.861,51.46,2716
@@ -5693,7 +5693,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 19007,Application Submitted,49.99,,-0.889,52.002,854900
 19008,Awaiting Construction,0.81,,-0.126,53.582,14896
 19013,Awaiting Construction,0.24,,-2.669,51.516,4215
-19016,Application Submitted,165.0,,-2.552,55.993,3091594
+19016,Application Submitted,165.0,,-2.552,55.993,3091595
 19046,Awaiting Construction,,,-0.182,51.128,
 19047,Awaiting Construction,0.77,,-0.435,51.767,14146
 19049,Revised,0.15,,1.36,51.37,2528
@@ -5712,7 +5712,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 19082,Application Submitted,30.0,,-2.798,53.261,770000
 19085,Application Submitted,40.0,,-3.44,55.873,760000
 19094,Application Submitted,20.0,,-1.569,53.686,356300
-19099,Application Submitted,29.0,,-0.575,53.274,543138
+19099,Application Submitted,29.0,,-0.575,53.274,543139
 19101,Awaiting Construction,,,-1.41,50.904,
 19108,Application Submitted,0.17,,-0.975,51.443,2903
 19109,Awaiting Construction,10.0,,-2.692,51.355,136000
@@ -5772,7 +5772,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 19231,Awaiting Construction,1.3,,-2.98,53.172,19150
 19233,Application Submitted,0.24,,-0.207,51.902,4215
 19234,Awaiting Construction,,,-1.454,52.917,
-19235,Awaiting Construction,,,-1.079,51.262,631
+19235,Awaiting Construction,,,-1.079,51.262,632
 19236,Awaiting Construction,0.28,,-0.365,51.663,4965
 19238,Under Construction,,,-2.735,54.311,
 19240,Awaiting Construction,0.15,,0.09,52.363,2528
@@ -5859,7 +5859,7 @@ Ref ID,Development Status (short),Installed Capacity (MWelec),Operational,lon,la
 19409,Application Submitted,,,-2.807,53.074,16339
 19415,Awaiting Construction,0.7,,-1.963,52.509,12835
 19416,Revised,1.25,,-2.66,53.412,23141
-19423,Application Submitted,46.41,,-0.945,52.193,869378
+19423,Application Submitted,46.41,,-0.945,52.193,869379
 19431,Application Submitted,49.9,,-0.229,53.757,818300
 19432,Application Submitted,,,0.295,51.868,
 19433,Awaiting Construction,0.31,,-3.065,53.424,5527
