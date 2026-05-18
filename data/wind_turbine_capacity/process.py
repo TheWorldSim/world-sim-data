@@ -1,5 +1,8 @@
 import os
 
+import ipdb
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 
 
@@ -10,7 +13,7 @@ wind_farms_averages_output_file_path = os.path.join(current_dir, "data/uk_subset
 
 class fields:
     installed = "Installed Capacity (MW)"
-    area = "Area (km²)"
+    area_km2 = "Area (km²)"
     cf = "Capacity Factor (%)"
     period = "Data Period"
     pdi = "Installed Power Density (W/m²)"
@@ -20,7 +23,7 @@ class fields:
 # Copied from table 1 of https://doi.org/10.1371/journal.pone.0321528
 # which as of 2026-05-18 was hosted at: https://ndownloader.figstatic.com/files/54155111
 data = [
-    ["Windfarm", fields.installed, fields.area, fields.cf, fields.period],
+    ["Windfarm", fields.installed, fields.area_km2, fields.cf, fields.period],
     ["HornseaTwo", 1386.0, 462.0, 41.4, "2023 - 2024"],
     ["HornseaOne", 1218.0, 407.3, 46.1, "2021 - 2023"],
     ["Seagreen", 1075.0, 332.0, 15.6, "2023 - 2024"],
@@ -63,6 +66,8 @@ def main():
     # save to a csv
     df.to_csv(wind_farms_output_file_path, index=False)
 
+    plot_installed_capacity_vs_area(df)
+    plot_realised_power_density_vs_area(df)
     averages_df = calculate_average_power_density(df)
     averages_df.to_csv(wind_farms_averages_output_file_path, index=False)
 
@@ -70,13 +75,80 @@ def main():
 def calculate_power_density(df: pd.DataFrame):
     df = df.copy()
 
-    df[fields.pdi] = (df[fields.installed] / df[fields.area]).round(1)
+    df[fields.pdi] = (df[fields.installed] / df[fields.area_km2]).round(1)
 
     df[fields.pdr] = (
         df[fields.pdi] * (df[fields.cf] / 100)
     ).round(1)
 
     return df
+
+
+def plot_installed_capacity_vs_area(df: pd.DataFrame):
+    x_data = df[fields.installed]
+    y_data = df[fields.area_km2]
+
+    # Create a linear line of best fit and a polynomial line of best fit, forced
+    # to go through the origin (0, 0)
+    # Weight the data points by the installed capacity, so that larger wind farms
+    # have more influence on the line of best fit than smaller ones
+    weights = df[fields.installed]
+    # Add 0,0 to the data to force the line of best fit to go through the origin
+    # and give it a very large weight to ensure the line of best fit goes through the origin
+    x_fit_data = np.append(x_data, 0)
+    y_fit_data = np.append(y_data, 0)
+    weights = np.append(weights, weights.max() * 1000)
+
+    linear_fit = np.polyfit(x_fit_data, y_fit_data, 1, w=weights)
+
+
+    plt.figure(figsize=(10, 6))
+    plt.scatter(x_data, y_data, alpha=0.7)
+    plt.title("Area of UK Offshore Wind Farms vs Installed Capacity")
+    plt.xlabel(fields.installed)
+    plt.ylabel(fields.area_km2)
+    plt.grid(True)
+
+    # Plot the lines of best fit
+    x_fit = np.linspace(min(x_data), max(x_data), 100)
+    plt.plot(x_fit, np.polyval(linear_fit, x_fit), color="red", label="Linear Fit")
+    plt.legend()
+
+    # Add the equation of the line of best fit to the plot
+    slope, intercept = linear_fit
+    equation_text = f"y = {slope:.2f}x + {intercept:.2f}"
+    plt.text(0.05, 0.95, equation_text, transform=plt.gca().transAxes, fontsize=10, verticalalignment="top")
+
+    plt.savefig(os.path.join(current_dir, "installed_capacity_vs_area.png"))
+    plt.show()
+
+
+def plot_realised_power_density_vs_area(df: pd.DataFrame):
+    x_data = df[fields.area_km2]
+    y_data = df[fields.pdr]
+
+    # Make line of best fit from equation 17 in the paper: https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0321528#pone.0321528.e052
+    # Where ZP equals 0.74 Wm⁻², and WP equals 3729 Wm⁻¹
+    Zp = 0.74
+    Wp = 3729
+    x_fit_area_km2 = np.linspace(min(x_data), max(x_data), 100)
+    circumference_km = 2 * np.pi * np.sqrt(x_fit_area_km2 / np.pi)  # Assuming circular wind farms
+    circumference_m = circumference_km * 1000  # Convert km to m
+    x_fit_area_m2 = x_fit_area_km2 * 1e6  # Convert km² to m²
+    y_fit = Wp * (circumference_m / x_fit_area_m2) + Zp
+
+    plt.figure(figsize=(10, 6))
+    plt.scatter(x_data, y_data, alpha=0.7)
+    plt.title("Realised Power Density vs Area of UK Offshore Wind Farms")
+    plt.xlabel("Area (km²)")
+    plt.ylabel("Realised Power Density (W m⁻²)")
+    plt.grid(True)
+
+    # Plot the lines of best fit
+    plt.plot(x_fit_area_km2, y_fit, color="red", label="Fitted using equation 17 & parameters from PLoS paper")
+    plt.legend()
+    plt.savefig(os.path.join(current_dir, "realised_power_density_vs_area.png"))
+    plt.show()
 
 
 def calculate_average_power_density(df: pd.DataFrame):
