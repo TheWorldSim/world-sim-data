@@ -22,12 +22,21 @@ class fields:
 
 # Copied from table 1 of https://doi.org/10.1371/journal.pone.0321528
 # which as of 2026-05-18 was hosted at: https://ndownloader.figstatic.com/files/54155111
+#
+# And then commented out the 4 wind farms mentioned in appendix 1 as being
+# suspected of not running at full capacity during the data periods
+#
+#     Four wind farms are excluded from the analysis because it was not possible
+#     to find a period where they were running at full capacity long enough to
+#     estimate a representative capacity factor. These wind farms are Seagreen,
+#     Moray East, Sheringham Shoals and Kincardine. The method of visual
+#     inspection is explained in S1-Appendix.
 data = [
     ["Windfarm", fields.installed, fields.area_km2, fields.cf, fields.period],
     ["HornseaTwo", 1386.0, 462.0, 41.4, "2023 - 2024"],
     ["HornseaOne", 1218.0, 407.3, 46.1, "2021 - 2023"],
-    ["Seagreen", 1075.0, 332.0, 15.6, "2023 - 2024"],
-    ["MorayEast", 950.0, 295.6, 25.3, "2022 - 2024"],
+    # ["Seagreen", 1075.0, 332.0, 15.6, "2023 - 2024"],
+    # ["MorayEast", 950.0, 295.6, 25.3, "2022 - 2024"],
     ["TritonKnoll", 857.0, 149.0, 40.6, "2023 - 2024"],
     ["EastAngliaOne", 714.0, 162.8, 46.9, "2021, 2023"],
     ["WalneyExtension", 659.0, 149.1, 44.3, "2020 - 2023"],
@@ -40,7 +49,7 @@ data = [
     ["Rampion", 400.0, 56.3, 41.1, "2021 - 2023"],
     ["WestOfDuddonSands", 389.0, 67.0, 43.8, "2020 - 2023"],
     ["Galloper", 353.0, 113.7, 47.3, "2021 - 2023"],
-    ["SheringhamShoals", 316.8, 35.0, 36.5, "2022 - 2023"],
+    # ["SheringhamShoals", 316.8, 35.0, 36.5, "2022 - 2023"],
     ["Lincs", 270.0, 38.9, 41.7, "2020 - 2023"],
     ["BurboBankExtension", 254.0, 39.6, 40.1, "2020 - 2023"],
     ["HumberGateway", 219.0, 27.0, 42.6, "2020 - 2023"],
@@ -53,7 +62,7 @@ data = [
     ["Aberdeen", 96.8, 20.0, 36.8, "2020"],
     ["BurboBank", 90.0, 10.0, 31.8, "2020 - 2023"],
     ["Barrow", 90.0, 10.0, 31.7, "2021 - 2022"],
-    ["Kincardine", 50.0, 20.0, 19.3, "2020 - 2023"],
+    # ["Kincardine", 50.0, 20.0, 19.3, "2020 - 2023"],
     ["HywindScotland", 30.0, 15.4, 50.8, "2020 - 2023"],
 ]
 
