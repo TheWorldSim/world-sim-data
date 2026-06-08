@@ -6,3 +6,5 @@ pandas==2.3.3
 pyproj==3.7.2
 rasterio==1.5.0
 scikit-learn==1.8.0
+jupyterlab==4.5.8
+h3==4.5.0
