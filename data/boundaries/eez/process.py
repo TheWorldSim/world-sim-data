@@ -7,7 +7,6 @@ import sys
 import geopandas as gpd
 import matplotlib.pyplot as plt
 from pandas import Series
-from shapely import LineString
 from shapely.ops import transform
 
 
@@ -20,12 +19,11 @@ for path in [src_directory, data_directory]:
 
 from boundaries.countries.process import get_boundaries
 from geo_utils import join_linestrings
+from constants import LAT_LON_LOW_RES_DP
 
 
 input_file_path = current_directory + "/ospar_eez_2025_01_001.csv"
 output_file_path = current_directory + "/uk_eez.geojson"
-# Reduce precision to 1 decimal places: https://xkcd.com/2170/
-LOW_RES_DP = 2
 
 
 def process():
@@ -35,7 +33,7 @@ def process():
     UK_EEZs.joined_low_res.to_file(
         output_file_path,
         driver="GeoJSON",
-        description=f"UK EEZ and national boundaries as longitude, latitude pairs with {LOW_RES_DP} dp resolution geometry",
+        description=f"UK EEZ and national boundaries as longitude, latitude pairs with {LAT_LON_LOW_RES_DP} dp resolution geometry",
     )
     plot_eezs(UK_EEZs)
 
@@ -70,9 +68,9 @@ def get_UK_EEZ() -> UK_EEZs:
     joined_gdf = gpd.GeoDataFrame(geometry=[joined_linestring], crs="EPSG:4326")
     joined_gdf_low_res = joined_gdf.copy().simplify(0.1)
 
-    # Reduce precision to LOW_RES_DP decimal places
-    low_res = low_res.apply(lambda geom: transform(lambda x, y, z=None: (round(x, LOW_RES_DP), round(y, LOW_RES_DP)), geom))
-    joined_low_res = joined_gdf_low_res.apply((lambda geom: transform(lambda x, y, z=None: (round(x, LOW_RES_DP), round(y, LOW_RES_DP)), geom)))
+    # Reduce precision to LAT_LON_LOW_RES_DP decimal places
+    low_res = low_res.apply(lambda geom: transform(lambda x, y, z=None: (round(x, LAT_LON_LOW_RES_DP), round(y, LAT_LON_LOW_RES_DP)), geom))
+    joined_low_res = joined_gdf_low_res.apply((lambda geom: transform(lambda x, y, z=None: (round(x, LAT_LON_LOW_RES_DP), round(y, LAT_LON_LOW_RES_DP)), geom)))
 
 
     return UK_EEZs(
