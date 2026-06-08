@@ -60,6 +60,7 @@ def get_boundaries():
     class Boundaries:
         uk_mainland: Polygon
         ni: Polygon
+        uk_all: list[Polygon]
         ie: Polygon
         fr: Polygon
         ie_gb_nri_boundary: LineString
@@ -67,6 +68,7 @@ def get_boundaries():
     return Boundaries(
         uk_mainland=uk_mainland,
         ni=ni,
+        uk_all=uk_geoms,
         ie=ie,
         fr=fr,
         ie_gb_nri_boundary=ie_gb_nri_boundary,
