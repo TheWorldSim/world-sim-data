@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 import ipdb
 import os
 import sys
@@ -49,6 +51,21 @@ def save_h3_cells(cells):
         for cell in cells:
             lat, lon = h3.cell_to_latlng(cell)
             f.write(f"{cell},{round(lat, LAT_LON_LOW_RES_DP)},{round(lon, LAT_LON_LOW_RES_DP)}\n")
+
+
+@dataclass
+class H3CellData:
+    h3_cell_id: str
+    lat: float
+    lon: float
+
+def load_h3_cells():
+    h3_cells: list[H3CellData] = []
+    with open(os.path.join(current_directory, f"uk_eez_h3_res_{resolution}.txt"), "r") as f:
+        for line in f:
+            cell, lat, lon = line.strip().split(",")
+            h3_cells.append(H3CellData(h3_cell_id=cell, lat=float(lat), lon=float(lon)))
+    return h3_cells
 
 
 def plot_eez(eez):
