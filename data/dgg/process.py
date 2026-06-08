@@ -15,8 +15,11 @@ for path in [src_directory, data_directory]:
     if path not in sys.path:
         sys.path.append(path)
 
+
+from constants import LAT_LON_LOW_RES_DP
 from geo_utils import swap_lat_lng
 # from boundaries.countries.process import get_boundaries
+
 
 resolution = 4
 uk_eez = gpd.read_file(os.path.join(data_directory, "boundaries/eez/uk_eez.geojson"))
@@ -44,7 +47,8 @@ def save_h3_cells(cells):
     cells = sorted(cells)
     with open(os.path.join(current_directory, f"uk_eez_h3_res_{resolution}.txt"), "w") as f:
         for cell in cells:
-            f.write(f"{cell}\n")
+            lat, lon = h3.cell_to_latlng(cell)
+            f.write(f"{cell},{round(lat, LAT_LON_LOW_RES_DP)},{round(lon, LAT_LON_LOW_RES_DP)}\n")
 
 
 def plot_eez(eez):
