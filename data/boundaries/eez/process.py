@@ -35,7 +35,7 @@ def process():
     UK_EEZs.joined_low_res.to_file(
         output_file_path,
         driver="GeoJSON",
-        description=f"UK EEZ and national boundaries with {LOW_RES_DP} dp resolution geometry",
+        description=f"UK EEZ and national boundaries as longitude, latitude pairs with {LOW_RES_DP} dp resolution geometry",
     )
     plot_eezs(UK_EEZs)
 
