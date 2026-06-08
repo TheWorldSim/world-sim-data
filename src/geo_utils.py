@@ -34,3 +34,7 @@ def join_linestrings(linestrings: list[LineString], close=False) -> LineString:
         coords.append(coords[0])
 
     return LineString(coords)
+
+
+def swap_lat_lng(coords: list[tuple[float, float]]) -> list[tuple[float, float]]:
+    return [(lng, lat) for lat, lng in coords]
