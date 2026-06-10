@@ -5,3 +5,6 @@
 # data fetching / processing scripts that depend on it and all their downstream
 # dependencies.
 LAT_LON_LOW_RES_DP = 2
+
+
+H3_RESOLUTION = 4
