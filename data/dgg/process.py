@@ -18,12 +18,11 @@ for path in [src_directory, data_directory]:
         sys.path.append(path)
 
 
-from constants import LAT_LON_LOW_RES_DP
+from constants import LAT_LON_LOW_RES_DP, H3_RESOLUTION
 from geo_utils import swap_lat_lng
 from boundaries.countries.process import get_boundaries
 
 
-resolution = 4
 uk_eez = gpd.read_file(os.path.join(data_directory, "boundaries/eez/uk_eez.geojson"))
 uk_land_polygons = get_boundaries().uk_all
 
@@ -59,7 +58,7 @@ def process():
     eez = uk_eez
     h3_cells = get_h3_cell_ids(eez)
     mark_h3_cells_over_land(h3_cells, land_polygons=uk_land_polygons)
-    print(f"Number of H3 cells covering the UK EEZ at resolution {resolution}: {len(h3_cells)}")
+    print(f"Number of H3 cells covering the UK EEZ at resolution {H3_RESOLUTION}: {len(h3_cells)}")
     print(f"Total marked as land: {sum(cell.is_land for cell in h3_cells)}")
     print("Area of UK land polygons:", round(sum(polygon.area for polygon in uk_land_polygons), 3))
     print("Area of H3 cells marked as land:", round(sum(h3_cell_id_to_polygon(cell.h3_cell_id).area for cell in h3_cells if cell.is_land), 3))
@@ -77,7 +76,7 @@ def get_h3_cell_ids(eez) -> list[H3CellData]:
     eez_lat_lon = eez.geometry.iloc[0].coords
     eez_polygon = Polygon(eez_lat_lon)
     eez_h3_polygon = h3.geo_to_h3shape(eez_polygon)
-    h3_cell_ids = h3.polygon_to_cells(eez_h3_polygon, res=resolution)
+    h3_cell_ids = h3.polygon_to_cells(eez_h3_polygon, res=H3_RESOLUTION)
 
     cells: list[H3CellData] = []
     for h3_cell_id in h3_cell_ids:
@@ -96,7 +95,7 @@ def mark_h3_cells_over_land(h3_cells: list[H3CellData], land_polygons):
 # Useful for debugging
 def save_h3_cells(cells: list[H3CellData]):
     cells = sorted(cells, key=lambda cell: cell.h3_cell_id)
-    with open(os.path.join(current_directory, f"uk_eez_h3_res_{resolution}.txt"), "w") as f:
+    with open(os.path.join(current_directory, f"uk_eez_h3_res_{H3_RESOLUTION}.txt"), "w") as f:
         f.write(f"h3 cell id (minus ffffffff), lat, lon, is land\n")
         for cell in cells:
             short_h3_cell_id = cell.h3_cell_id[:7]
@@ -109,7 +108,7 @@ def save_h3_cells(cells: list[H3CellData]):
 
 def load_h3_cells():
     h3_cells: list[H3CellData] = []
-    with open(os.path.join(current_directory, f"uk_eez_h3_res_{resolution}.txt"), "r") as f:
+    with open(os.path.join(current_directory, f"uk_eez_h3_res_{H3_RESOLUTION}.txt"), "r") as f:
         lines = f.readlines()[1:]  # Skip header
         for line in lines:
             short_h3_cell_id, lat, lon, over_land = line.strip().split(",")
