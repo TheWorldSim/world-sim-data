@@ -1,0 +1,1337 @@
+[
+  {
+    "h3_cell_id": "8519565bfffffff",
+    "pixel_count": 456,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 29,
+      "arable": 2,
+      "grassland": 735,
+      "wetland": 6,
+      "rock": 161,
+      "inland_water": 10,
+      "urban": 4,
+      "suburban": 0
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85195643fffffff",
+    "pixel_count": 460,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 549,
+      "arable": 20,
+      "grassland": 5608,
+      "wetland": 68,
+      "rock": 442,
+      "inland_water": 29,
+      "urban": 19,
+      "suburban": 14
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8519564bfffffff",
+    "pixel_count": 460,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1602,
+      "arable": 720,
+      "grassland": 12672,
+      "wetland": 331,
+      "rock": 316,
+      "inland_water": 0,
+      "urban": 39,
+      "suburban": 345
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182587fffffff",
+    "pixel_count": 458,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 754,
+      "arable": 1487,
+      "grassland": 9564,
+      "wetland": 85,
+      "rock": 589,
+      "inland_water": 103,
+      "urban": 334,
+      "suburban": 1215
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8518258ffffffff",
+    "pixel_count": 462,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 2438,
+      "arable": 712,
+      "grassland": 6151,
+      "wetland": 537,
+      "rock": 1300,
+      "inland_water": 167,
+      "urban": 45,
+      "suburban": 131
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182513fffffff",
+    "pixel_count": 462,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 0,
+      "arable": 49,
+      "grassland": 51,
+      "wetland": 0,
+      "rock": 279,
+      "inland_water": 298,
+      "urban": 0,
+      "suburban": 0
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8518251bfffffff",
+    "pixel_count": 460,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 7,
+      "arable": 19,
+      "grassland": 46,
+      "wetland": 0,
+      "rock": 0,
+      "inland_water": 0,
+      "urban": 0,
+      "suburban": 0
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85195647fffffff",
+    "pixel_count": 460,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 81,
+      "arable": 18,
+      "grassland": 2013,
+      "wetland": 5,
+      "rock": 172,
+      "inland_water": 2,
+      "urban": 7,
+      "suburban": 50
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8519564ffffffff",
+    "pixel_count": 458,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 4806,
+      "arable": 47,
+      "grassland": 14979,
+      "wetland": 2944,
+      "rock": 0,
+      "inland_water": 21,
+      "urban": 6,
+      "suburban": 94
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851825b3fffffff",
+    "pixel_count": 466,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1220,
+      "arable": 1428,
+      "grassland": 19022,
+      "wetland": 788,
+      "rock": 8,
+      "inland_water": 17,
+      "urban": 63,
+      "suburban": 766
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851825bbfffffff",
+    "pixel_count": 458,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 4159,
+      "arable": 719,
+      "grassland": 16187,
+      "wetland": 836,
+      "rock": 125,
+      "inland_water": 135,
+      "urban": 80,
+      "suburban": 666
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182517fffffff",
+    "pixel_count": 466,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 2524,
+      "arable": 3873,
+      "grassland": 13750,
+      "wetland": 786,
+      "rock": 220,
+      "inland_water": 184,
+      "urban": 126,
+      "suburban": 709
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182503fffffff",
+    "pixel_count": 464,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1981,
+      "arable": 2490,
+      "grassland": 9994,
+      "wetland": 1241,
+      "rock": 402,
+      "inland_water": 1190,
+      "urban": 470,
+      "suburban": 1962
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85195673fffffff",
+    "pixel_count": 458,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 0,
+      "arable": 0,
+      "grassland": 0,
+      "wetland": 0,
+      "rock": 3,
+      "inland_water": 2,
+      "urban": 0,
+      "suburban": 0
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8519567bfffffff",
+    "pixel_count": 458,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 2678,
+      "arable": 103,
+      "grassland": 13610,
+      "wetland": 1432,
+      "rock": 152,
+      "inland_water": 66,
+      "urban": 76,
+      "suburban": 106
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8518250bfffffff",
+    "pixel_count": 466,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 304,
+      "arable": 767,
+      "grassland": 3890,
+      "wetland": 71,
+      "rock": 1,
+      "inland_water": 511,
+      "urban": 210,
+      "suburban": 835
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851825b7fffffff",
+    "pixel_count": 460,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 772,
+      "arable": 456,
+      "grassland": 20489,
+      "wetland": 755,
+      "rock": 32,
+      "inland_water": 10,
+      "urban": 34,
+      "suburban": 471
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851825a3fffffff",
+    "pixel_count": 462,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1540,
+      "arable": 976,
+      "grassland": 18653,
+      "wetland": 1256,
+      "rock": 52,
+      "inland_water": 132,
+      "urban": 62,
+      "suburban": 453
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851825abfffffff",
+    "pixel_count": 460,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 2597,
+      "arable": 59,
+      "grassland": 17279,
+      "wetland": 2894,
+      "rock": 10,
+      "inland_water": 3,
+      "urban": 13,
+      "suburban": 147
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182507fffffff",
+    "pixel_count": 466,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 2632,
+      "arable": 189,
+      "grassland": 17380,
+      "wetland": 2633,
+      "rock": 20,
+      "inland_water": 22,
+      "urban": 19,
+      "suburban": 419
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8518250ffffffff",
+    "pixel_count": 466,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1581,
+      "arable": 553,
+      "grassland": 18185,
+      "wetland": 2729,
+      "rock": 28,
+      "inland_water": 33,
+      "urban": 31,
+      "suburban": 183
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85195663fffffff",
+    "pixel_count": 458,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 714,
+      "arable": 289,
+      "grassland": 12058,
+      "wetland": 596,
+      "rock": 196,
+      "inland_water": 842,
+      "urban": 233,
+      "suburban": 711
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8519566bfffffff",
+    "pixel_count": 460,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1249,
+      "arable": 88,
+      "grassland": 19412,
+      "wetland": 1928,
+      "rock": 96,
+      "inland_water": 35,
+      "urban": 29,
+      "suburban": 196
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182573fffffff",
+    "pixel_count": 468,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 429,
+      "arable": 620,
+      "grassland": 5218,
+      "wetland": 44,
+      "rock": 0,
+      "inland_water": 139,
+      "urban": 139,
+      "suburban": 566
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851825a7fffffff",
+    "pixel_count": 462,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1412,
+      "arable": 635,
+      "grassland": 18600,
+      "wetland": 354,
+      "rock": 0,
+      "inland_water": 47,
+      "urban": 269,
+      "suburban": 1794
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851825affffffff",
+    "pixel_count": 462,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1680,
+      "arable": 1283,
+      "grassland": 17661,
+      "wetland": 731,
+      "rock": 15,
+      "inland_water": 455,
+      "urban": 246,
+      "suburban": 1038
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182533fffffff",
+    "pixel_count": 464,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 2516,
+      "arable": 249,
+      "grassland": 17663,
+      "wetland": 2461,
+      "rock": 98,
+      "inland_water": 73,
+      "urban": 40,
+      "suburban": 128
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8518253bfffffff",
+    "pixel_count": 464,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1705,
+      "arable": 6,
+      "grassland": 20248,
+      "wetland": 1221,
+      "rock": 0,
+      "inland_water": 0,
+      "urban": 1,
+      "suburban": 42
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85195667fffffff",
+    "pixel_count": 458,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 381,
+      "arable": 334,
+      "grassland": 4161,
+      "wetland": 34,
+      "rock": 343,
+      "inland_water": 172,
+      "urban": 168,
+      "suburban": 457
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182577fffffff",
+    "pixel_count": 468,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 2878,
+      "arable": 812,
+      "grassland": 16798,
+      "wetland": 2547,
+      "rock": 5,
+      "inland_water": 96,
+      "urban": 41,
+      "suburban": 241
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8519566ffffffff",
+    "pixel_count": 466,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1468,
+      "arable": 416,
+      "grassland": 14533,
+      "wetland": 45,
+      "rock": 167,
+      "inland_water": 139,
+      "urban": 614,
+      "suburban": 3279
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182563fffffff",
+    "pixel_count": 466,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1106,
+      "arable": 449,
+      "grassland": 14299,
+      "wetland": 965,
+      "rock": 0,
+      "inland_water": 12,
+      "urban": 39,
+      "suburban": 255
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851952d3fffffff",
+    "pixel_count": 460,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1411,
+      "arable": 827,
+      "grassland": 17307,
+      "wetland": 99,
+      "rock": 4,
+      "inland_water": 1607,
+      "urban": 298,
+      "suburban": 1461
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851952dbfffffff",
+    "pixel_count": 464,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 585,
+      "arable": 363,
+      "grassland": 6692,
+      "wetland": 47,
+      "rock": 0,
+      "inland_water": 15307,
+      "urban": 23,
+      "suburban": 189
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8518256bfffffff",
+    "pixel_count": 468,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 3672,
+      "arable": 33,
+      "grassland": 3246,
+      "wetland": 3430,
+      "rock": 0,
+      "inland_water": 6,
+      "urban": 0,
+      "suburban": 4
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182537fffffff",
+    "pixel_count": 462,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1244,
+      "arable": 1688,
+      "grassland": 19149,
+      "wetland": 20,
+      "rock": 19,
+      "inland_water": 6,
+      "urban": 144,
+      "suburban": 850
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182523fffffff",
+    "pixel_count": 466,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 2365,
+      "arable": 116,
+      "grassland": 16724,
+      "wetland": 3756,
+      "rock": 109,
+      "inland_water": 37,
+      "urban": 32,
+      "suburban": 178
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85195293fffffff",
+    "pixel_count": 462,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 321,
+      "arable": 1185,
+      "grassland": 4785,
+      "wetland": 7,
+      "rock": 496,
+      "inland_water": 27,
+      "urban": 124,
+      "suburban": 525
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8519529bfffffff",
+    "pixel_count": 462,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1777,
+      "arable": 2905,
+      "grassland": 8636,
+      "wetland": 28,
+      "rock": 1200,
+      "inland_water": 260,
+      "urban": 1052,
+      "suburban": 4303
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8518252bfffffff",
+    "pixel_count": 468,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 2322,
+      "arable": 60,
+      "grassland": 17294,
+      "wetland": 3013,
+      "rock": 51,
+      "inland_water": 77,
+      "urban": 35,
+      "suburban": 571
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851952d7fffffff",
+    "pixel_count": 460,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1733,
+      "arable": 468,
+      "grassland": 11858,
+      "wetland": 61,
+      "rock": 252,
+      "inland_water": 288,
+      "urban": 3165,
+      "suburban": 5042
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182567fffffff",
+    "pixel_count": 468,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 2632,
+      "arable": 228,
+      "grassland": 17483,
+      "wetland": 1958,
+      "rock": 38,
+      "inland_water": 29,
+      "urban": 133,
+      "suburban": 917
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8518256ffffffff",
+    "pixel_count": 474,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 5367,
+      "arable": 50,
+      "grassland": 12218,
+      "wetland": 3651,
+      "rock": 6,
+      "inland_water": 84,
+      "urban": 15,
+      "suburban": 143
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851952c3fffffff",
+    "pixel_count": 466,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 887,
+      "arable": 1672,
+      "grassland": 14940,
+      "wetland": 172,
+      "rock": 0,
+      "inland_water": 4942,
+      "urban": 91,
+      "suburban": 598
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851952cbfffffff",
+    "pixel_count": 466,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 684,
+      "arable": 279,
+      "grassland": 6006,
+      "wetland": 236,
+      "rock": 0,
+      "inland_water": 15869,
+      "urban": 41,
+      "suburban": 191
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851821d3fffffff",
+    "pixel_count": 468,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1387,
+      "arable": 5,
+      "grassland": 2947,
+      "wetland": 1308,
+      "rock": 0,
+      "inland_water": 2805,
+      "urban": 0,
+      "suburban": 28
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851821dbfffffff",
+    "pixel_count": 470,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 52,
+      "arable": 2,
+      "grassland": 770,
+      "wetland": 136,
+      "rock": 0,
+      "inland_water": 13,
+      "urban": 0,
+      "suburban": 65
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182527fffffff",
+    "pixel_count": 464,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1240,
+      "arable": 890,
+      "grassland": 18911,
+      "wetland": 201,
+      "rock": 35,
+      "inland_water": 120,
+      "urban": 307,
+      "suburban": 1509
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85195297fffffff",
+    "pixel_count": 462,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 0,
+      "arable": 18,
+      "grassland": 19,
+      "wetland": 0,
+      "rock": 60,
+      "inland_water": 2,
+      "urban": 7,
+      "suburban": 8
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85195283fffffff",
+    "pixel_count": 458,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 837,
+      "arable": 3090,
+      "grassland": 8012,
+      "wetland": 58,
+      "rock": 2186,
+      "inland_water": 7717,
+      "urban": 125,
+      "suburban": 253
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8518252ffffffff",
+    "pixel_count": 466,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 2073,
+      "arable": 99,
+      "grassland": 18959,
+      "wetland": 1650,
+      "rock": 190,
+      "inland_water": 14,
+      "urban": 43,
+      "suburban": 285
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182193fffffff",
+    "pixel_count": 468,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1903,
+      "arable": 163,
+      "grassland": 19745,
+      "wetland": 1291,
+      "rock": 6,
+      "inland_water": 2,
+      "urban": 27,
+      "suburban": 290
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8519528bfffffff",
+    "pixel_count": 462,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1171,
+      "arable": 2025,
+      "grassland": 18724,
+      "wetland": 95,
+      "rock": 76,
+      "inland_water": 115,
+      "urban": 127,
+      "suburban": 790
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851952c7fffffff",
+    "pixel_count": 464,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1036,
+      "arable": 3045,
+      "grassland": 16302,
+      "wetland": 40,
+      "rock": 34,
+      "inland_water": 85,
+      "urban": 356,
+      "suburban": 2320
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8518219bfffffff",
+    "pixel_count": 464,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1736,
+      "arable": 109,
+      "grassland": 19514,
+      "wetland": 1586,
+      "rock": 6,
+      "inland_water": 13,
+      "urban": 29,
+      "suburban": 233
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851821d7fffffff",
+    "pixel_count": 470,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 3553,
+      "arable": 127,
+      "grassland": 12708,
+      "wetland": 182,
+      "rock": 6,
+      "inland_water": 6497,
+      "urban": 50,
+      "suburban": 389
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851952cffffffff",
+    "pixel_count": 466,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1064,
+      "arable": 2134,
+      "grassland": 15840,
+      "wetland": 79,
+      "rock": 0,
+      "inland_water": 940,
+      "urban": 459,
+      "suburban": 2787
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851821c3fffffff",
+    "pixel_count": 468,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 6836,
+      "arable": 24,
+      "grassland": 9536,
+      "wetland": 4648,
+      "rock": 0,
+      "inland_water": 1478,
+      "urban": 2,
+      "suburban": 68
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85195253fffffff",
+    "pixel_count": 466,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1685,
+      "arable": 1387,
+      "grassland": 18541,
+      "wetland": 238,
+      "rock": 11,
+      "inland_water": 67,
+      "urban": 239,
+      "suburban": 1153
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8519525bfffffff",
+    "pixel_count": 468,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1369,
+      "arable": 1264,
+      "grassland": 19737,
+      "wetland": 46,
+      "rock": 1,
+      "inland_water": 92,
+      "urban": 64,
+      "suburban": 241
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85195287fffffff",
+    "pixel_count": 462,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 47,
+      "arable": 1107,
+      "grassland": 2201,
+      "wetland": 16,
+      "rock": 428,
+      "inland_water": 57,
+      "urban": 52,
+      "suburban": 67
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851821cbfffffff",
+    "pixel_count": 398,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 217,
+      "arable": 0,
+      "grassland": 263,
+      "wetland": 20,
+      "rock": 0,
+      "inland_water": 313,
+      "urban": 0,
+      "suburban": 0
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8519528ffffffff",
+    "pixel_count": 466,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1798,
+      "arable": 3599,
+      "grassland": 12529,
+      "wetland": 256,
+      "rock": 660,
+      "inland_water": 3613,
+      "urban": 175,
+      "suburban": 701
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182197fffffff",
+    "pixel_count": 468,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1543,
+      "arable": 76,
+      "grassland": 7654,
+      "wetland": 1203,
+      "rock": 0,
+      "inland_water": 40,
+      "urban": 30,
+      "suburban": 159
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182183fffffff",
+    "pixel_count": 472,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 5922,
+      "arable": 79,
+      "grassland": 13780,
+      "wetland": 3293,
+      "rock": 22,
+      "inland_water": 64,
+      "urban": 38,
+      "suburban": 175
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85195213fffffff",
+    "pixel_count": 464,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1615,
+      "arable": 1782,
+      "grassland": 18912,
+      "wetland": 88,
+      "rock": 89,
+      "inland_water": 138,
+      "urban": 88,
+      "suburban": 519
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8518218bfffffff",
+    "pixel_count": 472,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1906,
+      "arable": 71,
+      "grassland": 18938,
+      "wetland": 492,
+      "rock": 5,
+      "inland_water": 1100,
+      "urban": 156,
+      "suburban": 957
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8519521bfffffff",
+    "pixel_count": 466,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 526,
+      "arable": 1999,
+      "grassland": 19990,
+      "wetland": 57,
+      "rock": 36,
+      "inland_water": 41,
+      "urban": 77,
+      "suburban": 586
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85195257fffffff",
+    "pixel_count": 470,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 889,
+      "arable": 3110,
+      "grassland": 18490,
+      "wetland": 61,
+      "rock": 27,
+      "inland_water": 100,
+      "urban": 71,
+      "suburban": 776
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851821c7fffffff",
+    "pixel_count": 474,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 4616,
+      "arable": 43,
+      "grassland": 14159,
+      "wetland": 2259,
+      "rock": 17,
+      "inland_water": 657,
+      "urban": 11,
+      "suburban": 74
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851821cffffffff",
+    "pixel_count": 474,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 114,
+      "arable": 0,
+      "grassland": 457,
+      "wetland": 62,
+      "rock": 0,
+      "inland_water": 243,
+      "urban": 0,
+      "suburban": 0
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85195243fffffff",
+    "pixel_count": 468,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1530,
+      "arable": 359,
+      "grassland": 20172,
+      "wetland": 86,
+      "rock": 78,
+      "inland_water": 96,
+      "urban": 138,
+      "suburban": 965
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8519524bfffffff",
+    "pixel_count": 468,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 266,
+      "arable": 179,
+      "grassland": 5834,
+      "wetland": 42,
+      "rock": 0,
+      "inland_water": 25,
+      "urban": 5,
+      "suburban": 48
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851952bbfffffff",
+    "pixel_count": 458,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 3,
+      "arable": 316,
+      "grassland": 467,
+      "wetland": 1,
+      "rock": 201,
+      "inland_water": 100,
+      "urban": 13,
+      "suburban": 17
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182187fffffff",
+    "pixel_count": 470,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1067,
+      "arable": 15,
+      "grassland": 4370,
+      "wetland": 188,
+      "rock": 1,
+      "inland_water": 33,
+      "urban": 1,
+      "suburban": 47
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85195217fffffff",
+    "pixel_count": 466,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 191,
+      "arable": 1980,
+      "grassland": 4767,
+      "wetland": 142,
+      "rock": 1371,
+      "inland_water": 31,
+      "urban": 63,
+      "suburban": 144
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85195203fffffff",
+    "pixel_count": 462,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1933,
+      "arable": 638,
+      "grassland": 17353,
+      "wetland": 149,
+      "rock": 304,
+      "inland_water": 345,
+      "urban": 149,
+      "suburban": 401
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8518218ffffffff",
+    "pixel_count": 468,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 3596,
+      "arable": 93,
+      "grassland": 15398,
+      "wetland": 1769,
+      "rock": 55,
+      "inland_water": 1461,
+      "urban": 48,
+      "suburban": 285
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182113fffffff",
+    "pixel_count": 476,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1495,
+      "arable": 60,
+      "grassland": 13050,
+      "wetland": 966,
+      "rock": 79,
+      "inland_water": 1430,
+      "urban": 56,
+      "suburban": 90
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8519520bfffffff",
+    "pixel_count": 462,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1206,
+      "arable": 1415,
+      "grassland": 19255,
+      "wetland": 158,
+      "rock": 98,
+      "inland_water": 49,
+      "urban": 143,
+      "suburban": 810
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85195247fffffff",
+    "pixel_count": 470,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1367,
+      "arable": 299,
+      "grassland": 20257,
+      "wetland": 148,
+      "rock": 24,
+      "inland_water": 109,
+      "urban": 280,
+      "suburban": 1032
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8518211bfffffff",
+    "pixel_count": 466,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1,
+      "arable": 0,
+      "grassland": 990,
+      "wetland": 745,
+      "rock": 0,
+      "inland_water": 2,
+      "urban": 0,
+      "suburban": 0
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8519524ffffffff",
+    "pixel_count": 470,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 465,
+      "arable": 15,
+      "grassland": 7042,
+      "wetland": 156,
+      "rock": 0,
+      "inland_water": 215,
+      "urban": 8,
+      "suburban": 50
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85195207fffffff",
+    "pixel_count": 468,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 51,
+      "arable": 157,
+      "grassland": 954,
+      "wetland": 0,
+      "rock": 86,
+      "inland_water": 0,
+      "urban": 22,
+      "suburban": 84
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "851821bbfffffff",
+    "pixel_count": 470,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 107,
+      "arable": 2,
+      "grassland": 1266,
+      "wetland": 140,
+      "rock": 0,
+      "inland_water": 19,
+      "urban": 2,
+      "suburban": 7
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85182117fffffff",
+    "pixel_count": 474,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 119,
+      "arable": 5,
+      "grassland": 1543,
+      "wetland": 163,
+      "rock": 0,
+      "inland_water": 298,
+      "urban": 1,
+      "suburban": 0
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8519520ffffffff",
+    "pixel_count": 464,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 1118,
+      "arable": 1122,
+      "grassland": 11722,
+      "wetland": 69,
+      "rock": 963,
+      "inland_water": 115,
+      "urban": 91,
+      "suburban": 257
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "85195273fffffff",
+    "pixel_count": 468,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 659,
+      "arable": 85,
+      "grassland": 2888,
+      "wetland": 2,
+      "rock": 222,
+      "inland_water": 7,
+      "urban": 113,
+      "suburban": 388
+    },
+    "any_pixel_non_zero_percentage": true
+  },
+  {
+    "h3_cell_id": "8519527bfffffff",
+    "pixel_count": 468,
+    "simplified_coverage_type_cumulative_percentages": {
+      "woodland": 512,
+      "arable": 142,
+      "grassland": 5965,
+      "wetland": 14,
+      "rock": 8,
+      "inland_water": 29,
+      "urban": 31,
+      "suburban": 221
+    },
+    "any_pixel_non_zero_percentage": true
+  }
+]
