@@ -22,7 +22,7 @@ From the root directory of the project:
 1. run `jupyter lab --port=8899 --IdentityProvider.token='secretb629' --ServerApp.open_browser=False`
 2. copy the URL from the terminal, which should look something like `http://localhost:8899/lab?token=secretb629`
 3. In visual studio code, open the process.ipynb file, run the block with shift + enter
-4. When prompted for the URL to the python kernel, paste the URL from step 3 and press enter
+4. When prompted for the URL to the python kernel, paste the URL from step 2 and press enter
 
 For debugging in visual studio code you can set a breakpoint in the gutter of the
 python file and then run that cell in debug mode using shift + ctrl + enter (instead of ctrl + enter).
