@@ -43,6 +43,8 @@ h3_cell_ids_to_force_marking_as_land = {
     # "8419511ffffffff",  # Liverpool
     # "8419529ffffffff",  # Strangford Lough
     "841821dffffffff",  # South West of Northern Ireland
+    "84194e3ffffffff",  # Kent
+    "841959bffffffff",  # East solent
 }
 
 
@@ -88,7 +90,7 @@ def get_h3_cell_ids(eez) -> list[H3CellData]:
 def mark_h3_cells_over_land(h3_cells: list[H3CellData], land_polygons):
     for h3_cell in h3_cells:
         boundary = h3_cell_id_to_polygon(h3_cell.h3_cell_id)
-        is_land = any((land_polygon.intersection(boundary).area / boundary.area) >= 0.5 for land_polygon in land_polygons)
+        is_land = any((land_polygon.intersection(boundary).area / boundary.area) >= 0.2 for land_polygon in land_polygons)
         h3_cell.is_land = is_land or h3_cell.h3_cell_id in h3_cell_ids_to_force_marking_as_land
 
 
