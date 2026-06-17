@@ -57,7 +57,7 @@ def fetch_and_save_data_for_cell(cell: H3CellData, data_type: DataType):
         log(f"{data_type} data for cell {cell.h3_cell_id} already exists. Skipping.")
         return
 
-    if data_type == "solar" and not cell.is_land:
+    if data_type == "solar" and not cell.has_some_land:
         log(f"Cell {cell.h3_cell_id} is not land, skipping solar data fetch.")
         return
 
