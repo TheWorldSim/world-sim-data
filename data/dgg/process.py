@@ -43,8 +43,8 @@ h3_cell_ids_to_force_marking_as_land = {
     # "8419511ffffffff",  # Liverpool
     # "8419529ffffffff",  # Strangford Lough
     "841821dffffffff",  # South West of Northern Ireland
-    "84194e3ffffffff",  # Kent
-    "841959bffffffff",  # East solent
+    # "84194e3ffffffff",  # Kent
+    # "841959bffffffff",  # East solent
 }
 
 
@@ -54,6 +54,7 @@ class H3CellData:
     lat: float
     lon: float
     is_land: bool
+    has_some_land: bool
 
 
 def process():
@@ -61,9 +62,10 @@ def process():
     h3_cells = get_h3_cell_ids(eez)
     mark_h3_cells_over_land(h3_cells, land_polygons=uk_land_polygons)
     print(f"Number of H3 cells covering the UK EEZ at resolution {H3_RESOLUTION}: {len(h3_cells)}")
-    print(f"Total marked as land: {sum(cell.is_land for cell in h3_cells)}")
+    print(f"Total marked as land: {sum(cell.is_land for cell in h3_cells)} (having some land: {sum(cell.has_some_land for cell in h3_cells)})")
     print("Area of UK land polygons:", round(sum(polygon.area for polygon in uk_land_polygons), 3))
     print("Area of H3 cells marked as land:", round(sum(h3_cell_id_to_polygon(cell.h3_cell_id).area for cell in h3_cells if cell.is_land), 3))
+    print("Area of H3 cells marked as having some land:", round(sum(h3_cell_id_to_polygon(cell.h3_cell_id).area for cell in h3_cells if cell.has_some_land), 3))
     save_h3_cells(h3_cells)
 
     fig, ax = plt.subplots(figsize=(10, 10))
@@ -83,28 +85,30 @@ def get_h3_cell_ids(eez) -> list[H3CellData]:
     cells: list[H3CellData] = []
     for h3_cell_id in h3_cell_ids:
         lat, lon = h3.cell_to_latlng(h3_cell_id)
-        cells.append(H3CellData(h3_cell_id=h3_cell_id, lat=lat, lon=lon, is_land=False))
+        cells.append(H3CellData(h3_cell_id=h3_cell_id, lat=lat, lon=lon, is_land=False, has_some_land=False))
     return cells
 
 
-def mark_h3_cells_over_land(h3_cells: list[H3CellData], land_polygons):
+def mark_h3_cells_over_land(h3_cells: list[H3CellData], land_polygons: list[Polygon]):
     for h3_cell in h3_cells:
         boundary = h3_cell_id_to_polygon(h3_cell.h3_cell_id)
-        is_land = any((land_polygon.intersection(boundary).area / boundary.area) >= 0.2 for land_polygon in land_polygons)
+        is_land = any((land_polygon.intersection(boundary).area / boundary.area) >= 0.5 for land_polygon in land_polygons)
+        some_land = any((land_polygon.intersection(boundary).area / boundary.area) >= 0.01 for land_polygon in land_polygons)
         h3_cell.is_land = is_land or h3_cell.h3_cell_id in h3_cell_ids_to_force_marking_as_land
+        h3_cell.has_some_land = h3_cell.is_land or some_land
 
 
 # Useful for debugging
 def save_h3_cells(cells: list[H3CellData]):
     cells = sorted(cells, key=lambda cell: cell.h3_cell_id)
     with open(os.path.join(current_directory, f"uk_eez_h3_res_{H3_RESOLUTION}.txt"), "w") as f:
-        f.write(f"h3 cell id (minus ffffffff), lat, lon, is land\n")
+        f.write(f"h3 cell id (minus ffffffff), lat, lon, is land (L) or contains some land (l)\n")
         for cell in cells:
             short_h3_cell_id = cell.h3_cell_id[:7]
             lat, lon = h3.cell_to_latlng(cell.h3_cell_id)
             lat = round(lat, LAT_LON_LOW_RES_DP)
             lon = round(lon, LAT_LON_LOW_RES_DP)
-            land = "L" if cell.is_land else ""
+            land = "L" if cell.is_land else ("l" if cell.has_some_land else "")
             f.write(f"{short_h3_cell_id},{lat},{lon},{land}\n")
 
 
@@ -118,7 +122,8 @@ def load_h3_cells():
             lat = float(lat)
             lon = float(lon)
             is_land = over_land == "L"
-            h3_cells.append(H3CellData(h3_cell_id=h3_cell_id, lat=lat, lon=lon, is_land=is_land))
+            has_some_land = is_land or over_land == "l"
+            h3_cells.append(H3CellData(h3_cell_id=h3_cell_id, lat=lat, lon=lon, is_land=is_land, has_some_land=has_some_land))
     return h3_cells
 
 
@@ -144,6 +149,8 @@ def add_h3_land_cells_to_plot(ax, h3_cells: list[H3CellData]):
         x, y = zip(*boundary.exterior.coords)
         if cell.is_land:
             ax.fill(x, y, color="green", alpha=0.5)
+        elif cell.has_some_land:
+            ax.fill(x, y, color="yellow", alpha=0.25)
 
 
 def h3_cell_id_to_polygon(h3_cell_id: str) -> Polygon:
