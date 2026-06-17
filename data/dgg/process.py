@@ -81,6 +81,7 @@ def get_h3_cell_ids(eez) -> list[H3CellData]:
     eez_polygon = Polygon(eez_lat_lon)
     eez_h3_polygon = h3.geo_to_h3shape(eez_polygon)
     h3_cell_ids = h3.polygon_to_cells(eez_h3_polygon, res=H3_RESOLUTION)
+    h3_cell_ids.append("8418211ffffffff")  # Add a cell in the south west of Northern Ireland to ensure it is included
 
     cells: list[H3CellData] = []
     for h3_cell_id in h3_cell_ids:
