@@ -47,6 +47,11 @@ h3_cell_ids_to_force_marking_as_land = {
     # "841959bffffffff",  # East solent
 }
 
+h3_cell_ids_to_force_marking_as_some_land = {
+    "841951dffffffff",  # Blackpool
+    "8418709ffffffff",  # Porthoustock
+}
+
 
 @dataclass
 class H3CellData:
@@ -96,7 +101,7 @@ def mark_h3_cells_over_land(h3_cells: list[H3CellData], land_polygons: list[Poly
         is_land = any((land_polygon.intersection(boundary).area / boundary.area) >= 0.5 for land_polygon in land_polygons)
         some_land = any((land_polygon.intersection(boundary).area / boundary.area) >= 0.01 for land_polygon in land_polygons)
         h3_cell.is_land = is_land or h3_cell.h3_cell_id in h3_cell_ids_to_force_marking_as_land
-        h3_cell.has_some_land = h3_cell.is_land or some_land
+        h3_cell.has_some_land = h3_cell.is_land or some_land or h3_cell.h3_cell_id in h3_cell_ids_to_force_marking_as_some_land
 
 
 # Useful for debugging
@@ -141,7 +146,7 @@ def add_h3_cells_to_plot(ax, h3_cells: list[H3CellData]):
     for cell in h3_cells:
         boundary = h3_cell_id_to_polygon(cell.h3_cell_id)
         x, y = zip(*boundary.exterior.coords)
-        ax.plot(x, y, color="red")
+        ax.plot(x, y, color="blue", linewidth=1, alpha=0.5)
 
 
 def add_h3_land_cells_to_plot(ax, h3_cells: list[H3CellData]):
@@ -149,9 +154,11 @@ def add_h3_land_cells_to_plot(ax, h3_cells: list[H3CellData]):
         boundary = h3_cell_id_to_polygon(cell.h3_cell_id)
         x, y = zip(*boundary.exterior.coords)
         if cell.is_land:
-            ax.fill(x, y, color="green", alpha=0.5)
+            color = "purple" if cell.h3_cell_id in h3_cell_ids_to_force_marking_as_land else "green"
+            ax.fill(x, y, color=color, alpha=0.5)
         elif cell.has_some_land:
-            ax.fill(x, y, color="yellow", alpha=0.25)
+            color = "red" if cell.h3_cell_id in h3_cell_ids_to_force_marking_as_some_land else "yellow"
+            ax.fill(x, y, color=color, alpha=0.25)
 
 
 def h3_cell_id_to_polygon(h3_cell_id: str) -> Polygon:
