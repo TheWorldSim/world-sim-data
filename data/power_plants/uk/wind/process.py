@@ -42,8 +42,8 @@ def process_wind_df(wind_df: pd.DataFrame) -> None:
     offshore = wind_df[wind_df[field_technology_type] == technology_types["wind_offshore"]]
     onshore = wind_df[wind_df[field_technology_type] == technology_types["wind_onshore"]]
 
-    save_to_csv(offshore, "wind_offshore")
-    save_to_csv(onshore, "wind_onshore")
+    save_to_csv(offshore, output_file_path("wind_offshore"))
+    save_to_csv(onshore, output_file_path("wind_onshore"))
 
     # Find the earliest and latest operational date for all wind farms
     earliest_year = wind_df[field_operational_date].min().date().year
@@ -52,7 +52,7 @@ def process_wind_df(wind_df: pd.DataFrame) -> None:
     bucket_by_year(onshore, "wind_onshore", earliest_year, latest_year)
 
 
-def save_to_csv(df: pd.DataFrame, name: str):
+def save_to_csv(df: pd.DataFrame, file_path: str):
     df = df.copy()
     calculated_capacity = df[field_turbine_capacity] * df[field_number_of_turbines]
 
@@ -96,7 +96,6 @@ def save_to_csv(df: pd.DataFrame, name: str):
         # new_field_area,
     ]].copy()
 
-    file_path = output_file_path(name)
     subset_df.to_csv(file_path, index=False)
     print(f"Output written to: {file_path}")
 

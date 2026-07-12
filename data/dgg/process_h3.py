@@ -31,6 +31,7 @@ uk_land_polygons = get_boundaries().uk_all
 # to ensure the areas of the UK land polygons is about equal to the H3 cells:
 #    Area of UK land polygons: 33.095  (arbitrary units)
 #    Area of H3 cells marked as land: 33.148  (arbitrary units)
+#    Area diff:  0.053
 h3_cell_ids_to_force_marking_as_land = {
     "841908dffffffff",
     "8419083ffffffff",
@@ -47,10 +48,6 @@ h3_cell_ids_to_force_marking_as_land = {
     # "841959bffffffff",  # East solent
 }
 
-h3_cell_ids_to_force_marking_as_some_land = {
-    "841951dffffffff",  # Blackpool
-    "8418709ffffffff",  # Porthoustock
-}
 
 
 @dataclass
@@ -68,9 +65,12 @@ def process():
     mark_h3_cells_over_land(h3_cells, land_polygons=uk_land_polygons)
     print(f"Number of H3 cells covering the UK EEZ at resolution {H3_RESOLUTION}: {len(h3_cells)}")
     print(f"Total marked as land: {sum(cell.is_land for cell in h3_cells)} (having some land: {sum(cell.has_some_land for cell in h3_cells)})")
-    print("Area of UK land polygons:", round(sum(polygon.area for polygon in uk_land_polygons), 3))
-    print("Area of H3 cells marked as land:", round(sum(h3_cell_id_to_polygon(cell.h3_cell_id).area for cell in h3_cells if cell.is_land), 3))
-    print("Area of H3 cells marked as having some land:", round(sum(h3_cell_id_to_polygon(cell.h3_cell_id).area for cell in h3_cells if cell.has_some_land), 3))
+    area_of_uk_land_polygons = sum(polygon.area for polygon in uk_land_polygons)
+    area_of_h3_cells_marked_as_land = sum(h3_cell_id_to_polygon(cell.h3_cell_id).area for cell in h3_cells if cell.is_land)
+    print("Area of UK land polygons:", round(area_of_uk_land_polygons, 3))
+    print("Area of H3 cells marked as land:", round(area_of_h3_cells_marked_as_land, 3))
+    print("Area diff: ", round(area_of_h3_cells_marked_as_land - area_of_uk_land_polygons, 3))
+    # print("Area of H3 cells marked as having some land:", round(sum(h3_cell_id_to_polygon(cell.h3_cell_id).area for cell in h3_cells if cell.has_some_land), 3))
     save_h3_cells(h3_cells)
 
     fig, ax = plt.subplots(figsize=(10, 10))
@@ -99,9 +99,9 @@ def mark_h3_cells_over_land(h3_cells: list[H3CellData], land_polygons: list[Poly
     for h3_cell in h3_cells:
         boundary = h3_cell_id_to_polygon(h3_cell.h3_cell_id)
         is_land = any((land_polygon.intersection(boundary).area / boundary.area) >= 0.5 for land_polygon in land_polygons)
-        some_land = any((land_polygon.intersection(boundary).area / boundary.area) >= 0.01 for land_polygon in land_polygons)
+        some_land = any((land_polygon.intersection(boundary).area / boundary.area) > 0 for land_polygon in land_polygons)
         h3_cell.is_land = is_land or h3_cell.h3_cell_id in h3_cell_ids_to_force_marking_as_land
-        h3_cell.has_some_land = h3_cell.is_land or some_land or h3_cell.h3_cell_id in h3_cell_ids_to_force_marking_as_some_land
+        h3_cell.has_some_land = h3_cell.is_land or some_land
 
 
 # Useful for debugging
@@ -157,7 +157,7 @@ def add_h3_land_cells_to_plot(ax, h3_cells: list[H3CellData]):
             color = "purple" if cell.h3_cell_id in h3_cell_ids_to_force_marking_as_land else "green"
             ax.fill(x, y, color=color, alpha=0.5)
         elif cell.has_some_land:
-            color = "red" if cell.h3_cell_id in h3_cell_ids_to_force_marking_as_some_land else "yellow"
+            color = "yellow"
             ax.fill(x, y, color=color, alpha=0.25)
 
 

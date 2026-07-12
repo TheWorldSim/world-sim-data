@@ -8,4 +8,5 @@ rasterio==1.5.0
 scikit-learn==1.8.0
 jupyterlab==4.5.8
 h3==4.5.0
+mplcursors==0.7.1
 nbstripout==0.9.1

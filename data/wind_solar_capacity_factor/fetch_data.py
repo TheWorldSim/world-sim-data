@@ -16,7 +16,7 @@ for path in [src_directory, data_directory]:
         sys.path.append(path)
 
 
-from dgg.process import H3CellData, load_h3_cells
+from data.dgg.process_h3 import H3CellData, load_h3_cells
 from constants import H3_RESOLUTION
 
 directory_for_data = os.path.abspath(current_directory + "/input_data/uk_eez")
