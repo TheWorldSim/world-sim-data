@@ -33,3 +33,7 @@
 /data/electricity_demand/uk/cleaned_national_grid_energy_consumption.csv filter=lfs diff=lfs merge=lfs -text
 /data/solarpv_capacity/data/_2019_uk_h3_res4.csv filter=lfs diff=lfs merge=lfs -text
 /data/wind_turbine_capacity/data/_2019_uk_h3_res4.csv filter=lfs diff=lfs merge=lfs -text
+/data/grid_electrical/eur/input/lines.csv filter=lfs diff=lfs merge=lfs -text
+/data/grid_electrical/eur/processed/lines.csv filter=lfs diff=lfs merge=lfs -text
+/data/grid_electrical/input/eur/lines.csv filter=lfs diff=lfs merge=lfs -text
+/data/grid_electrical/processed/eur/lines.csv filter=lfs diff=lfs merge=lfs -text

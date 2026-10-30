@@ -1,12 +1,13 @@
+earth-osm==3.0.2
+h3==4.5.0
 ipdb==0.13.13
+jupyterlab==4.5.9
 kagglehub==1.0.0
+mplcursors==0.7.1
 matplotlib==3.10.8
+nbstripout==0.9.1
 numpy==2.0.2
 pandas==2.3.3
 pyproj==3.7.2
 rasterio==1.5.0
 scikit-learn==1.8.0
-jupyterlab==4.5.9
-h3==4.5.0
-mplcursors==0.7.1
-nbstripout==0.9.1
