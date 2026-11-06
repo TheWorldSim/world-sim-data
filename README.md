@@ -6,20 +6,17 @@ like [WikiSim.org](https://wikisim.org) and others.
 
 ## Dev
 
-Some data processing tasks use Python.  To activate a virtual environment and install
-the dependencies, run:
+Some data processing tasks use Python.  To install the dependencies, run:
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+uv sync
 ```
 
 ### Jupyter Notebook
 
 From the root directory of the project:
 
-1. run `jupyter lab --port=8899 --IdentityProvider.token='secretb629' --ServerApp.open_browser=False`
+1. run `uv run python -m jupyter lab --port=8899 --IdentityProvider.token='secretb629' --ServerApp.open_browser=False`
 2. copy the URL from the terminal, which should look something like `http://localhost:8899/lab?token=secretb629`
 3. In visual studio code, open the process.ipynb file, run the block with shift + enter
 4. When prompted for the URL to the python kernel, paste the URL from step 2 and press enter
