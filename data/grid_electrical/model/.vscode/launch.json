@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Mocha Test",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/mocha.js",
+            "runtimeArgs": ["--inspect-brk"],
+            "args": [
+                "--runInBand",
+                "--config",
+                ".mocharc.cjs",
+                "--no-timeouts",
+                "${file}" // Runs the currently open test file
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        }
+    ]
+}
