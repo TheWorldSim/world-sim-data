@@ -1,224 +1,122 @@
-from dataclasses import dataclass
-import math
-
-import ipdb
 from pathlib import Path
-import os
-import sys
 
-import geopandas as gpd
-import matplotlib.pyplot as plt
-import matplotlib as mpl
+import numpy as np
 import pandas as pd
-from shapely import Polygon
+from pyproj import Geod
+import shapely as shp
 
+GEOD = Geod(ellps="WGS84")
 
-current_directory = Path(__file__).resolve().parent
-src_directory = (current_directory.parent.parent / "src").as_posix()
-data_directory = (current_directory.parent.parent / "data").as_posix()
-for path in [src_directory, data_directory]:
-    if path not in sys.path:
-        sys.path.append(path)
+LATLON_DP = 2
+LATLON_MIN_DISTANCE_M = 2000
+VALUE_SF = 3
 
-
-from boundaries.countries.process import get_boundaries
-
-
-uk_land_polygons = get_boundaries().uk_all
+cwd = Path().cwd()
+buses_input_path = cwd / "eur/input/buses.csv"
+lines_input_path = cwd / "eur/input/lines.csv"
+links_input_path = cwd / "eur/input/links.csv"
+buses_processed_path = cwd / "eur/processed/buses.csv"
+lines_processed_path = cwd / "eur/processed/lines.csv"
+links_processed_path = cwd / "eur/processed/links.csv"
 
 
 def process():
-    fig, ax = plt.subplots(figsize=(12, 12))
-    add_land_to_plot(ax, uk_land_polygons)
-    plot_transmission(ax)
-    plt.title("UK High-voltage Transmission: cables, lines, interconnectors")
-    plt.show()
+    map_bus_id = process_buses()
+    process_lines(map_bus_id)
+    process_links(map_bus_id)
 
 
-def add_land_to_plot(ax, land_polygons: list[Polygon]):
-    land_gdf = gpd.GeoDataFrame(geometry=land_polygons)
-    land_gdf.plot(ax=ax, color="gray")
+def process_buses():
+    bus_df = pd.read_csv(buses_input_path)
+    map_bus_id = {orig_id: new_id for new_id, orig_id in enumerate(bus_df["bus_id"])}
+    bus_df["bus_id"] = bus_df["bus_id"].map(map_bus_id)
+    # Limit decimal places for lat lon
+    bus_df["lon"] = bus_df["x"].astype(float).round(LATLON_DP)
+    bus_df["lat"] = bus_df["y"].astype(float).round(LATLON_DP)
+    bus_fields = ["bus_id", "voltage", "lon", "lat"]
+    bus_df = bus_df[bus_fields]
+    bus_df.to_csv(buses_processed_path, index=False)
+
+    return map_bus_id
 
 
-def _read_layer(path):
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"File not found: {path}")
-    return gpd.read_file(path)
+def process_lines(map_bus_id):
+    line_df = pd.read_csv(lines_input_path, quotechar="'")
+
+    map_line_id = {orig_id: new_id for new_id, orig_id in enumerate(line_df["line_id"])}
+    line_df["line_id"] = line_df["line_id"].map(map_line_id)
+    line_df["bus0"] = line_df["bus0"].map(map_bus_id)
+    line_df["bus1"] = line_df["bus1"].map(map_bus_id)
+
+    # Copied from: https://github.com/PyPSA/PyPSA/blob/9f0b8a7/pypsa/network/power_flow.py#L814-L816
+    line_df["x_pu"] = line_df["x"] / (line_df["voltage"] ** 2)
+
+    line_df["voltage"] = round_sig_figs(line_df["voltage"], VALUE_SF)
+    line_df["s_nom"] = round_sig_figs(line_df["s_nom"], VALUE_SF)
+    line_df["x_pu"] = round_sig_figs(line_df["x_pu"], VALUE_SF)
+
+    line_df["geometry"] = round_linestring_series(line_df["geometry"], LATLON_DP)
+
+    line_fields = ["line_id", "bus0", "bus1", "voltage", "s_nom", "x_pu", "geometry"]
+    line_df = line_df[line_fields]
+    line_df.to_csv(lines_processed_path, index=False, float_format="%.15g")
 
 
-def plot_transmission(ax):
-    base = os.path.join(current_directory, "uk", "out")
+def process_links(map_bus_id):
+    link_df = pd.read_csv(links_input_path, quotechar="'")
 
-    # don't plot towers (pylons) per user request
+    map_link_id = {orig_id: new_id for new_id, orig_id in enumerate(link_df["link_id"])}
+    link_df["link_id"] = link_df["link_id"].map(map_link_id)
+    link_df["bus0"] = link_df["bus0"].map(map_bus_id)
+    link_df["bus1"] = link_df["bus1"].map(map_bus_id)
 
-    # cables (including buried and submarine)
-    cables_file_path = os.path.join(base, "britain-and-ireland_cable.geojson")
-    lines_file_path = os.path.join(base, "britain-and-ireland_line.geojson")
-    cables = _read_layer(cables_file_path)
-    lines = _read_layer(lines_file_path)
+    link_df["voltage"] = round_sig_figs(link_df["voltage"], VALUE_SF)
+    link_df["p_nom"] = round_sig_figs(link_df["p_nom"], VALUE_SF)
 
-    cables = normalise_values(cables)
-    cables = filter_rows(cables)
-    lines = normalise_values(lines)
-    lines = filter_rows(lines)
+    link_df["geometry"] = round_linestring_series(link_df["geometry"], LATLON_DP)
 
-    cables_and_lines = gpd.GeoDataFrame(pd.concat([cables, lines], ignore_index=True))
-    # plot_lines_and_cables_voltages(ax, cables_and_lines)
-    plot_lines_and_cables_count(ax, cables_and_lines)
+    link_fields = ["link_id", "bus0", "bus1", "voltage", "p_nom", "geometry"]
+    link_df = link_df[link_fields]
+    link_df.to_csv(links_processed_path, index=False, float_format="%.15g")
 
 
-def normalise_values(rows):
-    def float_not_nan(value):
-        value = float(value)
-        if isinstance(value, float) and math.isnan(value):
-            return None
-        return value
-
-    # try to interpret voltage as numeric where present
-    def parse_float(value):
-        try:
-            if value is None:
-                return None
-            if isinstance(value, (int, float)):
-                return float_not_nan(value)
-            string = str(value)
-            # some values are like "132000;33000"
-            if ";" in string:
-                string = string.split(";")[0]
-            return float_not_nan(string)
-        except Exception:
-            return None
-
-    def parse_int(value):
-        parsed = parse_float(value)
-        return None if parsed is None else int(parsed)
-
-    rows["voltage_v"] = rows["tags.voltage"].apply(parse_float)
-    rows["cables"] = rows["tags.cables"].apply(parse_int)
-    rows["circuits"] = rows["tags.circuits"].apply(parse_int)
-
-    return rows
+def round_sig_figs(series: pd.Series, sig_figs: int) -> pd.Series:
+    values = series.astype(float)
+    # Zeros, NaNs and infinities are left unchanged
+    mask = np.isfinite(values) & (values != 0)
+    # Replace masked-out values with 1.0 so log10 never sees 0, NaN or inf
+    exponent = np.floor(np.log10(np.abs(values.where(mask, 1.0))))
+    factor = 10.0 ** (sig_figs - 1 - exponent)
+    rounded = np.round(values * factor) / factor
+    return rounded.where(mask, values) # type: ignore
 
 
-def filter_rows(rows):
-    rows = rows[rows["voltage_v"].notnull() & (rows["voltage_v"] >= 100000)]
-    rows = rows[rows.geometry.notnull()]
-    return rows
+def round_linestring_series(series: pd.Series, dp: int = LATLON_DP) -> pd.Series:
+    return series.map(lambda str_value: round_linestring(str_value, dp) if pd.notna(str_value) else str_value)
 
 
-def plot_lines_and_cables_voltages(ax, cables_and_lines):
-    # Plot discrete voltage categories instead of a continuous colour scale.
-    # Map each unique voltage to a distinct colour and draw a legend entry for it.
-    unique_voltages = bucket_voltages(cables_and_lines['voltage_v'].unique(), 10)
+def round_linestring(str_value: str, dp: int) -> str:
+    line = shp.from_wkt(str_value)
+    coords = np.round(shp.get_coordinates(line), dp)
+    # Keep a point only if it differs from the previous point after rounding
+    keep = np.concatenate(([True], np.any(np.diff(coords, axis=0) != 0, axis=1)))
+    kept_coords = coords[keep]
 
-    # Use a single continuous colormap (e.g. 'viridis') sampled across the number of buckets
-    n_buckets = len(unique_voltages.all_buckets)
+    # If the kept coordinates are too close to each other, keep only the first one
+    # and the very last in the list
+    if len(kept_coords) > 1:
+        lons = kept_coords[:, 0]
+        lats = kept_coords[:, 1]
+        _, _, distances_m = GEOD.inv(lons[:-1], lats[:-1], lons[1:], lats[1:])
+        if np.all(np.asarray(distances_m) < LATLON_MIN_DISTANCE_M):
+            kept_coords = np.array([kept_coords[0], kept_coords[-1]])
 
-    # use a red->orange->blue diverging palette
-    cmap = mpl.cm.get_cmap('tab20', n_buckets)
-    cmap = mpl.cm.get_cmap('viridis', n_buckets)
-    cmap = mpl.cm.get_cmap('plasma', n_buckets)
-    colours = [cmap(i) for i in range(n_buckets)]
-    colour_map = {i: colours[i] for i in range(n_buckets)}
-
-    for i, bucket in enumerate(unique_voltages.all_buckets):
-        # select rows whose numeric voltage falls within the bucket range
-        part = cables_and_lines[(cables_and_lines['voltage_v'] >= bucket.min_voltage) & (cables_and_lines['voltage_v'] <= bucket.max_voltage)]
-        if part.empty:
-            continue
-        label = f"{int(bucket.min_voltage // 1000)}-{int(bucket.max_voltage // 1000)} kV" if bucket.min_voltage != 0 else "unknown"
-        part.plot(ax=ax, color=colour_map[i], linewidth=0.8, label=label)
-
-    # Create a legend showing the discrete voltage categories
-    ax.legend(title='Voltage')
-
-
-def plot_lines_and_cables_count(ax, cables_and_lines):
-    # Keep only rows with a positive integer cables value
-    cables_and_lines = cables_and_lines[cables_and_lines['cables'].notnull() & (cables_and_lines['cables'] > 0)]
-    cables_and_lines['cables'] = cables_and_lines['cables'].astype(int)
-
-    # Define a mapping from original cable counts to four groups (1, 3, 6, others)
-    # Group ids: 1 -> single cable, 2 -> three cables, 3 -> six cables, 4 -> grouped others
-    original_to_group = {
-        1: 1,
-        3: 2,
-        6: 4,
-
-        2: 3,
-        4: 3,
-        5: 3,
-        7: 3,
-        8: 3,
-        9: 3,
-        12: 3,
-        15: 3,
-    }
-
-    # Apply mapping to create a new column `cable_groups`.
-    # Unknown counts (not in the mapping) will be placed in group 4 (others).
-    cables_and_lines['cable_groups'] = cables_and_lines['cables'].apply(lambda c: original_to_group.get(int(c), 3))
-
-    # Labels for the four groups (order corresponds to group ids 1..4)
-    group_labels = {
-        1: '1 cable',
-        2: '3 cables',
-        4: '6 cables',
-        3: '2,4,5,7,8,9,12,15 cables (others)',
-    }
-
-    # Prepare colours for the four groups
-    unique_group_ids = [1, 2, 3, 4]
-    cmap = mpl.cm.get_cmap('plasma', len(unique_group_ids))
-    colours = {gid: cmap(i) for i, gid in enumerate(unique_group_ids)}
-
-    # Plot each group once so the legend contains only four entries
-    for gid in unique_group_ids:
-        part = cables_and_lines[cables_and_lines['cable_groups'] == gid]
-        if part.empty:
-            continue
-        part.plot(ax=ax, color=colours[gid], linewidth=0.8, label=group_labels[gid])
-
-    ax.legend(title='Cables')
-
-
-@dataclass
-class VoltageBucket:
-    min_voltage: float
-    max_voltage: float
-
-@dataclass
-class VoltageBuckets:
-    min_voltage: float
-    max_voltage: float
-    all_buckets: list[VoltageBucket]
-    voltage_to_bucket: dict[float, VoltageBucket]
-
-def bucket_voltages(voltages: list[float], percent_difference) -> VoltageBuckets:
-    voltages = sorted(voltages)
-
-    # Bucket voltages into nearest +10% e.g. if voltages are 30, 40, 200, 210
-    # then the resulting buckets would be 30, 40, 200-210
-    buckets = VoltageBuckets(min_voltage=float("inf"), max_voltage=float("-inf"), all_buckets=[], voltage_to_bucket={})
-    for v in voltages:
-        # Find the nearest bucket within 10% range
-        bucket_found = False
-        for bucket in buckets.all_buckets:
-            if bucket.min_voltage <= v <= bucket.max_voltage:
-                buckets.voltage_to_bucket[v] = bucket
-                bucket_found = True
-                break
-
-        if bucket_found:
-            continue
-        # Create a new bucket for this voltage
-        new_bucket = VoltageBucket(min_voltage=v, max_voltage=v * (1 + percent_difference / 100))
-        buckets.all_buckets.append(new_bucket)
-        buckets.voltage_to_bucket[v] = new_bucket
-        buckets.min_voltage = min(buckets.min_voltage, new_bucket.min_voltage)
-        buckets.max_voltage = max(buckets.max_voltage, new_bucket.max_voltage)
-
-    return buckets
+    if len(kept_coords) == 1:
+        rounded = shp.points(kept_coords)
+    else:
+        rounded = shp.linestrings(kept_coords)
+    # rounding_precision=-1 stops shapely truncating coordinates to 6 dp on output
+    return shp.to_wkt(rounded, rounding_precision=-1) # type: ignore
 
 
 if __name__ == "__main__":

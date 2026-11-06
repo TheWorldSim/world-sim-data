@@ -1,0 +1,25 @@
+[project]
+name = "world-sim-data"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "h3==4.5.0",
+    "ipdb==0.13.13",
+    "jupyterlab==4.5.8",
+    "kagglehub==1.0.0",
+    "mplcursors==0.7.1",
+    "matplotlib==3.10.8",
+    "nbstripout==0.9.1",
+    "numpy==2.0.2",
+    "pandas==2.3.3",
+    "pyproj==3.7.2",
+    "rasterio==1.5.0",
+    "scikit-learn==1.8.0",
+]
+
+[dependency-groups]
+dev = [
+    "ipdb==0.13.13",
+]
