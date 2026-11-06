@@ -2,30 +2,16 @@ import { expect } from "chai"
 
 import {
     build_fundamental_cycles,
-    build_incidence_matrix,
     find_ac_spanning_forest,
     type LineEnds,
-} from "./network_matrices.ts"
+} from "./network_cycles.ts"
 
 
 const triangle: LineEnds[] = [
-    { from_bus: 0, to_bus: 1, is_dc: false },
-    { from_bus: 1, to_bus: 2, is_dc: false },
-    { from_bus: 0, to_bus: 2, is_dc: false },
+    { from_bus_index: 0, to_bus_index: 1, is_dc: false },
+    { from_bus_index: 1, to_bus_index: 2, is_dc: false },
+    { from_bus_index: 0, to_bus_index: 2, is_dc: false },
 ]
-
-
-describe("build_incidence_matrix", () =>
-{
-    it("is +1 where a line starts and -1 where it ends", () =>
-    {
-        expect(build_incidence_matrix(3, triangle)).to.deep.equal([
-            [1, 0, 1],
-            [-1, 1, 0],
-            [0, -1, -1],
-        ])
-    })
-})
 
 
 describe("find_ac_spanning_forest", () =>
@@ -43,8 +29,8 @@ describe("find_ac_spanning_forest", () =>
     it("finds a separate tree for each AC area, not joining areas across a DC line", () =>
     {
         const forest = find_ac_spanning_forest(3, [
-            { from_bus: 0, to_bus: 1, is_dc: false },
-            { from_bus: 1, to_bus: 2, is_dc: true },
+            { from_bus_index: 0, to_bus_index: 1, is_dc: false },
+            { from_bus_index: 1, to_bus_index: 2, is_dc: true },
         ])
 
         expect(forest.reference_buses).to.deep.equal([0, 2])
@@ -60,7 +46,11 @@ describe("build_fundamental_cycles", () =>
         const forest = find_ac_spanning_forest(3, triangle)
 
         // 1 -> 2 along line 1, 2 -> 0 against line 2, 0 -> 1 along line 0
-        expect(build_fundamental_cycles(triangle, forest)).to.deep.equal([[1, 1, -1]])
+        expect(build_fundamental_cycles(triangle, forest)).to.deep.equal([[
+            { line: 1, direction: 1 },
+            { line: 2, direction: -1 },
+            { line: 0, direction: 1 },
+        ]])
     })
 
 
@@ -74,19 +64,22 @@ describe("build_fundamental_cycles", () =>
     it("finds a cycle for each parallel line", () =>
     {
         const lines: LineEnds[] = [
-            { from_bus: 0, to_bus: 1, is_dc: false },
-            { from_bus: 0, to_bus: 1, is_dc: false },
+            { from_bus_index: 0, to_bus_index: 1, is_dc: false },
+            { from_bus_index: 0, to_bus_index: 1, is_dc: false },
         ]
 
-        expect(build_fundamental_cycles(lines, find_ac_spanning_forest(2, lines))).to.deep.equal([[-1, 1]])
+        expect(build_fundamental_cycles(lines, find_ac_spanning_forest(2, lines))).to.deep.equal([[
+            { line: 1, direction: 1 },
+            { line: 0, direction: -1 },
+        ]])
     })
 
 
     it("ignores DC lines", () =>
     {
         const lines: LineEnds[] = [
-            { from_bus: 0, to_bus: 1, is_dc: false },
-            { from_bus: 0, to_bus: 1, is_dc: true },
+            { from_bus_index: 0, to_bus_index: 1, is_dc: false },
+            { from_bus_index: 0, to_bus_index: 1, is_dc: true },
         ]
 
         expect(build_fundamental_cycles(lines, find_ac_spanning_forest(2, lines))).to.deep.equal([])

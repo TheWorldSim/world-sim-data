@@ -1,36 +1,29 @@
 import type { ElectricalGrid } from "./interface.ts"
 import {
     build_fundamental_cycles,
-    build_incidence_matrix,
     find_ac_spanning_forest,
+    type CycleStep,
     type LineEnds,
-} from "./network_matrices.ts"
+} from "./network_cycles.ts"
 
 
 export interface SolverLine extends LineEnds
 {
     /** Zero for DC links, which are controllable rather than governed by KVL */
     reactance_pu: number
-    /** Infinity when the line has no known limit */
     capacity_MW: number
 }
 
 
-/** The grid as indices and matrices, ready for the power flow solver */
+/** The grid as indices, ready for the power flow solver */
 export interface SolverNetwork
 {
     bus_ids: string[]
     lines: SolverLine[]
-    /** incidence[bus][line] is +1 where the line starts, -1 where it ends */
-    incidence: number[][]
     /** KVL cycles of the AC lines only (a DC link breaks KVL) */
-    cycles: number[][]
-    ac_line_indices: number[]
-    dc_line_indices: number[]
-    /** Which synchronous (AC connected) area each bus belongs to */
-    component_of_bus: number[]
-    /** One reference bus per AC area */
-    reference_buses: number[]
+    cycles: CycleStep[][]
+    /** Number of separate synchronous (AC connected) areas, each of which must balance on its own */
+    ac_area_count: number
 }
 
 
@@ -52,29 +45,23 @@ export function build_solver_network(grid: ElectricalGrid): SolverNetwork
     ]
 
     const forest = find_ac_spanning_forest(bus_ids.length, lines)
-    const line_indices = lines.map((_, l) => l)
 
     return {
         bus_ids,
         lines,
-        incidence: build_incidence_matrix(bus_ids.length, lines),
         cycles: build_fundamental_cycles(lines, forest),
-        ac_line_indices: line_indices.filter(l => !lines[l].is_dc),
-        dc_line_indices: line_indices.filter(l => lines[l].is_dc),
-        component_of_bus: forest.component_of_bus,
-        reference_buses: forest.reference_buses,
+        ac_area_count: forest.reference_buses.length,
     }
 }
 
 
-function create_solver_line(from_bus_id: string, to_bus_id: string, is_dc: boolean, reactance_pu: number, capacity_mw: number, bus_index_by_id: Map<string, number>): SolverLine
+function create_solver_line(from_bus_id: string, to_bus_id: string, is_dc: boolean, reactance_pu: number, capacity_MW: number, bus_index_by_id: Map<string, number>): SolverLine
 {
-    const from_bus = get_bus_index(from_bus_id, bus_index_by_id)
-    const to_bus = get_bus_index(to_bus_id, bus_index_by_id)
-    if (from_bus === to_bus) throw new Error(`Line connects bus ${from_bus_id} to itself`)
+    const from_bus_index = get_bus_index(from_bus_id, bus_index_by_id)
+    const to_bus_index = get_bus_index(to_bus_id, bus_index_by_id)
+    if (from_bus_index === to_bus_index) throw new Error(`Line connects bus ${from_bus_id} to itself`)
 
-    const has_limit = Number.isFinite(capacity_mw) && capacity_mw >= 0
-    return { from_bus, to_bus, is_dc, reactance_pu, capacity_MW: has_limit ? capacity_mw : Infinity }
+    return { from_bus_index, to_bus_index, is_dc, reactance_pu, capacity_MW }
 }
 
 
