@@ -1,7 +1,7 @@
 export interface LineEnds
 {
-    from_bus: number
-    to_bus: number
+    from_bus_index: number
+    to_bus_index: number
     is_dc: boolean
 }
 
@@ -10,7 +10,7 @@ export interface AcSpanningForest
 {
     /** Which synchronous (AC connected) area each bus belongs to */
     component_of_bus: number[]
-    /** The root bus of each area, used as that area's reference bus */
+    /** The root bus of each area */
     reference_buses: number[]
     parent_bus: number[]
     parent_line: number[]
@@ -18,17 +18,11 @@ export interface AcSpanningForest
     tree_lines: Set<number>
 }
 
-
-/** incidence[bus][line] is +1 where the line starts, -1 where it ends */
-export function build_incidence_matrix(bus_count: number, lines: LineEnds[]): number[][]
+/** One line of a cycle, and whether the cycle runs along it (+1, from_bus to to_bus) or against it (-1) */
+export interface CycleStep
 {
-    const incidence = Array.from({ length: bus_count }, () => new Array<number>(lines.length).fill(0))
-    lines.forEach((line, l) =>
-    {
-        incidence[line.from_bus][l] = 1
-        incidence[line.to_bus][l] = -1
-    })
-    return incidence
+    line: number
+    direction: 1 | -1
 }
 
 
@@ -39,8 +33,8 @@ export function find_ac_spanning_forest(bus_count: number, lines: LineEnds[]): A
     lines.forEach((line, l) =>
     {
         if (line.is_dc) return
-        neighbours[line.from_bus].push({ bus: line.to_bus, line: l })
-        neighbours[line.to_bus].push({ bus: line.from_bus, line: l })
+        neighbours[line.from_bus_index].push({ bus: line.to_bus_index, line: l })
+        neighbours[line.to_bus_index].push({ bus: line.from_bus_index, line: l })
     })
 
     const forest: AcSpanningForest = {
@@ -84,47 +78,47 @@ export function find_ac_spanning_forest(bus_count: number, lines: LineEnds[]): A
 
 /**
  * Fundamental cycles: each AC line outside the spanning forest plus the tree path between its ends.
- * cycles[cycle][line] is +1 where the cycle runs along a line from its start to its end, -1 against it.
+ * Kirchhoff's voltage law says the reactance weighted flow around each of these cycles sums to zero.
+ * Each cycle starts with its closing line, then the tree lines back from its to_bus up to the common
+ * ancestor, then down to its from_bus.
  */
-export function build_fundamental_cycles(lines: LineEnds[], forest: AcSpanningForest): number[][]
+export function build_fundamental_cycles(lines: LineEnds[], forest: AcSpanningForest): CycleStep[][]
 {
-    const cycles: number[][] = []
+    const cycles: CycleStep[][] = []
 
     lines.forEach((line, l) =>
     {
         if (line.is_dc || forest.tree_lines.has(l)) return
 
-        const cycle = new Array<number>(lines.length).fill(0)
-        cycle[l] = 1 // from_bus -> to_bus along the line, then back from to_bus to from_bus through the tree
+        // from_bus -> to_bus along the line, then back from to_bus to from_bus through the tree
+        const cycle: CycleStep[] = [{ line: l, direction: 1 }]
+        const going_up: CycleStep[] = []
+        const going_down: CycleStep[] = []
 
-        let up_bus = line.to_bus
-        let down_bus = line.from_bus
-        const climbed_from: number[] = []
-        const descended_to: number[] = []
+        let up_bus = line.to_bus_index
+        let down_bus = line.from_bus_index
         while (up_bus !== down_bus)
         {
             if (forest.depth[up_bus] >= forest.depth[down_bus])
             {
-                climbed_from.push(up_bus)
+                going_up.push(create_step(lines, forest.parent_line[up_bus], up_bus))
                 up_bus = forest.parent_bus[up_bus]
             }
             else
             {
-                descended_to.push(down_bus)
+                going_down.push(create_step(lines, forest.parent_line[down_bus], forest.parent_bus[down_bus]))
                 down_bus = forest.parent_bus[down_bus]
             }
         }
 
-        climbed_from.forEach(bus => set_direction(cycle, lines, forest.parent_line[bus], bus))
-        descended_to.forEach(bus => set_direction(cycle, lines, forest.parent_line[bus], forest.parent_bus[bus]))
-        cycles.push(cycle)
+        cycles.push([...cycle, ...going_up, ...going_down.reverse()])
     })
 
     return cycles
 }
 
 
-function set_direction(cycle: number[], lines: LineEnds[], line_index: number, travelling_from_bus: number): void
+function create_step(lines: LineEnds[], line: number, travelling_from_bus: number): CycleStep
 {
-    cycle[line_index] = lines[line_index].from_bus === travelling_from_bus ? 1 : -1
+    return { line, direction: lines[line].from_bus_index === travelling_from_bus ? 1 : -1 }
 }

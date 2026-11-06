@@ -19,7 +19,6 @@ describe("solve_network", () =>
         const network = build_solver_network(create_test_grid([["0", "1", 1, 1000]], [], 2))
         const solution = solve_network(network, [-500, 500])
 
-        expect(solution.method).to.equal("linear")
         expect_close_to_all(solution.generation_MW, [0, 500])
         expect_close_to_all(solution.demand_MW, [500, 0])
         expect_close_to_all(solution.flows_MW, [-500])
@@ -41,10 +40,44 @@ describe("solve_network", () =>
         const network = build_solver_network(create_test_grid([["0", "1", 1, 1000]], [], 2))
         const solution = solve_network(network, [-2000, 2000])
 
-        expect(solution.method).to.equal("redispatch")
         expect_close_to_all(solution.generation_MW, [0, 1000])
         expect_close_to_all(solution.demand_MW, [1000, 0])
         expect_close_to_all(solution.flows_MW, [-1000])
+    })
+
+
+    it("splits flow around a loop inversely to reactance (KVL)", () =>
+    {
+        const network = build_solver_network(create_test_grid([["0", "1", 1], ["1", "2", 1], ["0", "2", 1]]))
+        const solution = solve_network(network, [-900, 900, 0])
+
+        // Directly 1 -> 0 carries 2/3, via bus 2 carries 1/3
+        expect_close_to_all(solution.flows_MW, [-600, 300, -300])
+    })
+
+
+    it("splits flow equally between two routes of equal total reactance", () =>
+    {
+        const network = build_solver_network(create_test_grid([["0", "1", 2], ["1", "2", 1], ["0", "2", 1]]))
+        const solution = solve_network(network, [-100, 100, 0])
+
+        expect_close_to_all(solution.flows_MW, [-50, 50, -50])
+    })
+
+
+    it("satisfies KCL: net flow out of each bus equals the dispatch at that bus", () =>
+    {
+        const lines: [string, string, number][] = [["0", "1", 1], ["1", "2", 3], ["0", "2", 2]]
+        const network = build_solver_network(create_test_grid(lines))
+        const solution = solve_network(network, [-50, 20, 30])
+
+        network.bus_ids.forEach((_, bus_index) =>
+        {
+            const net_outflow = network.lines.reduce((sum, line, l) =>
+                sum + (line.from_bus_index === bus_index ? solution.flows_MW[l] : 0) - (line.to_bus_index === bus_index ? solution.flows_MW[l] : 0), 0)
+
+            expect(net_outflow, `bus_index ${bus_index}`).to.be.closeTo(solution.generation_MW[bus_index] - solution.demand_MW[bus_index], 1e-6)
+        })
     })
 
 
@@ -64,7 +97,6 @@ describe("solve_network", () =>
         const network = build_solver_network(create_test_grid([], [["0", "1", 300]], 2))
         const solution = solve_network(network, [-500, 500])
 
-        expect(solution.method).to.equal("dispatch")
         expect_close_to_all(solution.demand_MW, [300, 0])
         expect_close_to_all(solution.flows_MW, [-300])
     })

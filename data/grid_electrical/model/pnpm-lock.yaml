@@ -8,25 +8,27 @@ importers:
 
   .:
     dependencies:
+      '@types/chai':
+        specifier: 5.2.3
+        version: 5.2.3
+      '@types/mocha':
+        specifier: 10.0.10
+        version: 10.0.10
+      '@types/node':
+        specifier: 26.6.6
+        version: 26.6.6
       chai:
         specifier: 6.3.0
         version: 6.3.0
+      highs:
+        specifier: 1.15.4
+        version: 1.15.4
       mocha:
         specifier: 12.0.3
         version: 12.0.3
       typescript:
         specifier: 7.0.2
         version: 7.0.2
-    devDependencies:
-      '@types/chai':
-        specifier: ^5.2.3
-        version: 5.2.3
-      '@types/mocha':
-        specifier: ^10.0.10
-        version: 10.0.10
-      '@types/node':
-        specifier: ^26.6.6
-        version: 26.6.6
 
 packages:
 
@@ -213,6 +215,10 @@ packages:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
 
+  highs@1.15.4:
+    resolution: {integrity: sha512-vsC03XHDqWAVrEFUt22h8e4CDDMb+LAFa0bycjPUq2kadRigK5pNLVIlwspKvMxxVtrr4NAucZHP/CAgigxiDQ==}
+    engines: {node: '>=18'}
+
   is-path-inside@4.0.0:
     resolution: {integrity: sha512-lJJV/5dYS+RcL8uQdBDW9c9uWFLLBNRyFhnAKXw5tVqLlKZ4RMGZKv+YQ/IA3OhD+RpbJa1LLFM1FQPGyIXvOA==}
     engines: {node: '>=12'}
@@ -389,6 +395,8 @@ snapshots:
       path-scurry: 2.0.2
 
   has-flag@4.0.0: {}
+
+  highs@1.15.4: {}
 
   is-path-inside@4.0.0: {}
 
