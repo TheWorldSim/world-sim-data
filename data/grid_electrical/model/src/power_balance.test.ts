@@ -33,13 +33,13 @@ describe("calculate_power_balance", () =>
     {
         const args: CalculatePowerBalanceArgs = {
             electrical_grid: { busses: [], ac_lines: [], dc_links: [] },
-            electrical_demand_GW_by_cell: {},
-            electrical_supply_GW_by_cell: {},
+            electrical_demand_MW_by_cell: {},
+            electrical_supply_MW_by_cell: {},
             latlon_to_cell,
         }
 
         expect(calculate_power_balance(args)).to.deep.equal({
-            GW_by_cell: {},
+            MW_by_cell: {},
             MW_by_line: {},
             MW_by_link: {},
         })
@@ -50,16 +50,16 @@ describe("calculate_power_balance", () =>
     {
         const args: CalculatePowerBalanceArgs = {
             electrical_grid: two_bus_grid,
-            electrical_demand_GW_by_cell: { "0,0": 0.5 },
-            electrical_supply_GW_by_cell: { "0,1": 0.5 },
+            electrical_demand_MW_by_cell: { "0,0": 500 },
+            electrical_supply_MW_by_cell: { "0,1": 500 },
             latlon_to_cell,
         }
 
         const balance = calculate_power_balance(args)
 
         // Net balance: supply minus demand, so the generating cell exports and the load cell imports
-        expect(balance.GW_by_cell["0,0"]).to.be.closeTo(-0.5, 1e-6)
-        expect(balance.GW_by_cell["0,1"]).to.be.closeTo(0.5, 1e-6)
+        expect(balance.MW_by_cell["0,0"]).to.be.closeTo(-500, 1e-6)
+        expect(balance.MW_by_cell["0,1"]).to.be.closeTo(500, 1e-6)
     })
 
 
@@ -67,16 +67,16 @@ describe("calculate_power_balance", () =>
     {
         const args: CalculatePowerBalanceArgs = {
             electrical_grid: two_bus_grid,
-            electrical_demand_GW_by_cell: { "0,0": 2 },
-            electrical_supply_GW_by_cell: { "0,1": 2 },
+            electrical_demand_MW_by_cell: { "0,0": 2000 },
+            electrical_supply_MW_by_cell: { "0,1": 2000 },
             latlon_to_cell,
         }
 
         const balance = calculate_power_balance(args)
 
-        // Line capacity is 1000 MW = 1 GW so only 1 GW can be delivered
-        expect(balance.GW_by_cell["0,0"]).to.be.closeTo(-1, 1e-6)
-        expect(balance.GW_by_cell["0,1"]).to.be.closeTo(1, 1e-6)
+        // Line capacity is 1000 MW, so only that can be delivered
+        expect(balance.MW_by_cell["0,0"]).to.be.closeTo(-1000, 1e-6)
+        expect(balance.MW_by_cell["0,1"]).to.be.closeTo(1000, 1e-6)
     })
 
 
@@ -110,19 +110,19 @@ describe("calculate_power_balance", () =>
 
         const args: CalculatePowerBalanceArgs = {
             electrical_grid,
-            electrical_supply_GW_by_cell: { "3,3": 2 },
-            electrical_demand_GW_by_cell: { "1,1": 2 },
+            electrical_supply_MW_by_cell: { "3,3": 2000 },
+            electrical_demand_MW_by_cell: { "1,1": 2000 },
             latlon_to_cell,
         }
 
         const balance = calculate_power_balance(args)
         deep_approximate(balance, {
-            GW_by_cell: {
-                "3,3":  2,
+            MW_by_cell: {
+                "3,3":  2000,
                 "2,2":  0,
                 "2,1":  0,
                 "1,2":  0,
-                "1,1": -2,
+                "1,1": -2000,
                 "0,1":  0,
             },
             MW_by_line: {
@@ -144,12 +144,12 @@ describe("calculate_power_balance", () =>
         const grid_without_dc_link = { ...electrical_grid, dc_links: [] }
         const balance_without_dc_link = calculate_power_balance({ ...args, electrical_grid: grid_without_dc_link })
         deep_approximate(balance_without_dc_link, {
-            GW_by_cell: {
-                "3,3":  1,
+            MW_by_cell: {
+                "3,3":  1000,
                 "2,2":  0,
                 "2,1":  0,
                 "1,2":  0,
-                "1,1": -1,
+                "1,1": -1000,
                 "0,1":  0,
             },
             MW_by_line: {
@@ -172,12 +172,12 @@ describe("calculate_power_balance", () =>
         }
         const balance_without_line_0 = calculate_power_balance({ ...args, electrical_grid: grid_without_line_0 })
         deep_approximate(balance_without_line_0, {
-            GW_by_cell: {
-                "3,3":  1,
+            MW_by_cell: {
+                "3,3":  1000,
                 "2,2":  0,
                 "2,1":  0,
                 "1,2":  0,
-                "1,1": -1,
+                "1,1": -1000,
                 "0,1":  0,
             },
             MW_by_line: {
