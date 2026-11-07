@@ -51,6 +51,7 @@ function parse_ac_lines(csv: string, bus_by_id: Record<string, Bus>): ACLine[]
 
     const headers = raw_rows[0] as string[]
     const header_indices = {
+        id: headers.indexOf("line_id"),
         bus0: headers.indexOf("bus0"),
         bus1: headers.indexOf("bus1"),
         voltage: headers.indexOf("voltage"),
@@ -80,6 +81,7 @@ function parse_ac_line(row: (string | number)[], header_indices: Record<string, 
     }
 
     return {
+        id: String(row[header_indices.id]),
         from_bus_id,
         to_bus_id,
         path: parse_geometry(String(row[header_indices.geometry]), from_bus, to_bus),
@@ -97,6 +99,7 @@ function parse_dc_links(csv: string, bus_by_id: Record<string, Bus>): DCLink[]
 
     const headers = raw_rows[0] as string[]
     const header_indices = {
+        id: headers.indexOf("link_id"),
         bus0: headers.indexOf("bus0"),
         bus1: headers.indexOf("bus1"),
         voltage: headers.indexOf("voltage"),
@@ -125,6 +128,7 @@ function parse_dc_link(row: (string | number)[], header_indices: Record<string, 
     }
 
     return {
+        id: String(row[header_indices.id]),
         from_bus_id,
         to_bus_id,
         path: parse_geometry(String(row[header_indices.geometry]), from_bus, to_bus),

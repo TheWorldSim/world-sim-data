@@ -53,8 +53,8 @@ describe("aggregate_grid_to_cells", () =>
         expect(aggregated_grid.ac_lines).to.have.length(2)
         expect(aggregated_grid.ac_lines).to.deep.equal([
             // line 0 removed as it goes from and to the same cell
-            { from_bus_id: "0", to_bus_id: "2", path, capacity_mw: 1700, x_pu: 9e-04, voltage_kv: 300 },
-            { from_bus_id: "0", to_bus_id: "2", path, capacity_mw: 3500, x_pu: 1e-05, voltage_kv: 400 },
+            { id: "1", from_bus_id: "0", to_bus_id: "2", path, capacity_mw: 1700, x_pu: 9e-04, voltage_kv: 300 },
+            { id: "2", from_bus_id: "0", to_bus_id: "2", path, capacity_mw: 3500, x_pu: 1e-05, voltage_kv: 400 },
         ])
     })
 
@@ -66,8 +66,8 @@ describe("aggregate_grid_to_cells", () =>
         expect(aggregated_grid.dc_links).to.have.length(2)
         expect(aggregated_grid.dc_links).to.deep.equal([
             // link 0 removed as it goes from and to the same cell
-            { from_bus_id: "0", to_bus_id: "2", path: path1, capacity_mw: 2000, voltage_kv: 300 },
-            { from_bus_id: "0", to_bus_id: "2", path: path2, capacity_mw: 3000, voltage_kv: 400 },
+            { id: "1", from_bus_id: "0", to_bus_id: "2", path: path1, capacity_mw: 2000, voltage_kv: 300 },
+            { id: "2", from_bus_id: "0", to_bus_id: "2", path: path2, capacity_mw: 3000, voltage_kv: 400 },
         ])
     })
 })

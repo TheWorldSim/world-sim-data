@@ -56,6 +56,7 @@ describe("parse_grid_csv_data", () =>
     {
         expect(grid.ac_lines).to.deep.equal([
             {
+                id: "0",
                 from_bus_id: "0",
                 to_bus_id: "1",
                 capacity_mw: 503,
@@ -64,6 +65,7 @@ describe("parse_grid_csv_data", () =>
                 path: [{ lat: 2, lon: 1 }, { lat: 2, lon: 2 }]
             },
             {
+                id: "1",
                 from_bus_id: "1",
                 to_bus_id: "2",
                 capacity_mw: 1790,
@@ -72,6 +74,7 @@ describe("parse_grid_csv_data", () =>
                 path: [{ lat: 2, lon: 2 }, { lat: 1, lon: 2 }]
             },
             {
+                id: "2",
                 from_bus_id: "2",
                 to_bus_id: "3",
                 capacity_mw: 1700,
@@ -101,6 +104,7 @@ describe("parse_grid_csv_data", () =>
     {
         expect(grid.dc_links).to.deep.equal([
             {
+                id: "0",
                 from_bus_id: "0",
                 to_bus_id: "3",
                 capacity_mw: 1000,
