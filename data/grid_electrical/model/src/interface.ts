@@ -20,6 +20,7 @@ export interface Bus
 }
 export interface ACLine
 {
+    id: string
     from_bus_id: string
     to_bus_id: string
     path: ILatLon[]
@@ -30,6 +31,7 @@ export interface ACLine
 }
 export interface DCLink
 {
+    id: string
     from_bus_id: string
     to_bus_id: string
     path: ILatLon[]
