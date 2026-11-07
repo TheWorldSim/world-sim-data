@@ -24,17 +24,17 @@ export function parse_grid_csv_data(data: GridCsvData): ElectricalGrid
 
 function parse_busses(csv: string): Bus[]
 {
-    const raw_rows = d1258v6_parse_csv(csv)
+    const raw_rows = d1258v6_parse_csv(csv) as string[][]
     if (raw_rows.length === 0) return []
 
-    const headers = raw_rows[0] as string[]
+    const [headers, ...rows] = raw_rows
     const header_indices = {
         bus_id: headers.indexOf("bus_id"),
         lon: headers.indexOf("lon"),
         lat: headers.indexOf("lat"),
     }
 
-    return raw_rows.slice(1).map(row => ({
+    return rows.map(row => ({
         id: String(row[header_indices.bus_id]),
         latlon: {
             lat: Number(row[header_indices.lat]),
@@ -46,10 +46,10 @@ function parse_busses(csv: string): Bus[]
 
 function parse_ac_lines(csv: string, bus_by_id: Record<string, Bus>): ACLine[]
 {
-    const raw_rows = d1258v6_parse_csv(csv)
+    const raw_rows = d1258v6_parse_csv(csv) as string[][]
     if (raw_rows.length === 0) return []
 
-    const headers = raw_rows[0] as string[]
+    const [headers, ...rows] = raw_rows
     const header_indices = {
         id: headers.indexOf("line_id"),
         bus0: headers.indexOf("bus0"),
@@ -60,7 +60,7 @@ function parse_ac_lines(csv: string, bus_by_id: Record<string, Bus>): ACLine[]
         geometry: headers.indexOf("geometry"),
     }
 
-    return raw_rows.slice(1).map(row => parse_ac_line(row, header_indices, bus_by_id))
+    return rows.map(row => parse_ac_line(row, header_indices, bus_by_id))
 }
 
 
@@ -94,10 +94,10 @@ function parse_ac_line(row: (string | number)[], header_indices: Record<string, 
 
 function parse_dc_links(csv: string, bus_by_id: Record<string, Bus>): DCLink[]
 {
-    const raw_rows = d1258v6_parse_csv(csv)
+    const raw_rows = d1258v6_parse_csv(csv) as string[][]
     if (raw_rows.length === 0) return []
 
-    const headers = raw_rows[0] as string[]
+    const [headers, ...rows] = raw_rows
     const header_indices = {
         id: headers.indexOf("link_id"),
         bus0: headers.indexOf("bus0"),
@@ -107,7 +107,7 @@ function parse_dc_links(csv: string, bus_by_id: Record<string, Bus>): DCLink[]
         geometry: headers.indexOf("geometry"),
     }
 
-    return raw_rows.slice(1).map(row => parse_dc_link(row, header_indices, bus_by_id))
+    return rows.map(row => parse_dc_link(row, header_indices, bus_by_id))
 }
 
 
@@ -141,19 +141,19 @@ function parse_dc_link(row: (string | number)[], header_indices: Record<string, 
 function parse_geometry(geometry: string, from_bus: Bus, to_bus: Bus): ILatLon[]
 {
     geometry = geometry.trim()
-    if (geometry === "") return []
 
-    const match_linestring = /^LINESTRING\s*\(([^()]*)\)$/i.exec(geometry.trim())
-    const match_point = /^\['POINT\s*\(\s*(\d+)\s*(\d+)\s*\)'\]$/i.exec(geometry.trim())
-    if (!match_linestring && !match_point) return []
-
-    const coords: ILatLon[] = [{ ...from_bus.latlon }]
+    const coords: ILatLon[] = []
     function add_coord({ lon, lat }: ILatLon)
     {
         const last_point = coords[coords.length - 1]
-        if (last_point.lon === lon && last_point.lat === lat) return
+        if (last_point && last_point.lon === lon && last_point.lat === lat) return
         coords.push({ lon, lat })
     }
+
+    add_coord({ ...from_bus.latlon })
+
+    const match_linestring = /^LINESTRING\s*\(([^()]*)\)$/i.exec(geometry)
+    const match_point = /^\['POINT\s*\(\s*(\d+)\s*(\d+)\s*\)'\]$/i.exec(geometry)
 
     if (match_linestring)
     {
