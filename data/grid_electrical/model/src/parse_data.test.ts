@@ -128,27 +128,38 @@ describe("parse_grid_csv_data", () =>
     it("handles empty geometry for ac lines", () =>
     {
         const grid = parse_grid_csv_data({
-            busses: busses_csv,
-            ac_lines: `line_id,bus0,bus1,voltage,s_nom,x_pu,geometry
-0,0,1,225,503,3.53e-05,""
-1,0,1,225,503,3.53e-05,`,
-            dc_links: dc_links_csv,
+            busses: `
+                bus_id,voltage,lon,lat
+                0,220,1,2
+                1,300,2,2
+            `,
+            ac_lines: `
+                line_id,bus0,bus1,voltage,s_nom,x_pu,geometry
+                0,0,1,225,503,3.53e-05,""
+                1,0,1,225,503,3.53e-05,
+            `,
+            dc_links: ``,
         })
 
-        expect(grid.ac_lines[0].path).to.deep.equal([])
+        expect(grid.ac_lines[0].path).to.deep.equal([{ lon: 1, lat: 2 }, { lon: 2, lat: 2 }])
+        expect(grid.ac_lines[1].path).to.deep.equal([{ lon: 1, lat: 2 }, { lon: 2, lat: 2 }])
     })
 
     it("handles POINT and LINESTRING geometry without duplicate points of busses", () =>
     {
         const grid = parse_grid_csv_data({
-            busses: `bus_id,voltage,lon,lat
-0,220,1,2
-1,300,2,2`,
-            ac_lines: `line_id,bus0,bus1,voltage,s_nom,x_pu,geometry
-0,0,1,225,503,3.53e-05,"['POINT (3 3)']"
-1,0,1,225,503,3.53e-05,"['POINT (1 2)']"
-2,0,1,225,503,3.53e-05,"LINESTRING (3 3, 4 4)"
-2,0,1,225,503,3.53e-05,"LINESTRING (3 3, 2 2)"`,
+            busses: `
+                bus_id,voltage,lon,lat
+                0,220,1,2
+                1,300,2,2
+            `,
+            ac_lines: `
+                line_id,bus0,bus1,voltage,s_nom,x_pu,geometry
+                0,0,1,225,503,3.53e-05,"['POINT (3 3)']"
+                1,0,1,225,503,3.53e-05,"['POINT (1 2)']"
+                2,0,1,225,503,3.53e-05,"LINESTRING (3 3, 4 4)"
+                2,0,1,225,503,3.53e-05,"LINESTRING (3 3, 2 2)"
+            `,
             dc_links: ``,
         })
 
