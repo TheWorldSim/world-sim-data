@@ -4,21 +4,18 @@ import { build_solver_network } from "./solver_network.ts"
 import { solve_network } from "./solve_network.ts"
 
 
-const MW_PER_GW = 1000
-
-
 export interface CalculatePowerBalanceArgs
 {
     electrical_grid: ElectricalGrid
-    electrical_demand_GW_by_cell: {[cell_id: string]: number}
-    electrical_supply_GW_by_cell: {[cell_id: string]: number}
+    electrical_demand_MW_by_cell: {[cell_id: string]: number}
+    electrical_supply_MW_by_cell: {[cell_id: string]: number}
 
     latlon_to_cell: LatLonToCell
 }
 /** Net power a cell exports to (+) or imports from (-) the grid, in GW; flows on lines and links in MW */
 export interface PowerBalance
 {
-    GW_by_cell: {[cell_id: string]: number}
+    MW_by_cell: {[cell_id: string]: number}
     MW_by_line: {[line_id: string]: number}
     MW_by_link: {[link_id: string]: number}
 }
@@ -33,34 +30,34 @@ export interface PowerBalance
  */
 export function calculate_power_balance(args: CalculatePowerBalanceArgs): PowerBalance
 {
-    const { electrical_demand_GW_by_cell, electrical_supply_GW_by_cell, latlon_to_cell } = args
+    const { electrical_demand_MW_by_cell, electrical_supply_MW_by_cell, latlon_to_cell } = args
 
     const grid = aggregate_grid_to_cells(args.electrical_grid, latlon_to_cell)
     const cell_id_by_bus = grid.busses.map(bus => latlon_to_cell.to_cell_id(bus.latlon))
 
     const power_balance: PowerBalance = {
-        GW_by_cell: {},
+        MW_by_cell: {},
         MW_by_line: {},
         MW_by_link: {},
     }
     const cell_ids = [
-        ...Object.keys(electrical_supply_GW_by_cell),
-        ...Object.keys(electrical_demand_GW_by_cell),
+        ...Object.keys(electrical_supply_MW_by_cell),
+        ...Object.keys(electrical_demand_MW_by_cell),
         ...cell_id_by_bus,
     ]
-    cell_ids.forEach(cell_id => { power_balance.GW_by_cell[cell_id] = 0 })
+    cell_ids.forEach(cell_id => { power_balance.MW_by_cell[cell_id] = 0 })
 
     if (grid.busses.length === 0) return power_balance
 
     const injections_MW = cell_id_by_bus.map(cell_id =>
-        ((electrical_supply_GW_by_cell[cell_id] ?? 0) - (electrical_demand_GW_by_cell[cell_id] ?? 0)) * MW_PER_GW)
+        ((electrical_supply_MW_by_cell[cell_id] ?? 0) - (electrical_demand_MW_by_cell[cell_id] ?? 0)))
 
     const solver_network = build_solver_network(grid)
     const solution = solve_network(solver_network, injections_MW)
 
     cell_id_by_bus.forEach((cell_id, bus) =>
     {
-        power_balance.GW_by_cell[cell_id] = (solution.generation_MW[bus] - solution.demand_MW[bus]) / MW_PER_GW
+        power_balance.MW_by_cell[cell_id] = (solution.generation_MW[bus] - solution.demand_MW[bus])
     })
 
     // Record line flows
