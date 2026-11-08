@@ -21,32 +21,35 @@ links_processed_path = cwd / "eur/processed/links.csv"
 
 
 def process():
-    map_bus_id = process_buses()
-    process_lines(map_bus_id)
-    process_links(map_bus_id)
+    bus_df = process_buses()
+    bus_df_by_id = bus_df.set_index("old_bus_id", drop=False)
+
+    process_lines(bus_df_by_id)
+    process_links(bus_df_by_id)
 
 
 def process_buses():
     bus_df = pd.read_csv(buses_input_path)
-    map_bus_id = {orig_id: new_id for new_id, orig_id in enumerate(bus_df["bus_id"])}
-    bus_df["bus_id"] = bus_df["bus_id"].map(map_bus_id)
+    bus_df["old_bus_id"] = bus_df["bus_id"]
+    bus_df["bus_id"] = range(len(bus_df))
+
     # Limit decimal places for lat lon
     bus_df["lon"] = bus_df["x"].astype(float).round(LATLON_DP)
     bus_df["lat"] = bus_df["y"].astype(float).round(LATLON_DP)
+
     bus_fields = ["bus_id", "voltage", "lon", "lat"]
-    bus_df = bus_df[bus_fields]
-    bus_df.to_csv(buses_processed_path, index=False)
+    bus_df[bus_fields].to_csv(buses_processed_path, index=False)
 
-    return map_bus_id
+    return bus_df
 
 
-def process_lines(map_bus_id):
+def process_lines(bus_df_by_id: pd.DataFrame):
     line_df = pd.read_csv(lines_input_path, quotechar="'")
 
     map_line_id = {orig_id: new_id for new_id, orig_id in enumerate(line_df["line_id"])}
     line_df["line_id"] = line_df["line_id"].map(map_line_id)
-    line_df["bus0"] = line_df["bus0"].map(map_bus_id)
-    line_df["bus1"] = line_df["bus1"].map(map_bus_id)
+    line_df["bus0"] = line_df["bus0"].map(lambda old_bus_id: bus_df_by_id.at[old_bus_id, "bus_id"])
+    line_df["bus1"] = line_df["bus1"].map(lambda old_bus_id: bus_df_by_id.at[old_bus_id, "bus_id"])
 
     # Copied from: https://github.com/PyPSA/PyPSA/blob/9f0b8a7/pypsa/network/power_flow.py#L814-L816
     line_df["x_pu"] = line_df["x"] / (line_df["voltage"] ** 2)
@@ -62,13 +65,13 @@ def process_lines(map_bus_id):
     line_df.to_csv(lines_processed_path, index=False, float_format="%.15g")
 
 
-def process_links(map_bus_id):
+def process_links(bus_df_by_id: pd.DataFrame):
     link_df = pd.read_csv(links_input_path, quotechar="'")
 
     map_link_id = {orig_id: new_id for new_id, orig_id in enumerate(link_df["link_id"])}
     link_df["link_id"] = link_df["link_id"].map(map_link_id)
-    link_df["bus0"] = link_df["bus0"].map(map_bus_id)
-    link_df["bus1"] = link_df["bus1"].map(map_bus_id)
+    link_df["bus0"] = link_df["bus0"].map(lambda old_bus_id: bus_df_by_id.at[old_bus_id, "bus_id"])
+    link_df["bus1"] = link_df["bus1"].map(lambda old_bus_id: bus_df_by_id.at[old_bus_id, "bus_id"])
 
     link_df["voltage"] = round_sig_figs(link_df["voltage"], VALUE_SF)
     link_df["p_nom"] = round_sig_figs(link_df["p_nom"], VALUE_SF)
