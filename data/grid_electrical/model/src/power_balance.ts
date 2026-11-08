@@ -1,16 +1,14 @@
 import { aggregate_grid_to_cells } from "./aggregate_grid_to_cells.ts"
-import type { ElectricalGrid, LatLonToCell } from "./interface.ts"
+import type { CellularElectricalGrid, CommonElectricalGrid, ConvertLatLonToFromCell } from "./interface.ts"
 import { build_solver_network } from "./solver_network.ts"
 import { solve_network } from "./solve_network.ts"
 
 
-export interface CalculatePowerBalanceArgs
+export interface PoweredElectricalGrid
 {
-    electrical_grid: ElectricalGrid
-    electrical_demand_MW_by_cell: {[cell_id: string]: number}
-    electrical_supply_MW_by_cell: {[cell_id: string]: number}
-
-    latlon_to_cell: LatLonToCell
+    cellular_grid: CellularElectricalGrid
+    demand_MW_by_cell: {[cell_id: string]: number}
+    supply_MW_by_cell: {[cell_id: string]: number}
 }
 /** Net power a cell exports to (+) or imports from (-) the grid, in GW; flows on lines and links in MW */
 export interface PowerBalance
@@ -18,7 +16,20 @@ export interface PowerBalance
     MW_by_cell: {[cell_id: string]: number}
     MW_by_line: {[line_id: string]: number}
     MW_by_link: {[link_id: string]: number}
+    status_by_cell: {[cell_id: string]: CellStatus}
 }
+/**
+ * How well a cell's net supply or demand was met:
+ *   idle                        no net supply or demand
+ *   supplying                   all net supply is dispatched
+ *   supply_curtailed_by_demand  some net supply is not dispatched, and no demand anywhere is left unmet
+ *   supply_curtailed_by_grid    some net supply is not dispatched while demand is left unmet, or the cell has no bus
+ *   demand_met                  all net demand is served
+ *   demand_unmet                some net demand is not served
+ */
+export type CellStatus = "idle" | "supplying" | "supply_curtailed_by_demand" | "supply_curtailed_by_grid" | "demand_met" | "demand_unmet"
+
+const NEGLIGIBLE_MW = 1e-6
 
 
 /**
@@ -28,34 +39,38 @@ export interface PowerBalance
  * Supply and demand within a cell are netted first.  A cell that has supply or demand but no bus on
  * the grid cannot trade with other cells so its balance is 0.
  */
-export function calculate_power_balance(args: CalculatePowerBalanceArgs): PowerBalance
+export function calculate_power_balance(powered_grid: PoweredElectricalGrid): PowerBalance
 {
-    const { electrical_demand_MW_by_cell, electrical_supply_MW_by_cell, latlon_to_cell } = args
+    const { cellular_grid: grid, demand_MW_by_cell, supply_MW_by_cell } = powered_grid
 
-    const grid = aggregate_grid_to_cells(args.electrical_grid, latlon_to_cell)
-    const cell_id_by_bus = grid.busses.map(bus => latlon_to_cell.to_cell_id(bus.latlon))
+    const bus_cell_ids = grid.buses.map(bus => bus.cell_id)
 
     const power_balance: PowerBalance = {
         MW_by_cell: {},
         MW_by_line: {},
         MW_by_link: {},
+        status_by_cell: {},
     }
     const cell_ids = [
-        ...Object.keys(electrical_supply_MW_by_cell),
-        ...Object.keys(electrical_demand_MW_by_cell),
-        ...cell_id_by_bus,
+        ...Object.keys(supply_MW_by_cell),
+        ...Object.keys(demand_MW_by_cell),
+        ...bus_cell_ids,
     ]
     cell_ids.forEach(cell_id => { power_balance.MW_by_cell[cell_id] = 0 })
 
-    if (grid.busses.length === 0) return power_balance
+    if (grid.buses.length === 0)
+    {
+        power_balance.status_by_cell = calculate_status_by_cell(powered_grid, power_balance.MW_by_cell)
+        return power_balance
+    }
 
-    const injections_MW = cell_id_by_bus.map(cell_id =>
-        ((electrical_supply_MW_by_cell[cell_id] ?? 0) - (electrical_demand_MW_by_cell[cell_id] ?? 0)))
+    const injections_MW = bus_cell_ids.map(cell_id =>
+        ((supply_MW_by_cell[cell_id] ?? 0) - (demand_MW_by_cell[cell_id] ?? 0)))
 
     const solver_network = build_solver_network(grid)
     const solution = solve_network(solver_network, injections_MW)
 
-    cell_id_by_bus.forEach((cell_id, bus) =>
+    bus_cell_ids.forEach((cell_id, bus) =>
     {
         power_balance.MW_by_cell[cell_id] = (solution.generation_MW[bus] - solution.demand_MW[bus])
     })
@@ -75,5 +90,44 @@ export function calculate_power_balance(args: CalculatePowerBalanceArgs): PowerB
         line_index++
     }
 
+    power_balance.status_by_cell = calculate_status_by_cell(powered_grid, power_balance.MW_by_cell)
+
     return power_balance
+}
+
+
+function calculate_status_by_cell(powered_grid: PoweredElectricalGrid, MW_by_cell: PowerBalance["MW_by_cell"]): PowerBalance["status_by_cell"]
+{
+    const { cellular_grid: grid, demand_MW_by_cell, supply_MW_by_cell } = powered_grid
+    const cells_with_bus = new Set(grid.buses.map(bus => bus.cell_id))
+
+    const requested_MW_by_cell: {[cell_id: string]: number} = {}
+    let total_unmet_demand_MW = 0
+    for (const [cell_id, actual_MW] of Object.entries(MW_by_cell))
+    {
+        const requested_MW = (supply_MW_by_cell[cell_id] ?? 0) - (demand_MW_by_cell[cell_id] ?? 0)
+        requested_MW_by_cell[cell_id] = requested_MW
+        // actual_MW is negative for served demand
+        if (requested_MW < 0) total_unmet_demand_MW += Math.max(-requested_MW + actual_MW, 0)
+    }
+
+    const status_by_cell: PowerBalance["status_by_cell"] = {}
+    for (const [cell_id, actual_MW] of Object.entries(MW_by_cell))
+    {
+        const requested_MW = requested_MW_by_cell[cell_id]
+
+        if (requested_MW > NEGLIGIBLE_MW)
+        {
+            if (requested_MW - actual_MW <= NEGLIGIBLE_MW) status_by_cell[cell_id] = "supplying"
+            else if (!cells_with_bus.has(cell_id) || total_unmet_demand_MW > NEGLIGIBLE_MW) status_by_cell[cell_id] = "supply_curtailed_by_grid"
+            else status_by_cell[cell_id] = "supply_curtailed_by_demand"
+        }
+        else if (requested_MW < -NEGLIGIBLE_MW)
+        {
+            status_by_cell[cell_id] = (-requested_MW + actual_MW <= NEGLIGIBLE_MW) ? "demand_met" : "demand_unmet"
+        }
+        else status_by_cell[cell_id] = "idle"
+    }
+
+    return status_by_cell
 }

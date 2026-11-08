@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Grid power flow</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="grid_power_flow.css">
+</head>
+<body>
+
+<div class="app">
+  <header>
+    <h1>Grid power flow</h1>
+  </header>
+
+  <div class="toolbar">
+    <label class="field" for="dataset"><span>Data set</span>
+      <select id="dataset">
+        <option value="3ac_1dc">3AC 1DC</option>
+        <option value="7ac_1dc">7AC 1DC</option>
+        <option value="uk">UK</option>
+        <option value="uk_ni">UK & NI</option>
+        <option value="europe">Europe</option>
+      </select>
+    </label>
+  </div>
+  <p class="sub" id="sub">Some description of the grid here</p>
+
+  <p class="msg err" id="net-error" role="alert" hidden></p>
+  <p class="msg warn" id="net-warn" hidden></p>
+
+  <div class="layout">
+    <section class="card diagram" id="diagram-card" aria-label="Network diagram">
+      <svg id="grid-display" role="group" aria-label="Grid network diagram"></svg>
+      <p class="hint">Click a bus to add one step of generation. Right-click removes one step; below zero the bus becomes demand.</p>
+      <ul class="legend" aria-label="Legend">
+        <li><span class="sw src"></span>Source</li>
+        <li><span class="sw sink"></span>Sink</li>
+        <li><span class="sw bar" style="background:var(--flow-low)"></span>Under 70% of limit</li>
+        <li><span class="sw bar" style="background:var(--flow-mid)"></span>70% and over</li>
+        <li><span class="sw bar" style="background:var(--flow-max)"></span>At limit</li>
+        <li><span class="sw bar dcs"></span>Dashed: DC line (controllable)</li>
+      </ul>
+    </section>
+
+    <div class="side">
+      <section class="card status tone-ok" id="status" aria-live="polite">
+        <h2 id="st-title">All power transferred</h2>
+        <p id="st-body"></p>
+        <dl class="stats">
+          <div>
+            <dt>Supply</dt>
+            <dd><span id="stat-supply">0.0</span> <small>MW</small></dd>
+          </div>
+          <div>
+            <dt>Demand</dt>
+            <dd><span id="stat-demand">0.0</span> <small>MW</small></dd>
+          </div>
+          <div>
+            <dt id="stat-diff-label">Surplus/Shortage</dt>
+            <dd><span id="stat-diff">0.0</span> <small>MW</small></dd>
+          </div>
+        </dl>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="./grid_power_flow.ts"></script>
+</body>
+</html>

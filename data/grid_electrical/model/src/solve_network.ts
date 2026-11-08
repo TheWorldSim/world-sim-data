@@ -1,4 +1,10 @@
-import { maximise, type LinearProgram, type LpConstraint, type LpTerm, type LpVariable } from "./lp_solver.ts"
+import {
+    maximise,
+    type LinearProgram,
+    type LpConstraint,
+    type LpTerm,
+    type LpVariable,
+} from "./lp_solver.ts"
 import type { SolverNetwork } from "./solver_network.ts"
 
 
@@ -32,14 +38,14 @@ export function solve_network(network: SolverNetwork, injections_MW: number[]): 
     const generation = injections_MW.map(p => Math.max(p, 0))
     const demand = injections_MW.map(p => Math.max(-p, 0))
 
-    const has_dc_lines = network.lines.some(line => line.is_dc)
-    if (network.ac_area_count === 1 && !has_dc_lines)
-    {
-        const balanced_request = scale_to_balance(generation, demand)
-        const solution = dispatch(network, balanced_request.generation, balanced_request.demand)
+    // const has_dc_lines = network.lines.some(line => line.is_dc)
+    // if (network.ac_area_count === 1 && !has_dc_lines)
+    // {
+    //     const balanced_request = scale_to_balance(generation, demand)
+    //     const solution = dispatch(network, balanced_request.generation, balanced_request.demand)
 
-        if (sum(solution.demand_MW) >= sum(balanced_request.demand) - NEGLIGIBLE_MW) return solution
-    }
+    //     if (sum(solution.demand_MW) >= sum(balanced_request.demand) - NEGLIGIBLE_MW) return solution
+    // }
 
     return dispatch(network, generation, demand)
 }

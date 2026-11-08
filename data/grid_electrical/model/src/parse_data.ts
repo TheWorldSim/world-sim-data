@@ -1,30 +1,30 @@
-import type { Bus, ElectricalGrid, ACLine, DCLink, ILatLon } from "./interface.ts"
+import type { LatLonBus, LatLonElectricalGrid, LatLonACLine, LatLonDCLink, ILatLon } from "./interface.ts"
 import { d1258v6_parse_csv } from "./d1258v6_parse_csv.js"
 
 
 export interface GridCsvData
 {
-    busses: string
+    buses: string
     ac_lines: string
     dc_links: string
 }
 
 
-export function parse_grid_csv_data(data: GridCsvData): ElectricalGrid
+export function parse_grid_csv_data(data: GridCsvData): LatLonElectricalGrid
 {
-    const busses: Bus[] = parse_busses(data.busses)
-    const bus_by_id = Object.fromEntries(busses.map(bus => [bus.id, bus]))
+    const buses: LatLonBus[] = parse_buses(data.buses)
+    const bus_by_id = Object.fromEntries(buses.map(bus => [bus.id, bus]))
 
-    const ac_lines: ACLine[] = parse_ac_lines(data.ac_lines, bus_by_id)
-    const dc_links: DCLink[] = parse_dc_links(data.dc_links, bus_by_id)
+    const ac_lines: LatLonACLine[] = parse_ac_lines(data.ac_lines, bus_by_id)
+    const dc_links: LatLonDCLink[] = parse_dc_links(data.dc_links, bus_by_id)
 
-    return { busses, ac_lines, dc_links }
+    return { buses, ac_lines, dc_links }
 }
 
 
-function parse_busses(csv: string): Bus[]
+function parse_buses(csv: string): LatLonBus[]
 {
-    const raw_rows = d1258v6_parse_csv(csv) as string[][]
+    const raw_rows = d1258v6_parse_csv(csv)
     if (raw_rows.length === 0) return []
 
     const [headers, ...rows] = raw_rows
@@ -44,9 +44,9 @@ function parse_busses(csv: string): Bus[]
 }
 
 
-function parse_ac_lines(csv: string, bus_by_id: Record<string, Bus>): ACLine[]
+function parse_ac_lines(csv: string, bus_by_id: Record<string, LatLonBus>): LatLonACLine[]
 {
-    const raw_rows = d1258v6_parse_csv(csv) as string[][]
+    const raw_rows = d1258v6_parse_csv(csv)
     if (raw_rows.length === 0) return []
 
     const [headers, ...rows] = raw_rows
@@ -64,7 +64,7 @@ function parse_ac_lines(csv: string, bus_by_id: Record<string, Bus>): ACLine[]
 }
 
 
-function parse_ac_line(row: (string | number)[], header_indices: Record<string, number>, bus_by_id: Record<string, Bus>): ACLine
+function parse_ac_line(row: (string | number)[], header_indices: Record<string, number>, bus_by_id: Record<string, LatLonBus>): LatLonACLine
 {
     const from_bus_id = String(row[header_indices.bus0])
     const to_bus_id = String(row[header_indices.bus1])
@@ -84,7 +84,7 @@ function parse_ac_line(row: (string | number)[], header_indices: Record<string, 
         id: String(row[header_indices.id]),
         from_bus_id,
         to_bus_id,
-        path: parse_geometry(String(row[header_indices.geometry]), from_bus, to_bus),
+        path_latlon: parse_geometry(String(row[header_indices.geometry]), from_bus, to_bus),
         capacity_mw: Number(row[header_indices.s_nom]),
         x_pu: Number(row[header_indices.x_pu]),
         voltage_kv: Number(row[header_indices.voltage]),
@@ -92,9 +92,9 @@ function parse_ac_line(row: (string | number)[], header_indices: Record<string, 
 }
 
 
-function parse_dc_links(csv: string, bus_by_id: Record<string, Bus>): DCLink[]
+function parse_dc_links(csv: string, bus_by_id: Record<string, LatLonBus>): LatLonDCLink[]
 {
-    const raw_rows = d1258v6_parse_csv(csv) as string[][]
+    const raw_rows = d1258v6_parse_csv(csv)
     if (raw_rows.length === 0) return []
 
     const [headers, ...rows] = raw_rows
@@ -111,7 +111,7 @@ function parse_dc_links(csv: string, bus_by_id: Record<string, Bus>): DCLink[]
 }
 
 
-function parse_dc_link(row: (string | number)[], header_indices: Record<string, number>, bus_by_id: Record<string, Bus>): DCLink
+function parse_dc_link(row: (string | number)[], header_indices: Record<string, number>, bus_by_id: Record<string, LatLonBus>): LatLonDCLink
 {
     const from_bus_id = String(row[header_indices.bus0])
     const to_bus_id = String(row[header_indices.bus1])
@@ -131,14 +131,14 @@ function parse_dc_link(row: (string | number)[], header_indices: Record<string, 
         id: String(row[header_indices.id]),
         from_bus_id,
         to_bus_id,
-        path: parse_geometry(String(row[header_indices.geometry]), from_bus, to_bus),
+        path_latlon: parse_geometry(String(row[header_indices.geometry]), from_bus, to_bus),
         capacity_mw: Number(row[header_indices.p_nom]),
         voltage_kv: Number(row[header_indices.voltage]),
     }
 }
 
 
-function parse_geometry(geometry: string, from_bus: Bus, to_bus: Bus): ILatLon[]
+function parse_geometry(geometry: string, from_bus: LatLonBus, to_bus: LatLonBus): ILatLon[]
 {
     geometry = geometry.trim()
 
