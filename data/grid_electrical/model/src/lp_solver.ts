@@ -2,10 +2,15 @@ import load_highs_module, { type Highs } from "highs"
 
 
 // The package typings describe a CommonJS default export but, as an ES module import, it is the loader function itself
-const load_highs = load_highs_module as unknown as () => Promise<Highs>
+const load_highs = load_highs_module as unknown as (options?: { locateFile?: (file: string) => string }) => Promise<Highs>
+
+// In a browser the WASM file is not beside the bundled JS, so point the loader at the asset URL Vite emits
+const highs_options = "window" in globalThis
+    ? { locateFile: () => new URL("../node_modules/highs/build/highs.wasm", import.meta.url).href }
+    : undefined
 
 // Loading the WASM solver is asynchronous but solving is synchronous, so load it once up front
-const highs = await load_highs()
+const highs = await load_highs(highs_options)
 
 
 /** One decision variable: lower <= x <= upper, contributing objective * x to the objective. Use +/-Infinity for no bound. */

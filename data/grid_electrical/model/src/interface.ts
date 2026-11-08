@@ -6,41 +6,81 @@ export interface ILatLon
 }
 
 
-export interface LatLonToCell
+export interface ConvertLatLonToFromCell
 {
-    round_to_cell_centre: (latlon: ILatLon) => ILatLon
-    to_cell_id: (latlon: ILatLon) => string
+    round_latlon_to_cell_centre: (latlon: ILatLon) => ILatLon
+    latlon_to_cell_id: (latlon: ILatLon) => string
+    cell_id_to_latlon: (cell_id: string) => ILatLon
 }
 
 
-export interface Bus
+interface CommonBus
 {
     id: string
-    latlon: ILatLon
 }
-export interface ACLine
+interface CommonACLine
 {
     id: string
     from_bus_id: string
     to_bus_id: string
-    path: ILatLon[]
     capacity_mw: number
     /** Reactance per unit */
     x_pu: number
     voltage_kv: number
 }
-export interface DCLink
+interface CommonDCLink
 {
     id: string
     from_bus_id: string
     to_bus_id: string
-    path: ILatLon[]
     capacity_mw: number
     voltage_kv: number
 }
-export interface ElectricalGrid
+export interface CommonElectricalGrid
 {
-    busses: Bus[]
-    ac_lines: ACLine[]
-    dc_links: DCLink[]
+    buses: CommonBus[]
+    ac_lines: CommonACLine[]
+    dc_links: CommonDCLink[]
+}
+
+
+export interface LatLonBus extends CommonBus
+{
+    latlon: ILatLon
+}
+export interface LatLonACLine extends CommonACLine
+{
+    path_latlon: ILatLon[]
+}
+export interface LatLonDCLink extends CommonDCLink
+{
+    path_latlon: ILatLon[]
+}
+export interface LatLonElectricalGrid extends CommonElectricalGrid
+{
+    buses: LatLonBus[]
+    ac_lines: LatLonACLine[]
+    dc_links: LatLonDCLink[]
+}
+
+
+export interface CellularBus extends CommonBus
+{
+    cell_id: string
+}
+export interface CellularACLine extends CommonACLine
+{
+    path_cell_ids: string[]
+}
+export interface CellularDCLink extends CommonDCLink
+{
+    path_cell_ids: string[]
+}
+export interface CellularElectricalGrid extends CommonElectricalGrid
+{
+    buses: CellularBus[]
+    ac_lines: CellularACLine[]
+    dc_links: CellularDCLink[]
+
+    bus_id_to_cell_id: (bus_id: string) => string
 }

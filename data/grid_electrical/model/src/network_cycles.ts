@@ -1,4 +1,4 @@
-export interface LineEnds
+export interface Edge
 {
     from_bus_index: number
     to_bus_index: number
@@ -27,14 +27,14 @@ export interface CycleStep
 
 
 /** Breadth first spanning forest of the AC subgraph, one tree per synchronous area. DC lines are ignored. */
-export function find_ac_spanning_forest(bus_count: number, lines: LineEnds[]): AcSpanningForest
+export function find_ac_spanning_forest(bus_count: number, edges: Edge[]): AcSpanningForest
 {
-    const neighbours: { bus: number, line: number }[][] = Array.from({ length: bus_count }, () => [])
-    lines.forEach((line, l) =>
+    const neighbours: { bus_index: number, edge_index: number }[][] = Array.from({ length: bus_count }, () => [])
+    edges.forEach((edge, edge_index) =>
     {
-        if (line.is_dc) return
-        neighbours[line.from_bus_index].push({ bus: line.to_bus_index, line: l })
-        neighbours[line.to_bus_index].push({ bus: line.from_bus_index, line: l })
+        if (edge.is_dc) return
+        neighbours[edge.from_bus_index].push({ bus_index: edge.to_bus_index, edge_index })
+        neighbours[edge.to_bus_index].push({ bus_index: edge.from_bus_index, edge_index })
     })
 
     const forest: AcSpanningForest = {
@@ -46,7 +46,7 @@ export function find_ac_spanning_forest(bus_count: number, lines: LineEnds[]): A
         tree_lines: new Set<number>(),
     }
 
-    for (let start = 0; start < bus_count; start++)
+    for (let start = 0; start < bus_count; ++start)
     {
         if (forest.component_of_bus[start] >= 0) continue
 
@@ -55,19 +55,19 @@ export function find_ac_spanning_forest(bus_count: number, lines: LineEnds[]): A
         forest.component_of_bus[start] = component
 
         const queue = [start]
-        for (let head = 0; head < queue.length; head++)
+        for (let head = 0; head < queue.length; ++head)
         {
             const bus = queue[head]
             for (const neighbour of neighbours[bus])
             {
-                if (forest.component_of_bus[neighbour.bus] >= 0) continue
+                if (forest.component_of_bus[neighbour.bus_index] >= 0) continue
 
-                forest.component_of_bus[neighbour.bus] = component
-                forest.parent_bus[neighbour.bus] = bus
-                forest.parent_line[neighbour.bus] = neighbour.line
-                forest.depth[neighbour.bus] = forest.depth[bus] + 1
-                forest.tree_lines.add(neighbour.line)
-                queue.push(neighbour.bus)
+                forest.component_of_bus[neighbour.bus_index] = component
+                forest.parent_bus[neighbour.bus_index] = bus
+                forest.parent_line[neighbour.bus_index] = neighbour.edge_index
+                forest.depth[neighbour.bus_index] = forest.depth[bus] + 1
+                forest.tree_lines.add(neighbour.edge_index)
+                queue.push(neighbour.bus_index)
             }
         }
     }
@@ -82,7 +82,7 @@ export function find_ac_spanning_forest(bus_count: number, lines: LineEnds[]): A
  * Each cycle starts with its closing line, then the tree lines back from its to_bus up to the common
  * ancestor, then down to its from_bus.
  */
-export function build_fundamental_cycles(lines: LineEnds[], forest: AcSpanningForest): CycleStep[][]
+export function build_fundamental_cycles(lines: Edge[], forest: AcSpanningForest): CycleStep[][]
 {
     const cycles: CycleStep[][] = []
 
@@ -118,7 +118,7 @@ export function build_fundamental_cycles(lines: LineEnds[], forest: AcSpanningFo
 }
 
 
-function create_step(lines: LineEnds[], line: number, travelling_from_bus: number): CycleStep
+function create_step(lines: Edge[], line: number, travelling_from_bus: number): CycleStep
 {
     return { line, direction: lines[line].from_bus_index === travelling_from_bus ? 1 : -1 }
 }

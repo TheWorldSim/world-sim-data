@@ -3,11 +3,11 @@ import { expect } from "chai"
 import {
     build_fundamental_cycles,
     find_ac_spanning_forest,
-    type LineEnds,
+    type Edge,
 } from "./network_cycles.ts"
 
 
-const triangle: LineEnds[] = [
+const triangle: Edge[] = [
     { from_bus_index: 0, to_bus_index: 1, is_dc: false },
     { from_bus_index: 1, to_bus_index: 2, is_dc: false },
     { from_bus_index: 0, to_bus_index: 2, is_dc: false },
@@ -63,7 +63,7 @@ describe("build_fundamental_cycles", () =>
 
     it("finds a cycle for each parallel line", () =>
     {
-        const lines: LineEnds[] = [
+        const lines: Edge[] = [
             { from_bus_index: 0, to_bus_index: 1, is_dc: false },
             { from_bus_index: 0, to_bus_index: 1, is_dc: false },
         ]
@@ -77,7 +77,7 @@ describe("build_fundamental_cycles", () =>
 
     it("ignores DC lines", () =>
     {
-        const lines: LineEnds[] = [
+        const lines: Edge[] = [
             { from_bus_index: 0, to_bus_index: 1, is_dc: false },
             { from_bus_index: 0, to_bus_index: 1, is_dc: true },
         ]

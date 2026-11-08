@@ -1,13 +1,13 @@
-import type { ElectricalGrid } from "./interface.ts"
+import type { CommonElectricalGrid } from "./interface.ts"
 import {
     build_fundamental_cycles,
     find_ac_spanning_forest,
     type CycleStep,
-    type LineEnds,
+    type Edge,
 } from "./network_cycles.ts"
 
 
-export interface SolverLine extends LineEnds
+export interface SolverLine extends Edge
 {
     /** Zero for DC links, which are controllable rather than governed by KVL */
     reactance_pu: number
@@ -22,18 +22,18 @@ export interface SolverNetwork
     lines: SolverLine[]
     /** KVL cycles of the AC lines only (a DC link breaks KVL) */
     cycles: CycleStep[][]
-    /** Number of separate synchronous (AC connected) areas, each of which must balance on its own */
-    ac_area_count: number
+    // /** Number of separate synchronous (AC connected) areas, each of which must balance on its own */
+    // ac_area_count: number
 }
 
 
 /**
  * AC lines with a non-finite reactance are open circuits and are dropped.
- * Expects every line to join two different known busses (as produced by aggregate_grid_to_cells).
+ * Expects every line to join two different known buses (as produced by aggregate_grid_to_cells).
  */
-export function build_solver_network(grid: ElectricalGrid): SolverNetwork
+export function build_solver_network(grid: CommonElectricalGrid): SolverNetwork
 {
-    const bus_ids = grid.busses.map(bus => bus.id)
+    const bus_ids = grid.buses.map(bus => bus.id)
     const bus_index_by_id = new Map(bus_ids.map((id, i) => [id, i]))
 
     const lines: SolverLine[] = [
@@ -50,7 +50,7 @@ export function build_solver_network(grid: ElectricalGrid): SolverNetwork
         bus_ids,
         lines,
         cycles: build_fundamental_cycles(lines, forest),
-        ac_area_count: forest.reference_buses.length,
+        // ac_area_count: forest.reference_buses.length,
     }
 }
 

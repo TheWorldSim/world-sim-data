@@ -5,8 +5,9 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "dev": "vite",
     "test": "mocha",
-    "typecheck": "tsc"
+    "typecheck": "tsc && tsc -p tsconfig.demo.json"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,7 @@
     "chai": "6.3.0",
     "highs": "1.15.4",
     "mocha": "12.0.3",
-    "typescript": "7.0.2"
+    "typescript": "7.0.2",
+    "vite": "^8.3.6"
   }
 }

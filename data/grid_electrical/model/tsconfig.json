@@ -11,5 +11,5 @@
     "skipLibCheck": true,
     "types": ["node", "mocha"]
   },
-  "include": ["*.ts", "src/power_balance.test.ts", "src/power_balance.ts"]
+  "include": ["**/*.ts"]
 }
