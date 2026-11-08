@@ -7,7 +7,7 @@ import shapely as shp
 
 GEOD = Geod(ellps="WGS84")
 
-LATLON_DP = 2
+LATLON_DP = 3
 LATLON_MIN_DISTANCE_M = 2000
 VALUE_SF = 3
 
