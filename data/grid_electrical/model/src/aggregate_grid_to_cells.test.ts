@@ -2,7 +2,7 @@ import { expect } from "chai"
 
 import { aggregate_grid_to_cells } from "./aggregate_grid_to_cells.ts"
 import { parse_grid_csv_data } from "./parse_data.ts"
-import { latlon_to_from_cell } from "./latlon_to_from_cell.ts"
+import { latlon_to_from_cell_1dp } from "./latlon_to_from_cell.ts"
 
 
 
@@ -36,7 +36,7 @@ const grid = parse_grid_csv_data({
 
 describe("aggregate_grid_to_cells", () =>
 {
-    const aggregated_grid = aggregate_grid_to_cells(grid, latlon_to_from_cell)
+    const aggregated_grid = aggregate_grid_to_cells(grid, latlon_to_from_cell_1dp)
 
     it("aggregates all buses and merges by cell", () =>
     {

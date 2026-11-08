@@ -7,7 +7,7 @@ import {
 import type { LatLonElectricalGrid } from "./interface.ts"
 import { parse_grid_csv_data } from "./parse_data.ts"
 import { deep_approximate } from "./utils.ts"
-import { latlon_to_from_cell } from "./latlon_to_from_cell.ts"
+import { latlon_to_from_cell_1dp } from "./latlon_to_from_cell.ts"
 import { aggregate_grid_to_cells } from "./aggregate_grid_to_cells.ts"
 
 
@@ -48,7 +48,7 @@ describe("calculate_power_balance", () =>
 
     it("balances supply and demand across a connected two bus grid", () =>
     {
-        const cellular_grid = aggregate_grid_to_cells(two_bus_grid, latlon_to_from_cell)
+        const cellular_grid = aggregate_grid_to_cells(two_bus_grid, latlon_to_from_cell_1dp)
         const args: PoweredElectricalGrid = {
             cellular_grid,
             demand_MW_by_cell: { "0_0": 500 },
@@ -67,7 +67,7 @@ describe("calculate_power_balance", () =>
 
     it("flags supply as curtailed by demand when there is more supply than demand", () =>
     {
-        const cellular_grid = aggregate_grid_to_cells(two_bus_grid, latlon_to_from_cell)
+        const cellular_grid = aggregate_grid_to_cells(two_bus_grid, latlon_to_from_cell_1dp)
         const balance = calculate_power_balance({
             cellular_grid,
             demand_MW_by_cell: { "0_0": 500 },
@@ -82,7 +82,7 @@ describe("calculate_power_balance", () =>
 
     it("flags a cell with no net supply or demand as idle, including when supply and demand cancel", () =>
     {
-        const cellular_grid = aggregate_grid_to_cells(two_bus_grid, latlon_to_from_cell)
+        const cellular_grid = aggregate_grid_to_cells(two_bus_grid, latlon_to_from_cell_1dp)
 
         const balance_nothing = calculate_power_balance({ cellular_grid, demand_MW_by_cell: {}, supply_MW_by_cell: {} })
         expect(balance_nothing.status_by_cell).to.deep.equal({ "0_0": "idle", "0_1": "idle" })
@@ -98,7 +98,7 @@ describe("calculate_power_balance", () =>
 
     it("flags supply and demand in a cell with no bus as curtailed by the grid and unmet", () =>
     {
-        const cellular_grid = aggregate_grid_to_cells(two_bus_grid, latlon_to_from_cell)
+        const cellular_grid = aggregate_grid_to_cells(two_bus_grid, latlon_to_from_cell_1dp)
         const balance = calculate_power_balance({
             cellular_grid,
             demand_MW_by_cell: { "5_5": 100 },
@@ -114,7 +114,7 @@ describe("calculate_power_balance", () =>
 
     it("limits flow to the capacity of the line", () =>
     {
-        const cellular_grid = aggregate_grid_to_cells(two_bus_grid, latlon_to_from_cell)
+        const cellular_grid = aggregate_grid_to_cells(two_bus_grid, latlon_to_from_cell_1dp)
         const args: PoweredElectricalGrid = {
             cellular_grid,
             demand_MW_by_cell: { "0_0": 2000 },
@@ -158,7 +158,7 @@ describe("calculate_power_balance", () =>
                 0,0,3,400,1000,
             `,
         })
-        const cellular_grid = aggregate_grid_to_cells(grid, latlon_to_from_cell)
+        const cellular_grid = aggregate_grid_to_cells(grid, latlon_to_from_cell_1dp)
 
         const args: PoweredElectricalGrid = {
             cellular_grid,
@@ -201,7 +201,7 @@ describe("calculate_power_balance", () =>
 
         // Without the DC link, bus 0 is only reachable through line 0, which limits delivery to 1 GW
         const grid_without_dc_link = { ...grid, dc_links: [] }
-        const cellular_grid_without_dc_link = aggregate_grid_to_cells(grid_without_dc_link, latlon_to_from_cell)
+        const cellular_grid_without_dc_link = aggregate_grid_to_cells(grid_without_dc_link, latlon_to_from_cell_1dp)
         const balance_without_dc_link = calculate_power_balance({ ...args, cellular_grid: cellular_grid_without_dc_link })
         deep_approximate(balance_without_dc_link, {
             MW_by_cell: {
@@ -238,7 +238,7 @@ describe("calculate_power_balance", () =>
             ...grid,
             ac_lines: grid.ac_lines.filter(line => line.id !== "0")
         }
-        const cellular_grid_without_line_0 = aggregate_grid_to_cells(grid_without_line_0, latlon_to_from_cell)
+        const cellular_grid_without_line_0 = aggregate_grid_to_cells(grid_without_line_0, latlon_to_from_cell_1dp)
         const balance_without_line_0 = calculate_power_balance({ ...args, cellular_grid: cellular_grid_without_line_0 })
         deep_approximate(balance_without_line_0, {
             MW_by_cell: {
