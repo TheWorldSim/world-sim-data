@@ -1,4 +1,3 @@
-import { latlon_to_from_cell } from "../src/latlon_to_from_cell.ts"
 import { calculate_power_balance, type PoweredElectricalGrid } from "../src/power_balance.ts"
 import { grid_to_screen } from "./latlon_to_screen.ts"
 import { manage_svg_view } from "./manage_svg_view.ts"
@@ -9,14 +8,18 @@ import { make_lines_and_links_layer, make_buses_layer } from "./render_grid_as_s
 const svg_view = manage_svg_view(document.getElementById("grid-display") as unknown as SVGSVGElement)
 
 
-function render_grid(powered_grid: PoweredElectricalGrid, spread: number): void
+function render_grid(): void
 {
+    const spread = power_grids.get_grid_spread()
+    const cell_id_to_latlon = power_grids.get_cell_id_to_latlon()
+    const powered_grid = power_grids.get_grid()
     const { cellular_grid: grid } = powered_grid
+
     const svg_grid_display = svg_view.svg
     svg_grid_display.replaceChildren()
 
     const { width, height } = svg_grid_display.getBoundingClientRect()
-    const { project, home_view } = grid_to_screen({ grid, width, height, spread, cell_id_to_latlon: latlon_to_from_cell.cell_id_to_latlon })
+    const { project, home_view } = grid_to_screen({ grid, width, height, spread, cell_id_to_latlon })
 
     svg_view.set_home_view(home_view)
 
@@ -69,10 +72,16 @@ function render_grid(powered_grid: PoweredElectricalGrid, spread: number): void
     update_view()
 }
 
-render_grid(power_grids.get_grid(), power_grids.get_grid_spread())
+render_grid()
 
 document.getElementById("dataset")?.addEventListener("change", async (event) => {
     const target = event.target as HTMLSelectElement
     await power_grids.select_grid(target.value as "3ac_1dc" | "7ac_1dc" | "uk" | "uk_ni" | "europe")
-    render_grid(power_grids.get_grid(), power_grids.get_grid_spread())
+    render_grid()
+})
+
+document.getElementById("dgg")?.addEventListener("change", async (event) => {
+    const target = event.target as HTMLSelectElement
+    await power_grids.set_dgg(target.value as "1dp" | "h3r4")
+    render_grid()
 })
