@@ -26,12 +26,17 @@ export default defineConfig({
     build: {
         outDir: "../dist",
         emptyOutDir: true,
+        sourcemap: true, // Add sourcemap
         target: "es2022",
         rollupOptions: {
             input: demo_html,
-            output: {
+            output:
+            {
                 entryFileNames: "[name].js",
                 assetFileNames: "[name][extname]",
+                manualChunks(id) {
+                    if (id.includes("node_modules")) return "vendor"
+                },
             },
         },
     },

@@ -32,7 +32,7 @@ describe("calculate_power_balance", () =>
     it("returns an empty balance for an empty grid with no supply or demand", () =>
     {
         const args: PoweredElectricalGrid = {
-            cellular_grid: { buses: [], ac_lines: [], dc_links: [] },
+            cellular_grid: { buses: [], ac_lines: [], dc_links: [], bus_id_to_cell_id: () => "" },
             demand_MW_by_cell: {},
             supply_MW_by_cell: {},
         }
