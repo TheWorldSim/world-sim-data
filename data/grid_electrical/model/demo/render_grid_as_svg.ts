@@ -1,7 +1,8 @@
-import type { CellularBus, CellularElectricalGrid } from "../src/interface.ts"
+import type { CellularACLine, CellularBus, CellularDCLink, CellularElectricalGrid } from "../src/interface.ts"
 import { flow_level } from "../src/flow_level.ts"
 import type { CellStatus } from "../src/power_balance.ts"
-import type { ProjectCellId } from "./latlon_to_screen.ts"
+import type { ProjectCellId, ProjectLatLon } from "./latlon_to_screen.ts"
+import type { CountryOutline } from "./country_outlines.ts"
 
 
 const SVG_NS = "http://www.w3.org/2000/svg"
@@ -14,12 +15,28 @@ function make_svg_element(tag: string, attributes: Record<string, string | numbe
 }
 
 
+export function make_countries_layer(countries: CountryOutline[], project_latlon_to_xy: ProjectLatLon): SVGElement
+{
+    const countries_layer = make_svg_element("g", {}, "countries")
+    for (const country of countries)
+    {
+        const d = country.rings.map(ring => {
+            const points = ring.map(latlon => project_latlon_to_xy(latlon))
+            return points.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ") + " Z"
+        }).join(" ")
+        countries_layer.append(make_svg_element("path", { d }, "country"))
+    }
+    return countries_layer
+}
+
+
 export function make_lines_and_links_layer(grid: CellularElectricalGrid, project: ProjectCellId)
 {
     const lines_layer = make_svg_element("g", {}, "lines")
 
     interface LineSvg
     {
+        line_id: string
         points: Point[]
         capacity_MW: number
         flow_MW: number
@@ -43,10 +60,11 @@ export function make_lines_and_links_layer(grid: CellularElectricalGrid, project
     const label_percent = make_svg_element("text", { y: 11 }, "lab-n halo")
     label_group.append(label_MW, label_percent)
 
-    function add_line(line: { id: string, capacity_mw: number, path_cell_ids: string[] }, kind: "ac" | "dc", line_svg_by_id: Record<string, LineSvg>)
+
+    function add_line(line: CellularACLine | CellularDCLink, kind: "ac" | "dc", line_svg_by_id: Record<string, LineSvg>)
     {
         const points = line.path_cell_ids.map(cell_id => project(cell_id))
-        const base = make_svg_element("path", {}, `ln ${kind}`)
+        const base = make_svg_element("path", {}, `ln ${kind} debug-line-id-${line.id}-bus0-${line.from_bus_id}-bus1-${line.to_bus_id}`)
         const flow = make_svg_element("path", { visibility: "hidden" }, "ln-flow")
         const arrow = make_svg_element("path", { d: "M -6 -6 L 8 0 L -6 6 L -2 0 Z", visibility: "hidden" }, "arrow")
         const hit = make_svg_element("path", {}, "ln-hit")
@@ -55,7 +73,7 @@ export function make_lines_and_links_layer(grid: CellularElectricalGrid, project
         lines_layer.append(group)
 
         const label_position = label_position_along_path(points)
-        const line_svg: LineSvg = { points, capacity_MW: line.capacity_mw, flow_MW: 0, label_position, base, flow, arrow, hit }
+        const line_svg: LineSvg = { line_id: line.id, points, capacity_MW: line.capacity_mw, flow_MW: 0, label_position, base, flow, arrow, hit }
         line_svg_by_id[line.id] = line_svg
         update_line_svg(line_svg, 0, 1)
 
@@ -236,7 +254,7 @@ export function make_buses_layer(grid: CellularElectricalGrid, project: ProjectC
     for (const bus of grid.buses)
     {
         const { x, y } = project(bus.cell_id)
-        const bus_group = make_svg_element("g", { transform: `translate(${x} ${y})` }, "bus")
+        const bus_group = make_svg_element("g", { transform: `translate(${x} ${y})` }, `bus debug-bus-id-${bus.id}`)
         const bus_name = make_svg_element("text", { y: -2 }, "bus-name")
         bus_name.textContent = bus.id
         const bus_amount_label = make_svg_element("text", { y: 16 }, "bus-amt")
