@@ -18,8 +18,13 @@ interface GridToScreenArgs
     spread: number
     cell_id_to_latlon: (cell_id: string) => ILatLon
 }
-
-export function grid_to_screen(args: GridToScreenArgs): { project: ProjectCellId, home_view: { x: number, y: number, w: number, h: number } }
+interface GridToScreenResult
+{
+    project: ProjectCellId
+    project_latlon_to_xy: ProjectLatLon
+    home_view: { x: number, y: number, w: number, h: number }
+}
+export function grid_to_screen(args: GridToScreenArgs): GridToScreenResult
 {
     const { grid, width, height, spread } = args
 
@@ -62,7 +67,7 @@ export function grid_to_screen(args: GridToScreenArgs): { project: ProjectCellId
         h: height * spread,
     }
 
-    return { project, home_view }
+    return { project, project_latlon_to_xy, home_view }
 }
 
 

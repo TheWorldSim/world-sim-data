@@ -38,3 +38,14 @@ export const latlon_to_from_cell_h3r4: ConvertLatLonToFromCell = {
 
 
 // TODO IVEA7H_Z7 dggal https://github.com/ecere/dggal/#installation-from-npm
+
+
+export const latlon_to_from_cell_raw: ConvertLatLonToFromCell = {
+    round_latlon_to_cell_centre: (latlon) => latlon,
+    latlon_to_cell_id: (latlon) => `${latlon.lat}_${latlon.lon}`,
+    cell_id_to_latlon: (cell_id) =>
+    {
+        const [lat, lon] = cell_id.split("_").map(Number)
+        return { lat, lon }
+    }
+}

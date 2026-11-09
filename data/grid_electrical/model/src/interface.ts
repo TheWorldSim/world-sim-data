@@ -14,11 +14,11 @@ export interface ConvertLatLonToFromCell
 }
 
 
-interface CommonBus
+export interface CommonBus
 {
     id: string
 }
-interface CommonACLine
+export interface CommonACLine
 {
     id: string
     from_bus_id: string
@@ -28,7 +28,7 @@ interface CommonACLine
     x_pu: number
     voltage_kv: number
 }
-interface CommonDCLink
+export interface CommonDCLink
 {
     id: string
     from_bus_id: string

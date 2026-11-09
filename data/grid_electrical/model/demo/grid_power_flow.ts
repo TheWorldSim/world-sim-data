@@ -1,11 +1,14 @@
 import { calculate_power_balance, type PoweredElectricalGrid } from "../src/power_balance.ts"
+import { load_europe_country_outlines, type CountryOutline } from "./country_outlines.ts"
 import { grid_to_screen } from "./latlon_to_screen.ts"
 import { manage_svg_view } from "./manage_svg_view.ts"
 import { power_grids } from "./power_grids.ts"
-import { make_lines_and_links_layer, make_buses_layer } from "./render_grid_as_svg.ts"
+import { make_countries_layer, make_lines_and_links_layer, make_buses_layer } from "./render_grid_as_svg.ts"
 
 
 const svg_view = manage_svg_view(document.getElementById("grid-display") as unknown as SVGSVGElement)
+
+let country_outlines: CountryOutline[] = []
 
 
 function render_grid(): void
@@ -19,7 +22,7 @@ function render_grid(): void
     svg_grid_display.replaceChildren()
 
     const { width, height } = svg_grid_display.getBoundingClientRect()
-    const { project, home_view } = grid_to_screen({ grid, width, height, spread, cell_id_to_latlon })
+    const { project, project_latlon_to_xy, home_view } = grid_to_screen({ grid, width, height, spread, cell_id_to_latlon })
 
     svg_view.set_home_view(home_view)
 
@@ -54,7 +57,9 @@ function render_grid(): void
 
     const lines = make_lines_and_links_layer(grid, project)
     const buses = make_buses_layer(grid, project, handle_change_cell_MW)
+    const countries = make_countries_layer(country_outlines, project_latlon_to_xy)
 
+    svg_grid_display.append(countries)
     svg_grid_display.append(lines.svg)
     svg_grid_display.append(buses.svg)
 
@@ -72,8 +77,6 @@ function render_grid(): void
     update_view()
 }
 
-render_grid()
-
 document.getElementById("dataset")?.addEventListener("change", async (event) => {
     const target = event.target as HTMLSelectElement
     await power_grids.select_grid(target.value as "3ac_1dc" | "7ac_1dc" | "uk" | "uk_ni" | "europe")
@@ -82,6 +85,18 @@ document.getElementById("dataset")?.addEventListener("change", async (event) => 
 
 document.getElementById("dgg")?.addEventListener("change", async (event) => {
     const target = event.target as HTMLSelectElement
-    await power_grids.set_dgg(target.value as "1dp" | "h3r4")
+    await power_grids.set_dgg(target.value as "latlon_raw" |"1dp" | "h3r4")
     render_grid()
 })
+
+
+async function initial_render()
+{
+    country_outlines = await load_europe_country_outlines().catch((error) => {
+        console.error("Failed to load country outlines", error)
+        return []
+    })
+    document.getElementById("dataset")?.dispatchEvent(new Event("change"))
+    document.getElementById("dgg")?.dispatchEvent(new Event("change"))
+}
+initial_render()
