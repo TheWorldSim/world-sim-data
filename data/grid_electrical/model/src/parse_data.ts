@@ -1,5 +1,5 @@
-import type { LatLonBus, LatLonElectricalGrid, LatLonACLine, LatLonDCLink, ILatLon } from "./interface.ts"
 import { d1258v6_parse_csv } from "./d1258v6_parse_csv.js"
+import type { ILatLon, LatLonACLine, LatLonBus, LatLonDCLink, LatLonElectricalGrid } from "./interface.ts"
 
 
 export interface GridCsvData

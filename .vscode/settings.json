@@ -1,3 +1,13 @@
 {
-    "python-envs.defaultEnvManager": "ms-python.python:venv"
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "always"
+    },
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": true,
+    "python-envs.defaultEnvManager": "ms-python.python:venv",
+    "[plaintext]": {
+        "editor.suggest.showWords": false
+    },
+    "typescript.tsdk": "node_modules/typescript/lib"
 }

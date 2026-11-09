@@ -1,8 +1,8 @@
 import { expect } from "chai"
 
 import { create_test_grid } from "./create_test_grid.ts"
-import { build_solver_network } from "./solver_network.ts"
 import { solve_network } from "./solve_network.ts"
+import { build_solver_network } from "./solver_network.ts"
 
 
 function expect_close_to_all(actual: number[], expected: number[])

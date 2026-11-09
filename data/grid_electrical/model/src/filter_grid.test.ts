@@ -1,8 +1,8 @@
 import { expect } from "chai"
 
-import { parse_grid_csv_data } from "./parse_data.ts"
 import { filter_grid } from "./filter_grid.ts"
 import type { CommonACLine, CommonBus, CommonDCLink } from "./interface.ts"
+import { parse_grid_csv_data } from "./parse_data.ts"
 
 
 const buses_csv = `

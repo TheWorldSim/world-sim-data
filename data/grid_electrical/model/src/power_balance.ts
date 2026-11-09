@@ -1,6 +1,6 @@
 import type { CellularElectricalGrid } from "./interface.ts"
-import { build_solver_network } from "./solver_network.ts"
 import { solve_network } from "./solve_network.ts"
+import { build_solver_network } from "./solver_network.ts"
 
 
 export interface PoweredElectricalGrid
