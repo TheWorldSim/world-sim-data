@@ -13,8 +13,8 @@ export function create_test_grid(ac_lines: TestAcLine[], dc_links: TestDcLink[] 
     return {
         buses: Array.from({ length: bus_count }, (_, i) => ({ id: String(i), latlon: { lat: 0, lon: 0 } })),
         ac_lines: ac_lines.map(([from_bus_id, to_bus_id, x_pu, capacity_mw = Infinity], index) =>
-            ({ id: `${index}`, from_bus_id, to_bus_id, path: [], capacity_mw, x_pu, voltage_kv: 400 })),
+            ({ id: `${index}`, from_bus_id, to_bus_id, path_latlon: [], capacity_mw, x_pu, voltage_kv: 400 })),
         dc_links: dc_links.map(([from_bus_id, to_bus_id, capacity_mw = Infinity], index) =>
-            ({ id: `${index}`, from_bus_id, to_bus_id, path: [], capacity_mw, voltage_kv: 400 })),
+            ({ id: `${index}`, from_bus_id, to_bus_id, path_latlon: [], capacity_mw, voltage_kv: 400 })),
     }
 }

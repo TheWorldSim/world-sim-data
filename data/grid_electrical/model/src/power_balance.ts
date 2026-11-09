@@ -1,5 +1,4 @@
-import { aggregate_grid_to_cells } from "./aggregate_grid_to_cells.ts"
-import type { CellularElectricalGrid, CommonElectricalGrid, ConvertLatLonToFromCell } from "./interface.ts"
+import type { CellularElectricalGrid } from "./interface.ts"
 import { build_solver_network } from "./solver_network.ts"
 import { solve_network } from "./solve_network.ts"
 
