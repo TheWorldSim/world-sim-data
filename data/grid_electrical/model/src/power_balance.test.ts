@@ -1,14 +1,14 @@
 import { expect } from "chai"
 
+import { aggregate_grid_to_cells } from "./aggregate_grid_to_cells.ts"
+import type { LatLonElectricalGrid } from "./interface.ts"
+import { latlon_to_from_cell_1dp } from "./latlon_to_from_cell.ts"
+import { parse_grid_csv_data } from "./parse_data.ts"
 import {
     calculate_power_balance,
     type PoweredElectricalGrid,
 } from "./power_balance.ts"
-import type { LatLonElectricalGrid } from "./interface.ts"
-import { parse_grid_csv_data } from "./parse_data.ts"
 import { deep_approximate } from "./utils.ts"
-import { latlon_to_from_cell_1dp } from "./latlon_to_from_cell.ts"
-import { aggregate_grid_to_cells } from "./aggregate_grid_to_cells.ts"
 
 
 const two_bus_grid: LatLonElectricalGrid = parse_grid_csv_data({
