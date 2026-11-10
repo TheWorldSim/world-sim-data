@@ -2,8 +2,10 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from pyproj import Geod
 import shapely as shp
+from df_to_file import save_buses_df, save_lines_df, save_links_df
+from process_uk import process_uk
+from pyproj import Geod
 
 GEOD = Geod(ellps="WGS84")
 
@@ -11,21 +13,24 @@ LATLON_DP = 3
 LATLON_MIN_DISTANCE_M = 2000
 VALUE_SF = 3
 
-cwd = Path().cwd()
-buses_input_path = cwd / "eur/input/buses.csv"
-lines_input_path = cwd / "eur/input/lines.csv"
-links_input_path = cwd / "eur/input/links.csv"
-buses_processed_path = cwd / "eur/processed/buses.csv"
-lines_processed_path = cwd / "eur/processed/lines.csv"
-links_processed_path = cwd / "eur/processed/links.csv"
+cwd = Path.cwd()
+buses_input_path = cwd / "input/eur/buses.csv"
+lines_input_path = cwd / "input/eur/lines.csv"
+links_input_path = cwd / "input/eur/links.csv"
+uk_eez_path = Path("/Users/ajp/projects/the_world_sim/world-sim-data/data/boundaries/eez/uk_eez.geojson")
+eur_buses_processed_path = cwd / "processed/eur/buses.csv"
+eur_lines_processed_path = cwd / "processed/eur/lines.csv"
+eur_links_processed_path = cwd / "processed/eur/links.csv"
 
 
 def process():
-    bus_df = process_buses()
-    bus_df_by_old_id = bus_df.set_index("old_bus_id", drop=False)
+    eur_buses_df = process_buses()
+    bus_df_by_old_id = eur_buses_df.set_index("old_bus_id", drop=False)
 
-    process_lines(bus_df_by_old_id)
-    process_links(bus_df_by_old_id)
+    eur_lines_df = process_lines(bus_df_by_old_id)
+    eur_links_df = process_links(bus_df_by_old_id)
+
+    process_uk(eur_lines_df, eur_links_df, eur_buses_df)
 
 
 def process_buses():
@@ -37,53 +42,52 @@ def process_buses():
     bus_df["lon"] = bus_df["x"].astype(float).round(LATLON_DP)
     bus_df["lat"] = bus_df["y"].astype(float).round(LATLON_DP)
 
-    bus_fields = ["bus_id", "voltage", "lon", "lat"]
-    bus_df[bus_fields].to_csv(buses_processed_path, index=False)
+    save_buses_df(bus_df, eur_buses_processed_path)
 
     return bus_df
 
 
 def process_lines(bus_df_by_old_id: pd.DataFrame):
-    line_df = pd.read_csv(lines_input_path, quotechar="'")
+    lines_df = pd.read_csv(lines_input_path, quotechar="'")
 
     # Manually repair data
-    line_df.loc[line_df["line_id"] == "way/1302963591-220", "geometry"] = "LINESTRING (-3.57961068 40.41199437, -3.57500309 40.42231781, -3.571702949526109 40.41176072465484, -3.5716714 40.4117619, -3.5674641 40.4119189, -3.5657976 40.4119763, -3.5654965848212576 40.41198789978665)".replace("-3.57961068 40.41199437, ", "")
+    lines_df.loc[lines_df["line_id"] == "way/1302963591-220", "geometry"] = "LINESTRING (-3.57961068 40.41199437, -3.57500309 40.42231781, -3.571702949526109 40.41176072465484, -3.5716714 40.4117619, -3.5674641 40.4119189, -3.5657976 40.4119763, -3.5654965848212576 40.41198789978665)".replace("-3.57961068 40.41199437, ", "")
 
     # Copied from: https://github.com/PyPSA/PyPSA/blob/9f0b8a7/pypsa/network/power_flow.py#L814-L816
-    line_df["x_pu"] = line_df["x"] / (line_df["voltage"] ** 2)
+    lines_df["x_pu"] = lines_df["x"] / (lines_df["voltage"] ** 2)
 
-    line_df["voltage"] = round_sig_figs(line_df["voltage"], VALUE_SF)
-    line_df["s_nom"] = round_sig_figs(line_df["s_nom"], VALUE_SF)
-    line_df["x_pu"] = round_sig_figs(line_df["x_pu"], VALUE_SF)
+    lines_df["voltage"] = round_sig_figs(lines_df["voltage"], VALUE_SF)
+    lines_df["s_nom"] = round_sig_figs(lines_df["s_nom"], VALUE_SF)
+    lines_df["x_pu"] = round_sig_figs(lines_df["x_pu"], VALUE_SF)
 
-    line_df["geometry"] = round_linestring_series(line_df, bus_df_by_old_id, LATLON_DP)
+    lines_df["geometry"] = round_linestring_series(lines_df, bus_df_by_old_id, LATLON_DP)
 
-    map_line_id = {orig_id: new_id for new_id, orig_id in enumerate(line_df["line_id"])}
-    line_df["line_id"] = line_df["line_id"].map(map_line_id)
-    line_df["bus0"] = line_df["bus0"].map(lambda old_bus_id: bus_df_by_old_id.at[old_bus_id, "bus_id"])
-    line_df["bus1"] = line_df["bus1"].map(lambda old_bus_id: bus_df_by_old_id.at[old_bus_id, "bus_id"])
+    map_line_id = {orig_id: new_id for new_id, orig_id in enumerate(lines_df["line_id"])}
+    lines_df["line_id"] = lines_df["line_id"].map(map_line_id)
+    lines_df["bus0"] = lines_df["bus0"].map(lambda old_bus_id: bus_df_by_old_id.at[old_bus_id, "bus_id"])
+    lines_df["bus1"] = lines_df["bus1"].map(lambda old_bus_id: bus_df_by_old_id.at[old_bus_id, "bus_id"])
 
-    line_fields = ["line_id", "bus0", "bus1", "voltage", "s_nom", "x_pu", "geometry"]
-    line_df = line_df[line_fields]
-    line_df.to_csv(lines_processed_path, index=False, float_format="%.15g")
+    save_lines_df(lines_df, eur_lines_processed_path)
+
+    return lines_df
 
 
 def process_links(bus_df_by_old_id: pd.DataFrame):
-    link_df = pd.read_csv(links_input_path, quotechar="'")
+    links_df = pd.read_csv(links_input_path, quotechar="'")
 
-    link_df["voltage"] = round_sig_figs(link_df["voltage"], VALUE_SF)
-    link_df["p_nom"] = round_sig_figs(link_df["p_nom"], VALUE_SF)
+    links_df["voltage"] = round_sig_figs(links_df["voltage"], VALUE_SF)
+    links_df["p_nom"] = round_sig_figs(links_df["p_nom"], VALUE_SF)
 
-    link_df["geometry"] = round_linestring_series(link_df, bus_df_by_old_id, LATLON_DP)
+    links_df["geometry"] = round_linestring_series(links_df, bus_df_by_old_id, LATLON_DP)
 
-    map_link_id = {orig_id: new_id for new_id, orig_id in enumerate(link_df["link_id"])}
-    link_df["link_id"] = link_df["link_id"].map(map_link_id)
-    link_df["bus0"] = link_df["bus0"].map(lambda old_bus_id: bus_df_by_old_id.at[old_bus_id, "bus_id"])
-    link_df["bus1"] = link_df["bus1"].map(lambda old_bus_id: bus_df_by_old_id.at[old_bus_id, "bus_id"])
+    map_link_id = {orig_id: new_id for new_id, orig_id in enumerate(links_df["link_id"])}
+    links_df["link_id"] = links_df["link_id"].map(map_link_id)
+    links_df["bus0"] = links_df["bus0"].map(lambda old_bus_id: bus_df_by_old_id.at[old_bus_id, "bus_id"])
+    links_df["bus1"] = links_df["bus1"].map(lambda old_bus_id: bus_df_by_old_id.at[old_bus_id, "bus_id"])
 
-    link_fields = ["link_id", "bus0", "bus1", "voltage", "p_nom", "geometry"]
-    link_df = link_df[link_fields]
-    link_df.to_csv(links_processed_path, index=False, float_format="%.15g")
+    save_links_df(links_df, eur_links_processed_path)
+
+    return links_df
 
 
 def round_sig_figs(series: pd.Series, sig_figs: int) -> pd.Series:
