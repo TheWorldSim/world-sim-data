@@ -19,3 +19,15 @@ cd model
 pnpm install
 pnpm run dev
 ```
+
+## Tests
+
+```bash
+uv run pytest
+```
+
+```bash
+cd model
+pnpm install
+pnpm test
+```

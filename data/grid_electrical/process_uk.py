@@ -11,10 +11,13 @@ if data_dir not in sys.path:
 
 from boundaries.eez.load_uk_eez import load_uk_eez
 from df_to_file import save_buses_df, save_lines_df, save_links_df
+from process_to_h3 import aggregate_grid_to_h3
 
-uk_buses_processed_path = this_dir / "processed/uk/buses.csv"
-uk_lines_processed_path = this_dir / "processed/uk/lines.csv"
-uk_links_processed_path = this_dir / "processed/uk/links.csv"
+processed_uk_dir = this_dir / "processed/uk"
+uk_buses_processed_path = processed_uk_dir / "buses.csv"
+uk_lines_processed_path = processed_uk_dir / "lines.csv"
+uk_links_processed_path = processed_uk_dir / "links.csv"
+processed_uk_h3_dir = processed_uk_dir / "h3r4"
 
 
 def process_uk(eur_lines_df: pd.DataFrame, eur_links_df: pd.DataFrame, eur_buses_df: pd.DataFrame):
@@ -24,12 +27,16 @@ def process_uk(eur_lines_df: pd.DataFrame, eur_links_df: pd.DataFrame, eur_buses
     uk_buses_df = process_uk_buses(eur_buses_df, uk_eez_polygon)
 
     uk_bus_ids = set(uk_buses_df["bus_id"])
-    related_bus_ids = process_uk_lines(uk_bus_ids, eur_lines_df)
-    related_bus_ids = related_bus_ids.union(process_uk_links(uk_bus_ids, eur_links_df))
+    (related_bus_ids, uk_lines_df) = process_uk_lines(uk_bus_ids, eur_lines_df)
+    links_result = process_uk_links(uk_bus_ids, eur_links_df)
+    uk_links_df = links_result[1]
+    related_bus_ids = related_bus_ids.union(links_result[0])
 
     all_uk_related_bus_ids = uk_bus_ids.union(related_bus_ids)
     all_uk_related_buses = eur_buses_df[eur_buses_df["bus_id"].isin(all_uk_related_bus_ids)]
     save_buses_df(all_uk_related_buses, uk_buses_processed_path)
+
+    aggregate_grid_to_h3(all_uk_related_buses, uk_lines_df, uk_links_df, processed_uk_h3_dir)
 
 
 def is_point_in_eez(lon: float, lat: float, eez_polygon: Polygon) -> bool:
@@ -63,7 +70,9 @@ def process_uk_lines(uk_bus_ids: set[str], eur_lines_df: pd.DataFrame):
     save_lines_df(uk_lines_df, uk_lines_processed_path)
 
     # Return the bus IDs that are connected to the UK EEZ
-    return set(uk_lines_df["bus0"]).union(set(uk_lines_df["bus1"])) - uk_bus_ids
+    related_bus_ids = set(uk_lines_df["bus0"]).union(set(uk_lines_df["bus1"])) - uk_bus_ids
+
+    return (related_bus_ids, uk_lines_df)
 
 
 def process_uk_links(uk_bus_ids: set[str], eur_links_df: pd.DataFrame):
@@ -72,4 +81,7 @@ def process_uk_links(uk_bus_ids: set[str], eur_links_df: pd.DataFrame):
     save_links_df(uk_links_df, uk_links_processed_path)
 
     # Return the bus IDs that are connected to the UK EEZ
-    return set(uk_links_df["bus0"]).union(set(uk_links_df["bus1"])) - uk_bus_ids
+    related_bus_ids = set(uk_links_df["bus0"]).union(set(uk_links_df["bus1"])) - uk_bus_ids
+    return (related_bus_ids, uk_links_df)
+    return (related_bus_ids, uk_links_df)
+    return (related_bus_ids, uk_links_df)

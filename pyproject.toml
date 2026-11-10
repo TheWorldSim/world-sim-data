@@ -23,4 +23,5 @@ dependencies = [
 [dependency-groups]
 dev = [
     "ipdb==0.13.13",
+    "pytest==9.2.0",
 ]
