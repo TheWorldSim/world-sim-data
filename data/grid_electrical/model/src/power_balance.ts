@@ -1,9 +1,16 @@
-import type { CellularElectricalGrid } from "./interface.ts"
+import type { CellularElectricalGrid, LatLonElectricalGrid } from "./interface.ts"
 import { solve_network } from "./solve_network.ts"
 import { build_solver_network } from "./solver_network.ts"
 
 
-export interface PoweredElectricalGrid
+/** Lat/lon grid with supply and demand keyed by bus, so it can be reaggregated to any DGG */
+export interface PoweredLatLonElectricalGrid
+{
+    latlon_grid: LatLonElectricalGrid
+    demand_MW_by_bus_id: {[bus_id: string]: number}
+    supply_MW_by_bus_id: {[bus_id: string]: number}
+}
+export interface PoweredCellularElectricalGrid
 {
     cellular_grid: CellularElectricalGrid
     demand_MW_by_cell_id: {[cell_id: string]: number}
@@ -38,7 +45,7 @@ const NEGLIGIBLE_MW = 1e-6
  * Supply and demand within a cell are netted first.  A cell that has supply or demand but no bus on
  * the grid cannot trade with other cells so its balance is 0.
  */
-export function calculate_power_balance(powered_grid: PoweredElectricalGrid): PowerBalance
+export function calculate_power_balance(powered_grid: PoweredCellularElectricalGrid): PowerBalance
 {
     const { cellular_grid: grid, demand_MW_by_cell_id, supply_MW_by_cell_id } = powered_grid
 
@@ -95,7 +102,7 @@ export function calculate_power_balance(powered_grid: PoweredElectricalGrid): Po
 }
 
 
-function calculate_status_by_cell(powered_grid: PoweredElectricalGrid, MW_by_cell: PowerBalance["MW_by_cell_id"]): PowerBalance["status_by_cell_id"]
+function calculate_status_by_cell(powered_grid: PoweredCellularElectricalGrid, MW_by_cell: PowerBalance["MW_by_cell_id"]): PowerBalance["status_by_cell_id"]
 {
     const { cellular_grid: grid, demand_MW_by_cell_id: demand_MW_by_cell, supply_MW_by_cell_id: supply_MW_by_cell } = powered_grid
     const cells_with_bus = new Set(grid.buses.map(bus => bus.cell_id))
