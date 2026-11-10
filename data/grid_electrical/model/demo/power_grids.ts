@@ -1,7 +1,7 @@
 import { aggregate_grid_to_cells } from "../src/aggregate_grid_to_cells.ts"
 import type { CellularElectricalGrid, ConvertLatLonToFromCell, LatLonElectricalGrid } from "../src/interface.ts"
 import { latlon_to_from_cell_1dp, latlon_to_from_cell_h3r4, latlon_to_from_cell_raw } from "../src/latlon_to_from_cell.ts"
-import { parse_grid_csv_data } from "../src/parse_data.ts"
+import { parse_latlon_grid_csv_data } from "../src/parse_data.ts"
 import type { PoweredCellularElectricalGrid, PoweredLatLonElectricalGrid } from "../src/power_balance.ts"
 
 
@@ -20,7 +20,7 @@ interface PoweredGridWithConfig extends PoweredLatLonElectricalGrid
     modify_grid?: (cellular_grid: CellularElectricalGrid) => CellularElectricalGrid
 }
 
-const _3ac_1dc_grid: LatLonElectricalGrid = parse_grid_csv_data({
+const _3ac_1dc_grid: LatLonElectricalGrid = parse_latlon_grid_csv_data({
     buses: `
         bus_id,voltage,lon,lat
         0,0,1,2
@@ -49,7 +49,7 @@ const source_3ac_1dc: PoweredGridWithConfig = {
 }
 
 
-const _7ac_1dc_grid: LatLonElectricalGrid = parse_grid_csv_data({
+const _7ac_1dc_grid: LatLonElectricalGrid = parse_latlon_grid_csv_data({
     buses: `
         bus_id,voltage,lon,lat
         0,0,3,3
@@ -120,7 +120,7 @@ async function get_source_europe(): Promise<PoweredGridWithConfig>
 {
     if (source_europe === undefined)
     {
-        const europe_grid: LatLonElectricalGrid = parse_grid_csv_data({
+        const europe_grid: LatLonElectricalGrid = parse_latlon_grid_csv_data({
             buses: await (await fetch("data_grids/eur/buses.csv")).text(),
             ac_lines: await (await fetch("data_grids/eur/lines.csv")).text(),
             dc_links: await (await fetch("data_grids/eur/links.csv")).text(),
@@ -144,7 +144,7 @@ async function get_source_uk(): Promise<PoweredGridWithConfig>
 {
     if (source_uk === undefined)
     {
-        const uk_grid: LatLonElectricalGrid = parse_grid_csv_data({
+        const uk_grid: LatLonElectricalGrid = parse_latlon_grid_csv_data({
             buses: await (await fetch("data_grids/uk/buses.csv")).text(),
             ac_lines: await (await fetch("data_grids/uk/lines.csv")).text(),
             dc_links: await (await fetch("data_grids/uk/links.csv")).text(),

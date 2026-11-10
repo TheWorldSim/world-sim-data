@@ -1,7 +1,7 @@
 import { expect } from "chai"
 
 import { aggregate_grid_to_cells } from "./aggregate_grid_to_cells.ts"
-import { parse_grid_csv_data } from "./parse_data.ts"
+import { parse_latlon_grid_csv_data } from "./parse_data.ts"
 import { latlon_to_from_cell_1dp } from "./latlon_to_from_cell.ts"
 
 
@@ -27,7 +27,7 @@ link_id,bus0,bus1,voltage,p_nom,geometry
 2,0,2,400,3000,"LINESTRING (1 2, 1 2.5)"
 `
 
-const grid = parse_grid_csv_data({
+const grid = parse_latlon_grid_csv_data({
     buses: buses_csv,
     ac_lines: ac_lines_csv,
     dc_links: dc_links_csv,

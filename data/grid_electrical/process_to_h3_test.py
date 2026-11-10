@@ -8,8 +8,8 @@ import h3
 import pandas as pd
 from process_to_h3 import H3_RESOLUTION, aggregate_grid_to_h3
 
-CELL_ID_COLUMN = f"h3r{H3_RESOLUTION}_cell_id"
-GEOMETRY_COLUMN = f"h3r{H3_RESOLUTION}_geometry"
+CELL_ID_COLUMN = "cell_id"
+GEOMETRY_COLUMN = "geometry"
 
 # Buses 0 and 1 are 100m apart so share a cell, bus 2 is ~110km away
 BUS_0 = (53.426, -2.379)
