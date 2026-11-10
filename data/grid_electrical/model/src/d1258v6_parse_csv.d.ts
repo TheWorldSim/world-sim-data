@@ -9,4 +9,4 @@ interface Options
 }
 
 
-export declare function d1258v6_parse_csv(csv_data: string, options?: Options): string[][]
+export declare function d1258v6_parse_csv(csv_data: string, options?: Options): (string | number)[][]

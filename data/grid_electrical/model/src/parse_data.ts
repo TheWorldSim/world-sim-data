@@ -27,7 +27,7 @@ function parse_buses(csv: string): LatLonBus[]
     const raw_rows = d1258v6_parse_csv(csv)
     if (raw_rows.length === 0) return []
 
-    const [headers, ...rows] = raw_rows
+    const [headers, ...rows] = raw_rows as [string[], ...(string | number)[][]]
     const header_indices = {
         bus_id: headers.indexOf("bus_id"),
         lon: headers.indexOf("lon"),
@@ -44,13 +44,23 @@ function parse_buses(csv: string): LatLonBus[]
 }
 
 
+interface ACLineHeaders
+{
+    id: number
+    bus0: number
+    bus1: number
+    voltage: number
+    s_nom: number
+    x_pu: number
+    geometry: number
+}
 function parse_ac_lines(csv: string, bus_by_id: Record<string, LatLonBus>): LatLonACLine[]
 {
     const raw_rows = d1258v6_parse_csv(csv)
     if (raw_rows.length === 0) return []
 
-    const [headers, ...rows] = raw_rows
-    const header_indices = {
+    const [headers, ...rows] = raw_rows as [string[], ...(string | number)[][]]
+    const header_indices: ACLineHeaders = {
         id: headers.indexOf("line_id"),
         bus0: headers.indexOf("bus0"),
         bus1: headers.indexOf("bus1"),
@@ -64,7 +74,7 @@ function parse_ac_lines(csv: string, bus_by_id: Record<string, LatLonBus>): LatL
 }
 
 
-function parse_ac_line(row: (string | number)[], header_indices: Record<string, number>, bus_by_id: Record<string, LatLonBus>): LatLonACLine
+function parse_ac_line(row: (string | number)[], header_indices: ACLineHeaders, bus_by_id: Record<string, LatLonBus>): LatLonACLine
 {
     const from_bus_id = String(row[header_indices.bus0])
     const to_bus_id = String(row[header_indices.bus1])
@@ -92,13 +102,22 @@ function parse_ac_line(row: (string | number)[], header_indices: Record<string, 
 }
 
 
+interface DCLinkHeaders
+{
+    id: number
+    bus0: number
+    bus1: number
+    voltage: number
+    p_nom: number
+    geometry: number
+}
 function parse_dc_links(csv: string, bus_by_id: Record<string, LatLonBus>): LatLonDCLink[]
 {
     const raw_rows = d1258v6_parse_csv(csv)
     if (raw_rows.length === 0) return []
 
-    const [headers, ...rows] = raw_rows
-    const header_indices = {
+    const [headers, ...rows] = raw_rows as [string[], ...(string | number)[][]]
+    const header_indices: DCLinkHeaders = {
         id: headers.indexOf("link_id"),
         bus0: headers.indexOf("bus0"),
         bus1: headers.indexOf("bus1"),
@@ -111,7 +130,7 @@ function parse_dc_links(csv: string, bus_by_id: Record<string, LatLonBus>): LatL
 }
 
 
-function parse_dc_link(row: (string | number)[], header_indices: Record<string, number>, bus_by_id: Record<string, LatLonBus>): LatLonDCLink
+function parse_dc_link(row: (string | number)[], header_indices: DCLinkHeaders, bus_by_id: Record<string, LatLonBus>): LatLonDCLink
 {
     const from_bus_id = String(row[header_indices.bus0])
     const to_bus_id = String(row[header_indices.bus1])
@@ -157,17 +176,17 @@ function parse_geometry(geometry: string, from_bus: LatLonBus, to_bus: LatLonBus
 
     if (match_linestring)
     {
-        match_linestring[1].split(",").forEach(coord =>
+        match_linestring[1]!.split(",").forEach(coord =>
         {
-            const [lon, lat] = coord.trim().split(/\s+/).map(safe_parse_float)
+            const [lon, lat] = coord.trim().split(/\s+/).map(safe_parse_float) as [number, number]
             add_coord({ lon, lat })
         })
     }
 
     if (match_point)
     {
-        const lon = safe_parse_float(match_point[1])
-        const lat = safe_parse_float(match_point[2])
+        const lon = safe_parse_float(match_point[1]!)
+        const lat = safe_parse_float(match_point[2]!)
         add_coord({ lon, lat })
     }
 

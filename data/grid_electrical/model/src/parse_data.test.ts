@@ -141,8 +141,8 @@ describe("parse_grid_csv_data", () =>
             dc_links: ``,
         })
 
-        expect(grid.ac_lines[0].path_latlon).to.deep.equal([{ lon: 1, lat: 2 }, { lon: 2, lat: 2 }])
-        expect(grid.ac_lines[1].path_latlon).to.deep.equal([{ lon: 1, lat: 2 }, { lon: 2, lat: 2 }])
+        expect(grid.ac_lines[0]!.path_latlon).to.deep.equal([{ lon: 1, lat: 2 }, { lon: 2, lat: 2 }])
+        expect(grid.ac_lines[1]!.path_latlon).to.deep.equal([{ lon: 1, lat: 2 }, { lon: 2, lat: 2 }])
     })
 
     it("handles POINT and LINESTRING geometry without duplicate points of buses", () =>
@@ -163,9 +163,9 @@ describe("parse_grid_csv_data", () =>
             dc_links: ``,
         })
 
-        expect(grid.ac_lines[0].path_latlon).to.deep.equal([{ lon: 1, lat: 2 }, { lon: 3, lat: 3 }, { lon: 2, lat: 2 }])
-        expect(grid.ac_lines[1].path_latlon).to.deep.equal([{ lon: 1, lat: 2 }, { lon: 2, lat: 2 }])
-        expect(grid.ac_lines[2].path_latlon).to.deep.equal([{ lon: 1, lat: 2 }, { lon: 3, lat: 3 }, { lon: 4, lat: 4 }, { lon: 2, lat: 2 }])
-        expect(grid.ac_lines[3].path_latlon).to.deep.equal([{ lon: 1, lat: 2 }, { lon: 3, lat: 3 }, { lon: 2, lat: 2 }])
+        expect(grid.ac_lines[0]!.path_latlon).to.deep.equal([{ lon: 1, lat: 2 }, { lon: 3, lat: 3 }, { lon: 2, lat: 2 }])
+        expect(grid.ac_lines[1]!.path_latlon).to.deep.equal([{ lon: 1, lat: 2 }, { lon: 2, lat: 2 }])
+        expect(grid.ac_lines[2]!.path_latlon).to.deep.equal([{ lon: 1, lat: 2 }, { lon: 3, lat: 3 }, { lon: 4, lat: 4 }, { lon: 2, lat: 2 }])
+        expect(grid.ac_lines[3]!.path_latlon).to.deep.equal([{ lon: 1, lat: 2 }, { lon: 3, lat: 3 }, { lon: 2, lat: 2 }])
     })
 })

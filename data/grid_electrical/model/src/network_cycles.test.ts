@@ -47,9 +47,9 @@ describe("build_fundamental_cycles", () =>
 
         // 1 -> 2 along line 1, 2 -> 0 against line 2, 0 -> 1 along line 0
         expect(build_fundamental_cycles(triangle, forest)).to.deep.equal([[
-            { line: 1, direction: 1 },
-            { line: 2, direction: -1 },
-            { line: 0, direction: 1 },
+            { line_or_link_index: 1, direction: 1 },
+            { line_or_link_index: 2, direction: -1 },
+            { line_or_link_index: 0, direction: 1 },
         ]])
     })
 
@@ -69,8 +69,8 @@ describe("build_fundamental_cycles", () =>
         ]
 
         expect(build_fundamental_cycles(lines, find_ac_spanning_forest(2, lines))).to.deep.equal([[
-            { line: 1, direction: 1 },
-            { line: 0, direction: -1 },
+            { line_or_link_index: 1, direction: 1 },
+            { line_or_link_index: 0, direction: -1 },
         ]])
     })
 

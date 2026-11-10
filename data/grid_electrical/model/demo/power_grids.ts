@@ -210,8 +210,8 @@ function build_powered_grid(source: SourceGrid, dgg: DGG, grid_filter: GridFilte
 
     return {
         cellular_grid,
-        supply_MW_by_cell: bus_MW_to_cell_MW(source.supply_MW_by_bus, cellular_grid),
-        demand_MW_by_cell: bus_MW_to_cell_MW(source.demand_MW_by_bus, cellular_grid),
+        supply_MW_by_cell_id: bus_MW_to_cell_MW(source.supply_MW_by_bus, cellular_grid),
+        demand_MW_by_cell_id: bus_MW_to_cell_MW(source.demand_MW_by_bus, cellular_grid),
     }
 }
 
@@ -302,10 +302,10 @@ export const power_grids = {
     },
     get_net_MW_by_cell: () =>
     {
-        return Array.from(new Set(Object.keys(selected.grid.demand_MW_by_cell).concat(Object.keys(selected.grid.supply_MW_by_cell))))
+        return Array.from(new Set(Object.keys(selected.grid.demand_MW_by_cell_id).concat(Object.keys(selected.grid.supply_MW_by_cell_id))))
             .reduce((acc, cell_id) =>
             {
-                const net = (selected.grid.supply_MW_by_cell[cell_id] || 0) - (selected.grid.demand_MW_by_cell[cell_id] || 0)
+                const net = (selected.grid.supply_MW_by_cell_id[cell_id] || 0) - (selected.grid.demand_MW_by_cell_id[cell_id] || 0)
                 acc[cell_id] = net
                 return acc
             }, {} as Record<string, number>)

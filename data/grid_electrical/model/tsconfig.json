@@ -3,12 +3,20 @@
     "target": "ES2022",
     "module": "nodenext",
     "moduleResolution": "nodenext",
-    "strict": true,
+
     "noEmit": true,
     "erasableSyntaxOnly": true,
     "verbatimModuleSyntax": true,
     "allowImportingTsExtensions": true,
     "skipLibCheck": true,
+
+    /* Linting */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
     "types": ["node", "mocha"]
   },
   "include": ["**/*.ts"]

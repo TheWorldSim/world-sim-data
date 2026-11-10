@@ -11,37 +11,38 @@ import {
 import { deep_approximate } from "./utils.ts"
 
 
-const two_bus_grid: LatLonElectricalGrid = parse_grid_csv_data({
-    buses: `
-        bus_id,voltage,lon,lat
-        0,220,0,0
-        1,300,1,0
-    `,
-    ac_lines: `
-        line_id,bus0,bus1,voltage,s_nom,x_pu,geometry
-        0,0,1,400,1000,1e-4,
-    `,
-    dc_links: `
-        link_id,bus0,bus1,voltage,p_nom,geometry
-    `,
-})
-
-
 describe("calculate_power_balance", () =>
 {
+
+    const two_bus_grid: LatLonElectricalGrid = parse_grid_csv_data({
+        buses: `
+            bus_id,voltage,lon,lat
+            A0,220,0,0
+            B1,300,1,0
+        `,
+        ac_lines: `
+            line_id,bus0,bus1,voltage,s_nom,x_pu,geometry
+            0,A0,B1,400,1000,1e-4,
+        `,
+        dc_links: `
+            link_id,bus0,bus1,voltage,p_nom,geometry
+        `,
+    })
+
+
     it("returns an empty balance for an empty grid with no supply or demand", () =>
     {
         const args: PoweredElectricalGrid = {
             cellular_grid: { buses: [], ac_lines: [], dc_links: [], bus_id_to_cell_id: () => "" },
-            demand_MW_by_cell: {},
-            supply_MW_by_cell: {},
+            demand_MW_by_cell_id: {},
+            supply_MW_by_cell_id: {},
         }
 
         expect(calculate_power_balance(args)).to.deep.equal({
-            MW_by_cell: {},
-            MW_by_line: {},
-            MW_by_link: {},
-            status_by_cell: {},
+            MW_by_cell_id: {},
+            MW_by_line_id: {},
+            MW_by_link_id: {},
+            status_by_cell_id: {},
         })
     })
 
@@ -51,17 +52,17 @@ describe("calculate_power_balance", () =>
         const cellular_grid = aggregate_grid_to_cells(two_bus_grid, latlon_to_from_cell_1dp)
         const args: PoweredElectricalGrid = {
             cellular_grid,
-            demand_MW_by_cell: { "0_0": 500 },
-            supply_MW_by_cell: { "0_1": 500 },
+            demand_MW_by_cell_id: { "0_0": 500 },
+            supply_MW_by_cell_id: { "0_1": 500 },
         }
 
         const balance = calculate_power_balance(args)
 
         // Net balance: supply minus demand, so the generating cell exports and the load cell imports
-        expect(balance.MW_by_cell["0_0"]).to.be.closeTo(-500, 1e-6)
-        expect(balance.MW_by_cell["0_1"]).to.be.closeTo(500, 1e-6)
+        expect(balance.MW_by_cell_id["0_0"]).to.be.closeTo(-500, 1e-6)
+        expect(balance.MW_by_cell_id["0_1"]).to.be.closeTo(500, 1e-6)
 
-        expect(balance.status_by_cell).to.deep.equal({ "0_0": "demand_met", "0_1": "supplying" })
+        expect(balance.status_by_cell_id).to.deep.equal({ "0_0": "demand_met", "0_1": "supplying" })
     })
 
 
@@ -70,13 +71,13 @@ describe("calculate_power_balance", () =>
         const cellular_grid = aggregate_grid_to_cells(two_bus_grid, latlon_to_from_cell_1dp)
         const balance = calculate_power_balance({
             cellular_grid,
-            demand_MW_by_cell: { "0_0": 500 },
-            supply_MW_by_cell: { "0_1": 800 },
+            demand_MW_by_cell_id: { "0_0": 500 },
+            supply_MW_by_cell_id: { "0_1": 800 },
         })
 
-        expect(balance.MW_by_cell["0_0"]).to.be.closeTo(-500, 1e-6)
-        expect(balance.MW_by_cell["0_1"]).to.be.closeTo(500, 1e-6)
-        expect(balance.status_by_cell).to.deep.equal({ "0_0": "demand_met", "0_1": "supply_curtailed_by_demand" })
+        expect(balance.MW_by_cell_id["0_0"]).to.be.closeTo(-500, 1e-6)
+        expect(balance.MW_by_cell_id["0_1"]).to.be.closeTo(500, 1e-6)
+        expect(balance.status_by_cell_id).to.deep.equal({ "0_0": "demand_met", "0_1": "supply_curtailed_by_demand" })
     })
 
 
@@ -84,15 +85,15 @@ describe("calculate_power_balance", () =>
     {
         const cellular_grid = aggregate_grid_to_cells(two_bus_grid, latlon_to_from_cell_1dp)
 
-        const balance_nothing = calculate_power_balance({ cellular_grid, demand_MW_by_cell: {}, supply_MW_by_cell: {} })
-        expect(balance_nothing.status_by_cell).to.deep.equal({ "0_0": "idle", "0_1": "idle" })
+        const balance_nothing = calculate_power_balance({ cellular_grid, demand_MW_by_cell_id: {}, supply_MW_by_cell_id: {} })
+        expect(balance_nothing.status_by_cell_id).to.deep.equal({ "0_0": "idle", "0_1": "idle" })
 
         const balance_cancelled = calculate_power_balance({
             cellular_grid,
-            demand_MW_by_cell: { "0_0": 300 },
-            supply_MW_by_cell: { "0_0": 300 },
+            demand_MW_by_cell_id: { "0_0": 300 },
+            supply_MW_by_cell_id: { "0_0": 300 },
         })
-        expect(balance_cancelled.status_by_cell).to.deep.equal({ "0_0": "idle", "0_1": "idle" })
+        expect(balance_cancelled.status_by_cell_id).to.deep.equal({ "0_0": "idle", "0_1": "idle" })
     })
 
 
@@ -101,14 +102,14 @@ describe("calculate_power_balance", () =>
         const cellular_grid = aggregate_grid_to_cells(two_bus_grid, latlon_to_from_cell_1dp)
         const balance = calculate_power_balance({
             cellular_grid,
-            demand_MW_by_cell: { "5_5": 100 },
-            supply_MW_by_cell: { "6_6": 100, "0_1": 100 },
+            demand_MW_by_cell_id: { "5_5": 100 },
+            supply_MW_by_cell_id: { "6_6": 100, "0_1": 100 },
         })
 
-        expect(balance.status_by_cell["5_5"]).to.equal("demand_unmet")
-        expect(balance.status_by_cell["6_6"]).to.equal("supply_curtailed_by_grid")
+        expect(balance.status_by_cell_id["5_5"]).to.equal("demand_unmet")
+        expect(balance.status_by_cell_id["6_6"]).to.equal("supply_curtailed_by_grid")
         // Demand elsewhere is unmet, so this supply is held back by the grid not by a lack of demand
-        expect(balance.status_by_cell["0_1"]).to.equal("supply_curtailed_by_grid")
+        expect(balance.status_by_cell_id["0_1"]).to.equal("supply_curtailed_by_grid")
     })
 
 
@@ -117,17 +118,17 @@ describe("calculate_power_balance", () =>
         const cellular_grid = aggregate_grid_to_cells(two_bus_grid, latlon_to_from_cell_1dp)
         const args: PoweredElectricalGrid = {
             cellular_grid,
-            demand_MW_by_cell: { "0_0": 2000 },
-            supply_MW_by_cell: { "0_1": 2000 },
+            demand_MW_by_cell_id: { "0_0": 2000 },
+            supply_MW_by_cell_id: { "0_1": 2000 },
         }
 
         const balance = calculate_power_balance(args)
 
         // Line capacity is 1000 MW, so only that can be delivered
-        expect(balance.MW_by_cell["0_0"]).to.be.closeTo(-1000, 1e-6)
-        expect(balance.MW_by_cell["0_1"]).to.be.closeTo(1000, 1e-6)
+        expect(balance.MW_by_cell_id["0_0"]).to.be.closeTo(-1000, 1e-6)
+        expect(balance.MW_by_cell_id["0_1"]).to.be.closeTo(1000, 1e-6)
 
-        expect(balance.status_by_cell).to.deep.equal({ "0_0": "demand_unmet", "0_1": "supply_curtailed_by_grid" })
+        expect(balance.status_by_cell_id).to.deep.equal({ "0_0": "demand_unmet", "0_1": "supply_curtailed_by_grid" })
     })
 
 
@@ -136,39 +137,39 @@ describe("calculate_power_balance", () =>
         const grid = parse_grid_csv_data({
             buses: `
                 bus_id,voltage,lon,lat
-                0,0,3,3
-                1,0,2,2
-                2,0,1,2
-                3,0,2,1
-                4,0,1,1
-                5,0,1.5,0
+                A0,0,3,3
+                B1,0,2,2
+                C2,0,1,2
+                D3,0,2,1
+                E4,0,1,1
+                F5,0,1.5,0
             `,
             ac_lines: `
                 line_id,bus0,bus1,voltage,s_nom,x_pu,geometry
-                0,0,1,400,1000,1e-4,
-                1,1,2,400,1000,1e-4,
-                2,1,3,400,1000,1e-4,
-                3,2,4,400,1000,1e-4,
-                4,3,4,400,1000,1e-4,
-                5,3,5,400,1000,1e-4,
-                6,4,5,400,1000,1e-4,
+                0,A0,B1,400,1000,1e-4,
+                1,B1,C2,400,1000,1e-4,
+                2,B1,D3,400,1000,1e-4,
+                3,C2,E4,400,1000,1e-4,
+                4,D3,E4,400,1000,1e-4,
+                5,D3,F5,400,1000,1e-4,
+                6,E4,F5,400,1000,1e-4,
             `,
             dc_links: `
                 link_id,bus0,bus1,voltage,p_nom,geometry
-                0,0,3,400,1000,
+                0,A0,D3,400,1000,
             `,
         })
         const cellular_grid = aggregate_grid_to_cells(grid, latlon_to_from_cell_1dp)
 
         const args: PoweredElectricalGrid = {
             cellular_grid,
-            supply_MW_by_cell: { "3_3": 2000 },
-            demand_MW_by_cell: { "1_1": 2000 },
+            supply_MW_by_cell_id: { "3_3": 2000 },
+            demand_MW_by_cell_id: { "1_1": 2000 },
         }
 
         const balance = calculate_power_balance(args)
         deep_approximate(balance, {
-            MW_by_cell: {
+            MW_by_cell_id: {
                 "3_3":  2000,
                 "2_2":  0,
                 "2_1":  0,
@@ -176,7 +177,7 @@ describe("calculate_power_balance", () =>
                 "1_1": -2000,
                 "0_2":  0,
             },
-            MW_by_line: {
+            MW_by_line_id: {
                 0:  1000,
                 1:  636.36,
                 2:  363.636,
@@ -185,10 +186,10 @@ describe("calculate_power_balance", () =>
                 5:  454.545,
                 6: -454.545,
             },
-            MW_by_link: {
+            MW_by_link_id: {
                 0: 1000,
             },
-            status_by_cell: {
+            status_by_cell_id: {
                 "3_3": "supplying",
                 "2_2": "idle",
                 "2_1": "idle",
@@ -204,7 +205,7 @@ describe("calculate_power_balance", () =>
         const cellular_grid_without_dc_link = aggregate_grid_to_cells(grid_without_dc_link, latlon_to_from_cell_1dp)
         const balance_without_dc_link = calculate_power_balance({ ...args, cellular_grid: cellular_grid_without_dc_link })
         deep_approximate(balance_without_dc_link, {
-            MW_by_cell: {
+            MW_by_cell_id: {
                 "3_3":  1000,
                 "2_2":  0,
                 "2_1":  0,
@@ -212,7 +213,7 @@ describe("calculate_power_balance", () =>
                 "1_1": -1000,
                 "0_2":  0,
             },
-            MW_by_line: {
+            MW_by_line_id: {
                 0: 1000,
                 1: 454.545,
                 2: 545.455,
@@ -221,8 +222,8 @@ describe("calculate_power_balance", () =>
                 5: 181.818,
                 6: -181.818,
             },
-            MW_by_link: {},
-            status_by_cell: {
+            MW_by_link_id: {},
+            status_by_cell_id: {
                 "3_3": "supply_curtailed_by_grid",
                 "2_2": "idle",
                 "2_1": "idle",
@@ -241,7 +242,7 @@ describe("calculate_power_balance", () =>
         const cellular_grid_without_line_0 = aggregate_grid_to_cells(grid_without_line_0, latlon_to_from_cell_1dp)
         const balance_without_line_0 = calculate_power_balance({ ...args, cellular_grid: cellular_grid_without_line_0 })
         deep_approximate(balance_without_line_0, {
-            MW_by_cell: {
+            MW_by_cell_id: {
                 "3_3":  1000,
                 "2_2":  0,
                 "2_1":  0,
@@ -249,7 +250,7 @@ describe("calculate_power_balance", () =>
                 "1_1": -1000,
                 "0_2":  0,
             },
-            MW_by_line: {
+            MW_by_line_id: {
                 1: 181.818,
                 2: -181.818,
                 3: 181.818,
@@ -257,10 +258,10 @@ describe("calculate_power_balance", () =>
                 5: 272.72,
                 6: -272.72,
             },
-            MW_by_link: {
+            MW_by_link_id: {
                 0: 1000,
             },
-            status_by_cell: {
+            status_by_cell_id: {
                 "3_3": "supply_curtailed_by_grid",
                 "2_2": "idle",
                 "2_1": "idle",

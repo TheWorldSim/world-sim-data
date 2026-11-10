@@ -1,4 +1,4 @@
-// Copied from wikisim-core/src/test/utils.ts
+// +++++++++++++++  Copied from wikisim-core/src/test/utils.ts  +++++++++++++++
 import { expect } from "chai"
 
 
@@ -45,4 +45,32 @@ export function deep_approximate<T>(actual: T, expected: T, tolerance: number = 
 function at_path(path: string): string
 {
     return path ? ` at path "${path}"` : ""
+}
+
+// ---------------  Copied from wikisim-core/src/test/utils.ts  ---------------
+
+
+
+export function safe_index__number(array: number[], index: number): number
+{
+    return safe_index(array, index, () => 0)
+}
+
+export function safe_index__array<A>(array: Array<A>[], index: number): Array<A>
+{
+    return safe_index(array, index, () => [])
+}
+
+export function safe_index<V>(array: V[], index: number, defalt?: () => V): V
+{
+    let value = array[index]
+    if (value === undefined)
+    {
+        const error_message = `Index ${index} out of bounds for array of length ${array.length}.`
+        if (!defalt) throw new Error(error_message)
+
+        console.error(error_message)
+        value = defalt()
+    }
+    return value
 }

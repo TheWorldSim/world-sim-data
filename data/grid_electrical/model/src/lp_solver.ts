@@ -67,15 +67,15 @@ function to_highs_model(program: LinearProgram)
 
     // Constraint matrix in compressed sparse row form
     const starts = new Int32Array(constraints.length + 1)
-    constraints.forEach((constraint, i) => { starts[i + 1] = starts[i] + constraint.terms.length })
-    const indices = new Int32Array(starts[constraints.length])
-    const values = new Float64Array(starts[constraints.length])
+    constraints.forEach((constraint, i) => { starts[i + 1] = starts[i]! + constraint.terms.length })
+    const indices = new Int32Array(starts[constraints.length]!)
+    const values = new Float64Array(starts[constraints.length]!)
     constraints.forEach((constraint, i) =>
     {
         constraint.terms.forEach(([variable, coefficient], k) =>
         {
-            indices[starts[i] + k] = variable
-            values[starts[i] + k] = coefficient
+            indices[starts[i]! + k] = variable
+            values[starts[i]! + k] = coefficient
         })
     })
 
