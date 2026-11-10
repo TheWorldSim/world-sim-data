@@ -7,7 +7,7 @@ import {
 } from "./network_cycles.ts"
 
 
-export interface SolverLine extends Edge
+export interface SolverLineOrLink extends Edge
 {
     /** Zero for DC links, which are controllable rather than governed by KVL */
     reactance_pu: number
@@ -19,7 +19,7 @@ export interface SolverLine extends Edge
 export interface SolverNetwork
 {
     bus_ids: string[]
-    lines: SolverLine[]
+    lines_and_links: SolverLineOrLink[]
     /** KVL cycles of the AC lines only (a DC link breaks KVL) */
     cycles: CycleStep[][]
     // /** Number of separate synchronous (AC connected) areas, each of which must balance on its own */
@@ -36,7 +36,7 @@ export function build_solver_network(grid: CommonElectricalGrid): SolverNetwork
     const bus_ids = grid.buses.map(bus => bus.id)
     const bus_index_by_id = new Map(bus_ids.map((id, i) => [id, i]))
 
-    const lines: SolverLine[] = [
+    const lines_and_links: SolverLineOrLink[] = [
         ...grid.ac_lines
             .filter(line => Number.isFinite(line.x_pu))
             .map(line => create_solver_line(line.from_bus_id, line.to_bus_id, false, line.x_pu, line.capacity_mw, bus_index_by_id)),
@@ -44,18 +44,18 @@ export function build_solver_network(grid: CommonElectricalGrid): SolverNetwork
             .map(link => create_solver_line(link.from_bus_id, link.to_bus_id, true, 0, link.capacity_mw, bus_index_by_id)),
     ]
 
-    const forest = find_ac_spanning_forest(bus_ids.length, lines)
+    const forest = find_ac_spanning_forest(bus_ids.length, lines_and_links)
 
     return {
         bus_ids,
-        lines,
-        cycles: build_fundamental_cycles(lines, forest),
+        lines_and_links,
+        cycles: build_fundamental_cycles(lines_and_links, forest),
         // ac_area_count: forest.reference_buses.length,
     }
 }
 
 
-function create_solver_line(from_bus_id: string, to_bus_id: string, is_dc: boolean, reactance_pu: number, capacity_MW: number, bus_index_by_id: Map<string, number>): SolverLine
+function create_solver_line(from_bus_id: string, to_bus_id: string, is_dc: boolean, reactance_pu: number, capacity_MW: number, bus_index_by_id: Map<string, number>): SolverLineOrLink
 {
     const from_bus_index = get_bus_index(from_bus_id, bus_index_by_id)
     const to_bus_index = get_bus_index(to_bus_id, bus_index_by_id)

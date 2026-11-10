@@ -6,6 +6,7 @@ import {
     type LpVariable,
 } from "./lp_solver.ts"
 import type { SolverNetwork } from "./solver_network.ts"
+import { safe_index__number, safe_index__array, safe_index } from "./utils.ts"
 
 
 const NEGLIGIBLE_MW = 1e-6
@@ -51,17 +52,17 @@ export function solve_network(network: SolverNetwork, injections_MW: number[]): 
 }
 
 
-function scale_to_balance(generation: number[], demand: number[]): { generation: number[], demand: number[] }
-{
-    const total_generation = sum(generation)
-    const total_demand = sum(demand)
-    const served = Math.min(total_generation, total_demand)
+// function scale_to_balance(generation: number[], demand: number[]): { generation: number[], demand: number[] }
+// {
+//     const total_generation = sum(generation)
+//     const total_demand = sum(demand)
+//     const served = Math.min(total_generation, total_demand)
 
-    return {
-        generation: generation.map(g => total_generation > 0 ? g * served / total_generation : 0),
-        demand: demand.map(d => total_demand > 0 ? d * served / total_demand : 0),
-    }
-}
+//     return {
+//         generation: generation.map(g => total_generation > 0 ? g * served / total_generation : 0),
+//         demand: demand.map(d => total_demand > 0 ? d * served / total_demand : 0),
+//     }
+// }
 
 
 /**
@@ -79,35 +80,40 @@ function dispatch(network: SolverNetwork, generation: number[], demand: number[]
     const result: NetworkSolution = {
         generation_MW: new Array<number>(bus_count).fill(0),
         demand_MW: new Array<number>(bus_count).fill(0),
-        flows_MW: new Array<number>(network.lines.length).fill(0),
+        flows_MW: new Array<number>(network.lines_and_links.length).fill(0),
     }
 
-    const active_buses = network.bus_ids.map((_, bus) => bus).filter(bus => generation[bus] > 0 || demand[bus] > 0)
-    if (active_buses.length === 0) return result
+    if (generation.length !== network.bus_ids.length) throw new Error(`Generation array length ${generation.length} mismatch with network bus count ${network.bus_ids.length}`)
+    if (demand.length !== network.bus_ids.length) throw new Error(`Demand array length ${demand.length} mismatch with network bus count ${network.bus_ids.length}`)
 
-    const layout = create_variable_layout(active_buses.length, network.lines.length, network.lines.some(line => line.is_dc))
-    const is_source = active_buses.map(bus => generation[bus] > 0)
+    const active_bus_indexs = network.bus_ids
+        .map((_, bus_index) => bus_index)
+        .filter(bus_index => safe_index__number(generation, bus_index) > 0 || safe_index__number(demand, bus_index) > 0)
+    if (active_bus_indexs.length === 0) return result
+
+    const layout = create_variable_layout(active_bus_indexs.length, network.lines_and_links.length, network.lines_and_links.some(line => line.is_dc))
+    const is_source = active_bus_indexs.map(bus_index => safe_index__number(generation, bus_index) > 0)
 
     const program: LinearProgram = {
         variables: [
-            ...build_dispatch_variables(active_buses, is_source, generation, demand),
+            ...build_dispatch_variables(active_bus_indexs, is_source, generation, demand),
             ...build_flow_variables(network),
             ...build_abs_flow_variables(network, layout),
         ],
         constraints: [
-            ...build_kcl_constraints(network, active_buses, is_source, layout),
+            ...build_kcl_constraints(network, active_bus_indexs, is_source, layout),
             ...build_kvl_constraints(network, layout),
             ...build_abs_flow_constraints(network, layout),
         ],
     }
     const solution = maximise(program)
 
-    active_buses.forEach((bus, k) =>
+    active_bus_indexs.forEach((bus_index, k) =>
     {
-        if (is_source[k]) result.generation_MW[bus] = clean(solution[layout.dispatch(k)])
-        else result.demand_MW[bus] = clean(solution[layout.dispatch(k)])
+        if (is_source[k]) result.generation_MW[bus_index] = clean(safe_index__number(solution, k))
+        else result.demand_MW[bus_index] = clean(safe_index__number(solution, k))
     })
-    network.lines.forEach((_, l) => { result.flows_MW[l] = clean(solution[layout.flow(l)]) })
+    network.lines_and_links.forEach((_, l) => { result.flows_MW[l] = clean(safe_index__number(solution, layout.flow(l))) })
 
     return result
 }
@@ -116,8 +122,8 @@ function dispatch(network: SolverNetwork, generation: number[], demand: number[]
 interface VariableLayout
 {
     uses_abs_flow: boolean
-    /** Dispatched generation, or served demand, of the k-th active bus */
-    dispatch: (k: number) => number
+    // /** Dispatched generation, or served demand, of the k-th active bus */
+    // dispatch: (k: number) => number
     flow: (line: number) => number
     /** t >= |flow| for a line, only present when there are DC links */
     abs_flow: (line: number) => number
@@ -128,46 +134,46 @@ function create_variable_layout(active_count: number, line_count: number, uses_a
 {
     return {
         uses_abs_flow,
-        dispatch: k => k,
+        // dispatch: k => k,
         flow: line => active_count + line,
         abs_flow: line => active_count + line_count + line,
     }
 }
 
 
-function build_dispatch_variables(active_buses: number[], is_source: boolean[], generation: number[], demand: number[]): LpVariable[]
+function build_dispatch_variables(active_bus_indexs: number[], is_source: boolean[], generation: number[], demand: number[]): LpVariable[]
 {
-    return active_buses.map((bus, k) => is_source[k]
-        ? { lower: 0, upper: generation[bus], objective: 0 }
-        : { lower: 0, upper: demand[bus], objective: 1 })
+    return active_bus_indexs.map((bus_index, k) => is_source[k]
+        ? { lower: 0, upper: safe_index__number(generation, bus_index), objective: 0 }
+        : { lower: 0, upper: safe_index__number(demand, bus_index), objective: 1 })
 }
 
 
 function build_flow_variables(network: SolverNetwork): LpVariable[]
 {
-    return network.lines.map(line => ({ lower: -line.capacity_MW, upper: line.capacity_MW, objective: 0 }))
+    return network.lines_and_links.map(line => ({ lower: -line.capacity_MW, upper: line.capacity_MW, objective: 0 }))
 }
 
 
 function build_abs_flow_variables(network: SolverNetwork, layout: VariableLayout): LpVariable[]
 {
     if (!layout.uses_abs_flow) return []
-    return network.lines.map(() => ({ lower: 0, upper: Infinity, objective: -TIE_BREAK_WEIGHT }))
+    return network.lines_and_links.map(() => ({ lower: 0, upper: Infinity, objective: -TIE_BREAK_WEIGHT }))
 }
 
 
 /** Net flow out of each bus (sum of line flows leaving it minus those arriving) = its injection */
-function build_kcl_constraints(network: SolverNetwork, active_buses: number[], is_source: boolean[], layout: VariableLayout): LpConstraint[]
+function build_kcl_constraints(network: SolverNetwork, active_bus_indexs: number[], is_source: boolean[], layout: VariableLayout): LpConstraint[]
 {
     const terms_by_bus: LpTerm[][] = network.bus_ids.map(() => [])
 
-    network.lines.forEach((line, l) =>
+    network.lines_and_links.forEach((line, l) =>
     {
-        terms_by_bus[line.from_bus_index].push([layout.flow(l), 1])
-        terms_by_bus[line.to_bus_index].push([layout.flow(l), -1])
+        safe_index__array(terms_by_bus, line.from_bus_index).push([layout.flow(l), 1])
+        safe_index__array(terms_by_bus, line.to_bus_index).push([layout.flow(l), -1])
     })
     // Moving the injection to the left hand side: outflow - injection = 0
-    active_buses.forEach((bus, k) => terms_by_bus[bus].push([layout.dispatch(k), is_source[k] ? -1 : 1]))
+    active_bus_indexs.forEach((bus_index, k) => safe_index__array(terms_by_bus, bus_index).push([k, is_source[k] ? -1 : 1]))
 
     return terms_by_bus.map(terms => ({ lower: 0, upper: 0, terms }))
 }
@@ -177,13 +183,13 @@ function build_kcl_constraints(network: SolverNetwork, active_buses: number[], i
 function build_kvl_constraints(network: SolverNetwork, layout: VariableLayout): LpConstraint[]
 {
     // Only rescales the KVL rows, keeping the coefficients near the size of the KCL ones
-    const reactance_scale = Math.max(...network.lines.map(line => Math.abs(line.reactance_pu)), Number.MIN_VALUE)
+    const reactance_scale = Math.max(...network.lines_and_links.map(line => Math.abs(line.reactance_pu)), Number.MIN_VALUE)
 
     return network.cycles.map(cycle => ({
         lower: 0,
         upper: 0,
-        terms: cycle.map(({ line, direction }): LpTerm =>
-            [layout.flow(line), direction * network.lines[line].reactance_pu / reactance_scale]),
+        terms: cycle.map(({ line_or_link_index: line_index, direction }): LpTerm =>
+            [layout.flow(line_index), direction * safe_index(network.lines_and_links, line_index).reactance_pu / reactance_scale]),
     }))
 }
 
@@ -193,17 +199,17 @@ function build_abs_flow_constraints(network: SolverNetwork, layout: VariableLayo
 {
     if (!layout.uses_abs_flow) return []
 
-    return network.lines.flatMap((_, l): LpConstraint[] => [
-        { lower: -Infinity, upper: 0, terms: [[layout.flow(l), 1], [layout.abs_flow(l), -1]] },
-        { lower: -Infinity, upper: 0, terms: [[layout.flow(l), -1], [layout.abs_flow(l), -1]] },
+    return network.lines_and_links.flatMap((_, line_index): LpConstraint[] => [
+        { lower: -Infinity, upper: 0, terms: [[layout.flow(line_index), 1], [layout.abs_flow(line_index), -1]] },
+        { lower: -Infinity, upper: 0, terms: [[layout.flow(line_index), -1], [layout.abs_flow(line_index), -1]] },
     ])
 }
 
 
-function sum(values: number[]): number
-{
-    return values.reduce((total, value) => total + value, 0)
-}
+// function sum(values: number[]): number
+// {
+//     return values.reduce((total, value) => total + value, 0)
+// }
 
 
 function clean(value: number): number

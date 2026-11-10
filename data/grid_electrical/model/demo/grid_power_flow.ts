@@ -30,9 +30,9 @@ function render_grid(): void
     {
         change_MW *= 100
 
-        const demand = powered_grid.demand_MW_by_cell[cell_id] || 0
-        const supply = powered_grid.supply_MW_by_cell[cell_id] || 0
-        if (change_MW > 0) powered_grid.supply_MW_by_cell[cell_id] = supply + change_MW
+        const demand = powered_grid.demand_MW_by_cell_id[cell_id] || 0
+        const supply = powered_grid.supply_MW_by_cell_id[cell_id] || 0
+        if (change_MW > 0) powered_grid.supply_MW_by_cell_id[cell_id] = supply + change_MW
         else if (change_MW < 0)
         {
             let remaining = -change_MW
@@ -45,11 +45,11 @@ function render_grid(): void
                 // supply == 20,  change_supply == 20,  remaining == 80
 
                 const change_supply = Math.min(supply, -change_MW)
-                powered_grid.supply_MW_by_cell[cell_id] = supply - change_supply
+                powered_grid.supply_MW_by_cell_id[cell_id] = supply - change_supply
 
                 remaining -= change_supply
             }
-            powered_grid.demand_MW_by_cell[cell_id] = demand + remaining
+            powered_grid.demand_MW_by_cell_id[cell_id] = demand + remaining
         }
 
         update_view()
@@ -71,8 +71,8 @@ function render_grid(): void
     function update_view()
     {
         const balance = calculate_power_balance(powered_grid)
-        buses.update_MW_by_cell(power_grids.get_net_MW_by_cell(), balance.status_by_cell)
-        lines.update_MW_by_line(balance.MW_by_line, balance.MW_by_link)
+        buses.update_MW_by_cell(power_grids.get_net_MW_by_cell(), balance.status_by_cell_id)
+        lines.update_MW_by_line(balance.MW_by_line_id, balance.MW_by_link_id)
     }
     update_view()
 }

@@ -11,7 +11,7 @@ export const latlon_to_from_cell_1dp: ConvertLatLonToFromCell = {
     latlon_to_cell_id: (latlon) => `${Math.round(latlon.lat)}_${Math.round(latlon.lon)}`,
     cell_id_to_latlon: (cell_id) =>
     {
-        const [lat, lon] = cell_id.split("_").map(Number)
+        const [lat, lon] = cell_id.split("_").map(Number) as [number, number]
         return { lat, lon }
     }
 }
@@ -45,7 +45,7 @@ export const latlon_to_from_cell_raw: ConvertLatLonToFromCell = {
     latlon_to_cell_id: (latlon) => `${latlon.lat}_${latlon.lon}`,
     cell_id_to_latlon: (cell_id) =>
     {
-        const [lat, lon] = cell_id.split("_").map(Number)
+        const [lat, lon] = cell_id.split("_").map(Number) as [number, number]
         return { lat, lon }
     }
 }
