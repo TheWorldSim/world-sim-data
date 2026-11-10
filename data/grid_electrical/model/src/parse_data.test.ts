@@ -1,6 +1,6 @@
 import { expect } from "chai"
 
-import { parse_grid_csv_data, type GridCsvData } from "./parse_data.ts"
+import { parse_cellular_grid_csv_data, parse_latlon_grid_csv_data, type GridCsvData } from "./parse_data.ts"
 
 
 
@@ -30,7 +30,7 @@ const demo_csv_data: GridCsvData = {
 
 describe("parse_grid_csv_data", () =>
 {
-    const grid = parse_grid_csv_data(demo_csv_data)
+    const grid = parse_latlon_grid_csv_data(demo_csv_data)
 
     it("parses all buses", () =>
     {
@@ -116,7 +116,7 @@ describe("parse_grid_csv_data", () =>
 
     it("returns an empty grid for empty (header only) csv data", () =>
     {
-        const empty_grid = parse_grid_csv_data({
+        const empty_grid = parse_latlon_grid_csv_data({
             buses: "bus_id,voltage,x,y\n",
             ac_lines: "line_id,bus0,bus1,voltage,s_nom,x_pu,geometry\n",
             dc_links: "link_id,bus0,bus1,voltage,p_nom,geometry\n",
@@ -127,7 +127,7 @@ describe("parse_grid_csv_data", () =>
 
     it("handles empty geometry for ac lines", () =>
     {
-        const grid = parse_grid_csv_data({
+        const grid = parse_latlon_grid_csv_data({
             buses: `
                 bus_id,voltage,lon,lat
                 0,220,1,2
@@ -147,7 +147,7 @@ describe("parse_grid_csv_data", () =>
 
     it("handles POINT and LINESTRING geometry without duplicate points of buses", () =>
     {
-        const grid = parse_grid_csv_data({
+        const grid = parse_latlon_grid_csv_data({
             buses: `
                 bus_id,voltage,lon,lat
                 0,220,1,2
@@ -167,5 +167,32 @@ describe("parse_grid_csv_data", () =>
         expect(grid.ac_lines[1]!.path_latlon).to.deep.equal([{ lon: 1, lat: 2 }, { lon: 2, lat: 2 }])
         expect(grid.ac_lines[2]!.path_latlon).to.deep.equal([{ lon: 1, lat: 2 }, { lon: 3, lat: 3 }, { lon: 4, lat: 4 }, { lon: 2, lat: 2 }])
         expect(grid.ac_lines[3]!.path_latlon).to.deep.equal([{ lon: 1, lat: 2 }, { lon: 3, lat: 3 }, { lon: 2, lat: 2 }])
+    })
+})
+
+
+describe("parse_cellular_grid_csv_data", () =>
+{
+    it("can parse cellular grid csv data", () =>
+    {
+        const cellular_grid = parse_cellular_grid_csv_data({
+            buses: `
+                bus_id,voltage,cell_id
+                0,220,8418655ffffffff
+                1,300,8419697ffffffff
+            `,
+            ac_lines: `
+                line_id,bus0,bus1,voltage,s_nom,x_pu,geometry
+                0,0,1,225,503,3.53e-05,"8418655ffffffff, 8419697ffffffff"
+            `,
+            dc_links: `
+                link_id,bus0,bus1,voltage,p_nom,geometry
+                0,1,0,300,2000,"8419697ffffffff, 8418655ffffffff"
+            `,
+        })
+
+        expect(cellular_grid.buses).to.have.length(2)
+        expect(cellular_grid.ac_lines).to.have.length(1)
+        expect(cellular_grid.dc_links).to.have.length(1)
     })
 })

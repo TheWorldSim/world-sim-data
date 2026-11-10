@@ -80,13 +80,13 @@ async function render_grid(): Promise<void>
 
 document.getElementById("dataset")?.addEventListener("change", async (event) => {
     const target = event.target as HTMLSelectElement
-    await power_grids.select_grid(target.value as "3ac_1dc" | "7ac_1dc" | "uk_ni" | "europe")
+    await power_grids.select_grid(target.value as "3ac_1dc" | "7ac_1dc" | "uk" | "europe")
     render_grid()
 })
 
 document.getElementById("dgg")?.addEventListener("change", async (event) => {
     const target = event.target as HTMLSelectElement
-    await power_grids.set_dgg(target.value as "latlon_raw" |"1dp" | "h3r4")
+    await power_grids.set_dgg(target.value as "latlon_raw" | "1dp" | "h3r4")
     render_grid()
 })
 

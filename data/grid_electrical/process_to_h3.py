@@ -6,8 +6,8 @@ import pandas as pd
 from shapely import wkt
 
 H3_RESOLUTION = 4
-CELL_ID_COLUMN = f"h3r{H3_RESOLUTION}_cell_id"
-GEOMETRY_COLUMN = f"h3r{H3_RESOLUTION}_geometry"
+CELL_ID_COLUMN = "cell_id"
+GEOMETRY_COLUMN = "geometry"
 
 BUS_FIELDS = ["bus_id", "voltage", CELL_ID_COLUMN]
 LINE_FIELDS = ["line_id", "bus0", "bus1", "voltage", "s_nom", "x_pu", GEOMETRY_COLUMN]
