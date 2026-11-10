@@ -7,6 +7,7 @@ import sys
 import geopandas as gpd
 import matplotlib.pyplot as plt
 from pandas import Series
+from shapely import Polygon
 from shapely.ops import transform
 
 
@@ -65,7 +66,8 @@ def get_UK_EEZ() -> UK_EEZs:
         low_res.values[0].geoms[0],
     ], close=True)
 
-    joined_gdf = gpd.GeoDataFrame(geometry=[joined_linestring], crs="EPSG:4326")
+    joined_polygon = Polygon(joined_linestring.coords)
+    joined_gdf = gpd.GeoDataFrame(geometry=[joined_polygon], crs="EPSG:4326")
     joined_gdf_low_res = joined_gdf.copy().simplify(0.1)
 
     # Reduce precision to LAT_LON_LOW_RES_DP decimal places
