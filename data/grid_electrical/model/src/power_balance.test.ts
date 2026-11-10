@@ -6,7 +6,7 @@ import { latlon_to_from_cell_1dp } from "./latlon_to_from_cell.ts"
 import { parse_grid_csv_data } from "./parse_data.ts"
 import {
     calculate_power_balance,
-    type PoweredElectricalGrid,
+    type PoweredCellularElectricalGrid,
 } from "./power_balance.ts"
 import { deep_approximate } from "./utils.ts"
 
@@ -32,7 +32,7 @@ describe("calculate_power_balance", () =>
 
     it("returns an empty balance for an empty grid with no supply or demand", () =>
     {
-        const args: PoweredElectricalGrid = {
+        const args: PoweredCellularElectricalGrid = {
             cellular_grid: { buses: [], ac_lines: [], dc_links: [], bus_id_to_cell_id: () => "" },
             demand_MW_by_cell_id: {},
             supply_MW_by_cell_id: {},
@@ -50,7 +50,7 @@ describe("calculate_power_balance", () =>
     it("balances supply and demand across a connected two bus grid", () =>
     {
         const cellular_grid = aggregate_grid_to_cells(two_bus_grid, latlon_to_from_cell_1dp)
-        const args: PoweredElectricalGrid = {
+        const args: PoweredCellularElectricalGrid = {
             cellular_grid,
             demand_MW_by_cell_id: { "0_0": 500 },
             supply_MW_by_cell_id: { "0_1": 500 },
@@ -116,7 +116,7 @@ describe("calculate_power_balance", () =>
     it("limits flow to the capacity of the line", () =>
     {
         const cellular_grid = aggregate_grid_to_cells(two_bus_grid, latlon_to_from_cell_1dp)
-        const args: PoweredElectricalGrid = {
+        const args: PoweredCellularElectricalGrid = {
             cellular_grid,
             demand_MW_by_cell_id: { "0_0": 2000 },
             supply_MW_by_cell_id: { "0_1": 2000 },
@@ -161,7 +161,7 @@ describe("calculate_power_balance", () =>
         })
         const cellular_grid = aggregate_grid_to_cells(grid, latlon_to_from_cell_1dp)
 
-        const args: PoweredElectricalGrid = {
+        const args: PoweredCellularElectricalGrid = {
             cellular_grid,
             supply_MW_by_cell_id: { "3_3": 2000 },
             demand_MW_by_cell_id: { "1_1": 2000 },

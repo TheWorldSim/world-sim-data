@@ -19,12 +19,12 @@ const europe_country_names = new Set([
     "Vatican", "Åland",
 ])
 
-const COUNTRIES_URL = "data_boundaries/countries_50m.json"
+const COUNTRIES_URL = "data_boundaries/countries/countries_50m.json"
 
 export async function load_europe_country_outlines(): Promise<CountryOutline[]>
 {
     const topology: Parameters<typeof feature>[0] = await (await fetch(COUNTRIES_URL)).json()
-    const result = feature(topology, topology.objects["countries"])
+    const result = feature(topology, topology.objects["countries"]!)
     const countries = "features" in result ? result.features : [result]
 
     const outlines: CountryOutline[] = []
@@ -37,7 +37,7 @@ export async function load_europe_country_outlines(): Promise<CountryOutline[]>
         if (geometry.type !== "Polygon" && geometry.type !== "MultiPolygon") continue
         const polygons = geometry.type === "Polygon" ? [geometry.coordinates] : geometry.coordinates
 
-        const rings = polygons.flat().map(ring => ring.map(([lon, lat]): ILatLon => ({ lat, lon })))
+        const rings = polygons.flat().map(ring => (ring as [number, number][]).map(([lon, lat]): ILatLon => ({ lat, lon })))
         outlines.push({ name, rings })
     }
     return outlines

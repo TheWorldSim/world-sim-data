@@ -1,4 +1,4 @@
-import { calculate_power_balance, type PoweredElectricalGrid } from "../src/power_balance.ts"
+import { calculate_power_balance } from "../src/power_balance.ts"
 import { load_europe_country_outlines, type CountryOutline } from "./country_outlines.ts"
 import { grid_to_screen } from "./latlon_to_screen.ts"
 import { manage_svg_view } from "./manage_svg_view.ts"
@@ -11,11 +11,11 @@ const svg_view = manage_svg_view(document.getElementById("grid-display") as unkn
 let country_outlines: CountryOutline[] = []
 
 
-function render_grid(): void
+async function render_grid(): Promise<void>
 {
     const spread = power_grids.get_grid_spread()
     const cell_id_to_latlon = power_grids.get_cell_id_to_latlon()
-    const powered_grid = power_grids.get_grid()
+    const powered_grid = await power_grids.get_grid()
     const { cellular_grid: grid } = powered_grid
 
     const svg_grid_display = svg_view.svg
@@ -25,6 +25,13 @@ function render_grid(): void
     const { project, project_latlon_to_xy, home_view } = grid_to_screen({ grid, width, height, spread, cell_id_to_latlon })
 
     svg_view.set_home_view(home_view)
+
+    async function update_view()
+    {
+        const balance = calculate_power_balance(powered_grid)
+        buses.update_MW_by_cell(await power_grids.get_net_MW_by_cell(), balance.status_by_cell_id)
+        lines.update_MW_by_line(balance.MW_by_line_id, balance.MW_by_link_id)
+    }
 
     function handle_change_cell_MW(cell_id: string, change_MW: number)
     {
@@ -68,18 +75,12 @@ function render_grid(): void
         if (!pressed_line) lines.clear_pinned_line()
     })
 
-    function update_view()
-    {
-        const balance = calculate_power_balance(powered_grid)
-        buses.update_MW_by_cell(power_grids.get_net_MW_by_cell(), balance.status_by_cell_id)
-        lines.update_MW_by_line(balance.MW_by_line_id, balance.MW_by_link_id)
-    }
     update_view()
 }
 
 document.getElementById("dataset")?.addEventListener("change", async (event) => {
     const target = event.target as HTMLSelectElement
-    await power_grids.select_grid(target.value as "3ac_1dc" | "7ac_1dc" | "uk" | "uk_ni" | "europe")
+    await power_grids.select_grid(target.value as "3ac_1dc" | "7ac_1dc" | "uk_ni" | "europe")
     render_grid()
 })
 
