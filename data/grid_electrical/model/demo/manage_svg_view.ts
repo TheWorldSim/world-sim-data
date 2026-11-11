@@ -25,7 +25,7 @@ export function manage_svg_view(svg: SVGSVGElement): SvgView
     let home_view: ViewBox = { x: 0, y: 0, w: 1, h: 1 }
 
     const current_view = (): ViewBox => {
-        const [x, y, w, h] = (svg.getAttribute("viewBox") ?? "0 0 1 1").split(" ").map(Number)
+        const [x, y, w, h] = (svg.getAttribute("viewBox") ?? "0 0 1 1").split(" ").map(Number) as [number, number, number, number]
         return { x, y, w, h }
     }
 

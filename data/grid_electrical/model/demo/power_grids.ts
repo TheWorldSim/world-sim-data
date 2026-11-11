@@ -123,7 +123,7 @@ async function get_source_uk(): Promise<PoweredGridWithConfig>
 
         source_uk = {
             name: "UK",
-            spread: 20,
+            spread: 12,
             latlon_grid: uk_grid,
             supply_MW_by_bus_id: {},
             demand_MW_by_bus_id: {},
