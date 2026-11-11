@@ -35,7 +35,7 @@ async function render_grid(): Promise<void>
 
     function handle_change_cell_MW(cell_id: string, change_MW: number)
     {
-        change_MW *= 100
+        change_MW *= 500
 
         const demand = powered_grid.demand_MW_by_cell_id[cell_id] || 0
         const supply = powered_grid.supply_MW_by_cell_id[cell_id] || 0

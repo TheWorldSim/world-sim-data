@@ -176,19 +176,21 @@ type Point = { x: number, y: number }
 /** Position, and direction of travel, a fraction of the way along a path */
 function point_along_path(points: Point[], fraction: number): { x: number, y: number, angle_degrees: number }
 {
-    const lengths = points.slice(1).map((p, i) => Math.hypot(p.x - points[i].x, p.y - points[i].y))
+    const lengths = points.slice(1).map((p, i) => Math.hypot(p.x - points[i]!.x, p.y - points[i]!.y))
     let remaining = fraction * lengths.reduce((total, length) => total + length, 0)
 
     for (let i = 0; i < lengths.length; ++i)
     {
-        if (remaining > lengths[i] && i < lengths.length - 1)
+        const len = lengths[i]!
+        if (remaining > len && i < lengths.length - 1)
         {
-            remaining -= lengths[i]
+            remaining -= len
             continue
         }
 
-        const from = points[i], to = points[i + 1]
-        const t = lengths[i] > 0 ? Math.min(remaining / lengths[i], 1) : 0
+        const from = points[i]!
+        const to = points[i + 1]!
+        const t = len > 0 ? Math.min(remaining / len, 1) : 0
         return {
             x: from.x + (to.x - from.x) * t,
             y: from.y + (to.y - from.y) * t,
@@ -269,7 +271,7 @@ export function make_buses_layer(grid: CellularElectricalGrid, project: ProjectC
         )
         buses_layer.append(bus_group)
 
-        bus_group.addEventListener("click", (e) =>
+        bus_group.addEventListener("click", () =>
         {
             change_MW_by_cell(bus.cell_id, 1)
         })
