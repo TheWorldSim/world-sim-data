@@ -1,6 +1,7 @@
 import { aggregate_grid_to_cells } from "../src/aggregate_grid_to_cells.ts"
 import type { CellularElectricalGrid, ConvertLatLonToFromCell, LatLonElectricalGrid } from "../src/interface.ts"
 import { latlon_to_from_cell_1dp, latlon_to_from_cell_h3r4, latlon_to_from_cell_raw } from "../src/latlon_to_from_cell.ts"
+import { modify_grid } from "../src/modify_grid.ts"
 import { parse_latlon_grid_csv_data } from "../src/parse_data.ts"
 import type { PoweredCellularElectricalGrid, PoweredLatLonElectricalGrid } from "../src/power_balance.ts"
 
@@ -81,36 +82,6 @@ const source_7ac_1dc: PoweredGridWithConfig = {
     supply_MW_by_bus_id: { "0": 500 },
     demand_MW_by_bus_id: { "0": 100, "4": 500 },
     spread: 1.5,
-}
-
-
-
-function modify_grid(cellular_grid: CellularElectricalGrid)
-{
-    // A fudge to map cells in France, Belgium and the Netherlands
-    // to be on land instead of in the sea.
-    const cell_ids_map: Record<string, string> = {
-        "8419481ffffffff": "841948bffffffff",
-        "84194ddffffffff": "84194d1ffffffff",
-        "84196b1ffffffff": "84196bbffffffff",
-    }
-
-    function change_cell_id(cell_id: string): string
-    {
-        return cell_ids_map[cell_id] || cell_id
-    }
-
-    cellular_grid.buses.forEach(bus => {
-        bus.cell_id = change_cell_id(bus.cell_id)
-    })
-    cellular_grid.ac_lines.forEach(line => {
-        line.path_cell_ids = line.path_cell_ids.map(change_cell_id)
-    })
-    cellular_grid.dc_links.forEach(link => {
-        link.path_cell_ids = link.path_cell_ids.map(change_cell_id)
-    })
-
-    return cellular_grid
 }
 
 
