@@ -76,17 +76,21 @@ describe("calculate_power_balance", () =>
     })
 
 
-    it("flags a cell with no net supply or demand as idle, including when supply and demand cancel", () =>
+    it("flags a cell with no supply and no demand as idle", () =>
     {
         const balance_nothing = calculate_power_balance({ cellular_grid: two_bus_grid, demand_MW_by_cell_id: {}, supply_MW_by_cell_id: {} })
         expect(balance_nothing.status_by_cell_id).to.deep.equal({ "abcedf1": "idle", "ghijkl2": "idle" })
+    })
 
+
+    it("flags a cell whose demand is exactly matched by its own supply as demand_met, not idle", () =>
+    {
         const balance_cancelled = calculate_power_balance({
             cellular_grid: two_bus_grid,
             demand_MW_by_cell_id: { "abcedf1": 300 },
             supply_MW_by_cell_id: { "abcedf1": 300 },
         })
-        expect(balance_cancelled.status_by_cell_id).to.deep.equal({ "abcedf1": "idle", "ghijkl2": "idle" })
+        expect(balance_cancelled.status_by_cell_id).to.deep.equal({ "abcedf1": "demand_met", "ghijkl2": "idle" })
     })
 
 
