@@ -16,7 +16,7 @@ describe("solve_network", () =>
 {
     it("serves all demand directly when lines have enough capacity", () =>
     {
-        const network = build_solver_network(create_test_grid([["A0", "B1", 1, 1000]], [], 2))
+        const network = build_solver_network(create_test_grid([["A0", "B1", 1, 1000]], []))
         const solution = solve_network(network, [-500, 500])
 
         expect_close_to_all(solution.generation_MW, [0, 500])
@@ -27,7 +27,7 @@ describe("solve_network", () =>
 
     it("scales the larger side down when supply and demand do not match", () =>
     {
-        const network = build_solver_network(create_test_grid([["A0", "B1", 1, 1000]], [], 2))
+        const network = build_solver_network(create_test_grid([["A0", "B1", 1, 1000]], []))
         const solution = solve_network(network, [-300, 500])
 
         expect_close_to_all(solution.generation_MW, [0, 300])
@@ -37,7 +37,7 @@ describe("solve_network", () =>
 
     it("limits delivery to the line capacity", () =>
     {
-        const network = build_solver_network(create_test_grid([["A0", "B1", 1, 1000]], [], 2))
+        const network = build_solver_network(create_test_grid([["A0", "B1", 1, 1000]], []))
         const solution = solve_network(network, [-2000, 2000])
 
         expect_close_to_all(solution.generation_MW, [0, 1000])
@@ -94,7 +94,7 @@ describe("solve_network", () =>
 
     it("limits delivery to the capacity of a DC link", () =>
     {
-        const network = build_solver_network(create_test_grid([], [["A0", "B1", 300]], 2))
+        const network = build_solver_network(create_test_grid([], [["A0", "B1", 300]]))
         const solution = solve_network(network, [-500, 500])
 
         expect_close_to_all(solution.demand_MW, [300, 0])
@@ -104,7 +104,7 @@ describe("solve_network", () =>
 
     it("lets a DC link carry power between separate AC areas", () =>
     {
-        const network = build_solver_network(create_test_grid([["A0", "B1", 1], ["C2", "D3", 1]], [["B1", "C2"]], 4))
+        const network = build_solver_network(create_test_grid([["A0", "B1", 1], ["C2", "D3", 1]], [["B1", "C2"]]))
         const solution = solve_network(network, [-100, 0, 0, 100])
 
         expect_close_to_all(solution.demand_MW, [100, 0, 0, 0])
@@ -114,7 +114,7 @@ describe("solve_network", () =>
 
     it("does not move power between AC areas that are not connected", () =>
     {
-        const network = build_solver_network(create_test_grid([["A0", "B1", 1], ["C2", "D3", 1]], [], 4))
+        const network = build_solver_network(create_test_grid([["A0", "B1", 1], ["C2", "D3", 1]], []))
         const solution = solve_network(network, [-100, 100, -50, 0])
 
         expect_close_to_all(solution.demand_MW, [100, 0, 0, 0])
@@ -124,7 +124,7 @@ describe("solve_network", () =>
 
     it("does nothing for a network with no supply or demand", () =>
     {
-        const network = build_solver_network(create_test_grid([["A0", "B1", 1]], [], 2))
+        const network = build_solver_network(create_test_grid([["A0", "B1", 1]], []))
         const solution = solve_network(network, [0, 0])
 
         expect(solution.generation_MW).to.deep.equal([0, 0])
