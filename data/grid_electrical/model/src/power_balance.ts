@@ -26,11 +26,11 @@ export interface PowerBalance
 }
 /**
  * How well a cell's net supply or demand was met:
- *   idle                        no net supply or demand
+ *   idle                        no supply and no demand
  *   supplying                   all net supply is dispatched
  *   supply_curtailed_by_demand  some net supply is not dispatched, and no demand anywhere is left unmet
  *   supply_curtailed_by_grid    some net supply is not dispatched while demand is left unmet, or the cell has no bus
- *   demand_met                  all net demand is served
+ *   demand_met                  all net demand is served, including demand exactly matched by the cell's own supply
  *   demand_unmet                some net demand is not served
  */
 export type CellStatus = "idle" | "supplying" | "supply_curtailed_by_demand" | "supply_curtailed_by_grid" | "demand_met" | "demand_unmet"
@@ -132,6 +132,7 @@ function calculate_status_by_cell(powered_grid: PoweredCellularElectricalGrid, M
         {
             status_by_cell[cell_id] = (-requested_MW + actual_MW <= NEGLIGIBLE_MW) ? "demand_met" : "demand_unmet"
         }
+        else if ((demand_MW_by_cell[cell_id] ?? 0) > NEGLIGIBLE_MW) status_by_cell[cell_id] = "demand_met"  // demand exactly matched by supply
         else status_by_cell[cell_id] = "idle"
     }
 
