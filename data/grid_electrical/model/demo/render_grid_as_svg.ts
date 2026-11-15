@@ -243,7 +243,8 @@ export function make_buses_layer(grid: CellularElectricalGrid, project: ProjectC
         supply_curtailed_by_demand: ["src", "curtailed-demand"],
         supply_curtailed_by_grid: ["src", "curtailed-grid"],
         demand_met: ["sink"],
-        demand_unmet: ["unmet"],
+        demand_unmet_by_supply: ["unmet-by-supply"],
+        demand_unmet_by_grid: ["unmet-by-grid"],
     }
     const all_status_classes = Array.from(new Set(Object.values(status_classes).flat()))
 

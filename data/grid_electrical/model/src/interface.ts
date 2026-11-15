@@ -104,6 +104,4 @@ export interface DistributionGridConfig
 {
     /** Capacity in MW of each hop outwards from a bus: the first entry is the hop next to a bus, the second the hop after that, and so on.  Cells further away are not connected. */
     hop_capacity_MW: number[]
-    /** Cells which share an edge or vertex with the given cell */
-    neighbour_cell_ids: (cell_id: string) => string[]
 }

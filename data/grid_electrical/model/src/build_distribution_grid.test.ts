@@ -30,7 +30,7 @@ describe("build_distribution_grid", () =>
     it("should return empty distribution for no config", () =>
     {
         const buses: CommonBus[] = [{ id: "Bus1" }]
-        const result = build_distribution_grid(buses, undefined)
+        const result = build_distribution_grid(buses, undefined, undefined)
         expect(result).to.deep.equal({ buses: [], dc_links: [], cell_ids: [] })
     })
 
@@ -41,10 +41,9 @@ describe("build_distribution_grid", () =>
         ]
         const config: DistributionGridConfig = {
             hop_capacity_MW: [300, 100],
-            neighbour_cell_ids,
         }
 
-        const result = build_distribution_grid(buses, config)
+        const result = build_distribution_grid(buses, neighbour_cell_ids, config)
 
         // d4 is the bus, its neighbours are c4, d3, d5, and e4, and they in
         // turn will connect to 8 more cells
@@ -70,10 +69,9 @@ describe("build_distribution_grid", () =>
         // Only 1 hop allowed
         const config: DistributionGridConfig = {
             hop_capacity_MW: [300],
-            neighbour_cell_ids,
         }
 
-        const result = build_distribution_grid(buses, config)
+        const result = build_distribution_grid(buses, neighbour_cell_ids, config)
 
         expect(result.cell_ids).deep.equal(["c4", "d3", "d5", "e4"], "Only cells 1 hop away should be included")
         // Should not include cells 2 hops away
@@ -88,10 +86,9 @@ describe("build_distribution_grid", () =>
         ]
         const config: DistributionGridConfig = {
             hop_capacity_MW: [300, 50],
-            neighbour_cell_ids,
         }
 
-        const result = build_distribution_grid(buses, config)
+        const result = build_distribution_grid(buses, neighbour_cell_ids, config)
 
         // Find links from 1-hop cells (should have 300 MW capacity)
         const first_hop_cells = new Set(["c4", "e4", "d3", "d5"])
@@ -112,10 +109,9 @@ describe("build_distribution_grid", () =>
         ]
         const config: DistributionGridConfig = {
             hop_capacity_MW: [300],
-            neighbour_cell_ids,
         }
 
-        const result = build_distribution_grid(buses, config)
+        const result = build_distribution_grid(buses, neighbour_cell_ids, config)
 
         // c4 is equally close to both d4 and e4, but d4 comes first alphabetically
         const c4_link = result.dc_links.find(link => link.from_bus_id === "distribution:c4")
@@ -130,10 +126,9 @@ describe("build_distribution_grid", () =>
         ]
         const config: DistributionGridConfig = {
             hop_capacity_MW: [300],
-            neighbour_cell_ids,
         }
 
-        const result = build_distribution_grid(buses, config)
+        const result = build_distribution_grid(buses, neighbour_cell_ids, config)
 
         for (const bus of result.buses)
         {

@@ -20,7 +20,7 @@ import type {
  * the merged buses and drops lines that start and end in the same cell.
  * If distribution_config is provided, builds virtual buses and links for cells without a bus.
  */
-export function aggregate_grid_to_cells(grid: LatLonElectricalGrid, latlon_to_cell: ConvertLatLonToFromCell, distribution_config?: DistributionGridConfig): CellularElectricalGrid
+export function aggregate_grid_to_cells(grid: LatLonElectricalGrid, latlon_to_cell: ConvertLatLonToFromCell, distribution_config: DistributionGridConfig | undefined): CellularElectricalGrid
 {
     const { buses, bus_id_to_merged_id } = aggregate_buses_to_cells(grid.buses, latlon_to_cell)
 
@@ -34,7 +34,7 @@ export function aggregate_grid_to_cells(grid: LatLonElectricalGrid, latlon_to_ce
     const ac_lines: CellularACLine[] = aggregate_ac_lines_to_cells(grid.ac_lines, get_merged_bus_id, latlon_to_cell)
     const dc_links: CellularDCLink[] = aggregate_dc_links_to_cells(grid.dc_links, get_merged_bus_id, latlon_to_cell)
 
-    const distribution_grid = build_distribution_grid(buses, distribution_config)
+    const distribution_grid = build_distribution_grid(buses, latlon_to_cell.neighbour_cell_ids, distribution_config)
 
     const bus_by_bus_id = new Map(buses.map(bus => [bus.id, bus]))
     function bus_id_to_cell_id(bus_id: string): string

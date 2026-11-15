@@ -1,5 +1,5 @@
 import { aggregate_grid_to_cells } from "../src/aggregate_grid_to_cells.ts"
-import type { CellularElectricalGrid, ConvertLatLonToFromCell, LatLonElectricalGrid } from "../src/interface.ts"
+import type { CellularElectricalGrid, ConvertLatLonToFromCell, DistributionGridConfig, LatLonElectricalGrid } from "../src/interface.ts"
 import { latlon_to_from_cell_1dp, latlon_to_from_cell_h3r4, latlon_to_from_cell_raw } from "../src/latlon_to_from_cell.ts"
 import { modify_grid } from "../src/modify_grid.ts"
 import { parse_latlon_grid_csv_data } from "../src/parse_data.ts"
@@ -134,6 +134,10 @@ async function get_source_uk(): Promise<PoweredGridWithConfig>
 }
 
 
+const distribution_grid_config: DistributionGridConfig = {
+    hop_capacity_MW: [300, 50],
+}
+
 // Cached per source and DGG so that supply and demand edits persist while the same grid and DGG are selected
 const powered_grid_cache = new Map<string, Partial<Record<DGG, PoweredCellularElectricalGrid>>>()
 function get_powered_grid(source: PoweredGridWithConfig, dgg: DGG): PoweredCellularElectricalGrid
@@ -148,7 +152,7 @@ function get_powered_grid(source: PoweredGridWithConfig, dgg: DGG): PoweredCellu
     const existing = powered_by_dgg[dgg]
     if (existing !== undefined) return existing
 
-    let cellular_grid = aggregate_grid_to_cells(source.latlon_grid, dgg_converters[dgg])
+    let cellular_grid = aggregate_grid_to_cells(source.latlon_grid, dgg_converters[dgg], distribution_grid_config)
     cellular_grid = source.modify_grid?.(cellular_grid) || cellular_grid
 
     powered_by_dgg[dgg] = {
@@ -161,7 +165,7 @@ function get_powered_grid(source: PoweredGridWithConfig, dgg: DGG): PoweredCellu
 }
 
 // Several buses can share a cell after aggregation, so their MW are summed
-function bus_MW_to_cell_MW(MW_by_bus: {[bus_id: string]: number}, cellular_grid: PoweredCellularElectricalGrid["cellular_grid"]): {[cell_id: string]: number}
+function bus_MW_to_cell_MW(MW_by_bus: {[bus_id: string]: number}, cellular_grid: CellularElectricalGrid): {[cell_id: string]: number}
 {
     const MW_by_cell: {[cell_id: string]: number} = {}
     for (const [bus_id, MW] of Object.entries(MW_by_bus))

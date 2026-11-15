@@ -1,4 +1,4 @@
-import type { CommonBus, DistributionGrid, DistributionGridConfig } from "./interface.ts"
+import type { CommonBus, ConvertLatLonToFromCell, DistributionGrid, DistributionGridConfig } from "./interface.ts"
 
 
 /**
@@ -8,11 +8,12 @@ import type { CommonBus, DistributionGrid, DistributionGridConfig } from "./inte
  */
 export function build_distribution_grid(
     buses: CommonBus[],
+    neighbour_cell_ids: ConvertLatLonToFromCell["neighbour_cell_ids"] | undefined,
     config: DistributionGridConfig | undefined,
 ): DistributionGrid
 {
     const distribution: DistributionGrid = { buses: [], dc_links: [], cell_ids: [] }
-    if (!config) return distribution
+    if (!neighbour_cell_ids || !config) return distribution
 
     const cell_id_to_bus_id_map = new Map<string, string>()
     for (const bus of buses)
@@ -35,7 +36,7 @@ export function build_distribution_grid(
         const next_frontier: string[] = []
         for (const cell_id of frontier)
         {
-            for (const neighbour_cell_id of [...config.neighbour_cell_ids(cell_id)].sort())
+            for (const neighbour_cell_id of [...neighbour_cell_ids(cell_id)].sort())
             {
                 if (hops_by_cell_id.has(neighbour_cell_id)) continue
                 hops_by_cell_id.set(neighbour_cell_id, hops)

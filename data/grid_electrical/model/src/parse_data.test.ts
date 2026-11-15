@@ -190,10 +190,7 @@ describe("parse_cellular_grid_csv_data", () =>
                 link_id,bus0,bus1,voltage,p_nom,geometry
                 0,1,0,300,2000,"8419697ffffffff, 8418655ffffffff"
             `,
-        }, {
-            hop_capacity_MW: [100, 50],
-            neighbour_cell_ids: latlon_to_from_cell_h3r4.neighbour_cell_ids,
-        })
+        }, latlon_to_from_cell_h3r4.neighbour_cell_ids, { hop_capacity_MW: [100, 50] })
 
         expect(cellular_grid.buses).to.have.length(2)
         expect(cellular_grid.ac_lines).to.have.length(1)
