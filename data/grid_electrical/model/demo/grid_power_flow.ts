@@ -3,7 +3,7 @@ import { load_europe_country_outlines, type CountryOutline } from "./country_out
 import { grid_to_screen } from "./latlon_to_screen.ts"
 import { manage_svg_view } from "./manage_svg_view.ts"
 import { power_grids } from "./power_grids.ts"
-import { make_countries_layer, make_lines_and_links_layer, make_buses_layer } from "./render_grid_as_svg.ts"
+import { make_buses_layer, make_countries_layer, make_lines_and_links_layer } from "./render_grid_as_svg.ts"
 
 
 const svg_view = manage_svg_view(document.getElementById("grid-display") as unknown as SVGSVGElement)

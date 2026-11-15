@@ -88,6 +88,6 @@ describe("aggregate_grid_to_cells", () =>
 
     it("uses build_distribution_grid", () =>
     {
-        expect(aggregated_grid.distribution_grid).to.be.an("object").keys(["buses", "cell_ids", "dc_links"])
+        expect(aggregated_grid.distribution_grid).to.be.an("object").keys(["buses", "dc_links"])
     })
 })

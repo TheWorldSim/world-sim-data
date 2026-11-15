@@ -38,16 +38,6 @@ export interface CommonDCLink
     capacity_mw: number
     voltage_kv: number
 }
-/** Virtual buses and lines which carry power from cells without a bus to their nearest bus */
-export interface DistributionGrid
-{
-    /** One virtual bus per cell reached by the distribution grid */
-    buses: CommonBus[]
-    /** Simplified representation of the distribution network */
-    dc_links: CommonDCLink[]
-    /** The cell of each virtual bus, in the same order as buses */
-    cell_ids: string[]
-}
 export interface CommonElectricalGrid
 {
     buses: CommonBus[]
@@ -87,6 +77,14 @@ export interface CellularACLine extends CommonACLine
 export interface CellularDCLink extends CommonDCLink
 {
     path_cell_ids: string[]
+}
+/** Virtual buses and lines which carry power from cells without a bus to their nearest bus */
+export interface DistributionGrid
+{
+    /** One virtual bus per cell reached by the distribution grid */
+    buses: CellularBus[]
+    /** Simplified representation of the distribution network */
+    dc_links: CommonDCLink[]
 }
 export interface CellularElectricalGrid extends CommonElectricalGrid
 {

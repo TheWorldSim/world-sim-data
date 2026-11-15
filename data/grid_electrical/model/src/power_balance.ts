@@ -75,7 +75,7 @@ export function calculate_power_balance(powered_grid: PoweredCellularElectricalG
     ].forEach(cell_id => power_balance.MW_by_cell_id[cell_id] = 0)
 
     const distribution = grid.distribution_grid
-    const solver_node_cell_ids = [...bus_cell_ids, ...distribution.cell_ids]
+    const solver_node_cell_ids = [...bus_cell_ids, ...distribution.buses.map(bus => bus.cell_id)]
     const solver_network = build_solver_network({
         buses: [...grid.buses, ...distribution.buses],
         ac_lines: grid.ac_lines,

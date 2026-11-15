@@ -56,7 +56,7 @@ describe("calculate_power_balance", () =>
                     ac_lines: [],
                     dc_links: [],
                     bus_id_to_cell_id: () => "",
-                    distribution_grid: { buses: [], dc_links: [], cell_ids: [] },
+                    distribution_grid: { buses: [], dc_links: [] },
                 },
                 demand_MW_by_cell_id: {},
                 supply_MW_by_cell_id: {},

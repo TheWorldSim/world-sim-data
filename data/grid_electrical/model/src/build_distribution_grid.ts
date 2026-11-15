@@ -12,7 +12,7 @@ export function build_distribution_grid(
     config: DistributionGridConfig | undefined,
 ): DistributionGrid
 {
-    const distribution: DistributionGrid = { buses: [], dc_links: [], cell_ids: [] }
+    const distribution: DistributionGrid = { buses: [], dc_links: [] }
     if (!neighbour_cell_ids || !config) return distribution
 
     const cell_id_to_bus_id_map = new Map<string, string>()
@@ -54,8 +54,7 @@ export function build_distribution_grid(
         const bus_id = cell_id_to_bus_id(cell_id)
         const parent_bus_id = cell_id_to_bus_id(parent_cell_id_by_cell_id.get(cell_id)!)
 
-        distribution.buses.push({ id: bus_id })
-        distribution.cell_ids.push(cell_id)
+        distribution.buses.push({ id: bus_id, cell_id })
         distribution.dc_links.push({
             id: `${bus_id}->${parent_bus_id}`,
             from_bus_id: bus_id,
