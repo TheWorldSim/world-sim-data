@@ -1,5 +1,17 @@
+import { build_distribution_grid } from "./build_distribution_grid.ts"
 import { d1258v6_parse_csv } from "./d1258v6_parse_csv.js"
-import type { CellularACLine, CellularBus, CellularDCLink, CellularElectricalGrid, ILatLon, LatLonACLine, LatLonBus, LatLonDCLink, LatLonElectricalGrid } from "./interface.ts"
+import type {
+    CellularACLine,
+    CellularBus,
+    CellularDCLink,
+    CellularElectricalGrid,
+    DistributionGridConfig,
+    ILatLon,
+    LatLonACLine,
+    LatLonBus,
+    LatLonDCLink,
+    LatLonElectricalGrid,
+} from "./interface.ts"
 
 
 export interface GridCsvData
@@ -22,7 +34,7 @@ export function parse_latlon_grid_csv_data(data: GridCsvData): LatLonElectricalG
 }
 
 
-export function parse_cellular_grid_csv_data(data: GridCsvData): CellularElectricalGrid
+export function parse_cellular_grid_csv_data(data: GridCsvData, distribution_grid_config: DistributionGridConfig): CellularElectricalGrid
 {
     const buses: CellularBus[] = parse_cellular_buses(data.buses)
     const bus_by_id = Object.fromEntries(buses.map(bus => [bus.id, bus]))
@@ -37,7 +49,9 @@ export function parse_cellular_grid_csv_data(data: GridCsvData): CellularElectri
         return bus.cell_id
     }
 
-    return { buses, ac_lines, dc_links, bus_id_to_cell_id }
+    const distribution_grid = build_distribution_grid(buses, distribution_grid_config)
+
+    return { buses, ac_lines, dc_links, bus_id_to_cell_id, distribution_grid }
 }
 
 

@@ -1,5 +1,6 @@
 import { expect } from "chai"
 
+import { latlon_to_from_cell_h3r4 } from "./latlon_to_from_cell.ts"
 import { parse_cellular_grid_csv_data, parse_latlon_grid_csv_data, type GridCsvData } from "./parse_data.ts"
 
 
@@ -189,6 +190,9 @@ describe("parse_cellular_grid_csv_data", () =>
                 link_id,bus0,bus1,voltage,p_nom,geometry
                 0,1,0,300,2000,"8419697ffffffff, 8418655ffffffff"
             `,
+        }, {
+            hop_capacity_MW: [100, 50],
+            neighbour_cell_ids: latlon_to_from_cell_h3r4.neighbour_cell_ids,
         })
 
         expect(cellular_grid.buses).to.have.length(2)
