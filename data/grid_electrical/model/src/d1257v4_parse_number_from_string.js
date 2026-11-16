@@ -1,7 +1,7 @@
-// Copied from https://wikisim.org/wiki/1257v3
+// Copied from https://wikisim.org/wiki/1257v4
 
 
-export const d1257v3_parse_number_from_string = (text, thousands_symbols = ",_ ", decimal_symbol = ".") =>
+export const d1257v4_parse_number_from_string = (text, thousands_symbols = ",_ ", decimal_symbol = ".") =>
 {
     const thousands_symbols_regex = new RegExp(`[${thousands_symbols}]`, "g")
 
@@ -13,7 +13,7 @@ export const d1257v3_parse_number_from_string = (text, thousands_symbols = ",_ "
     if (Number.isNaN(number)) return text
 
     const valid_number_regex = /^[-+]?\d+\.?\d*\s*(e\s*[-+]?\d+\.?\d*)?$/
-    if (!valid_number_regex.test(modified_text)) return modified_text
+    if (!valid_number_regex.test(modified_text)) return text
 
     return number
 }

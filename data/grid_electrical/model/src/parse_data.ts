@@ -1,5 +1,5 @@
 import { build_distribution_grid } from "./build_distribution_grid.ts"
-import { d1258v6_parse_csv } from "./d1258v6_parse_csv.js"
+import { d1258v8_parse_csv } from "./d1258v8_parse_csv.js"
 import type {
     CellularACLine,
     CellularBus,
@@ -58,7 +58,7 @@ export function parse_cellular_grid_csv_data(data: GridCsvData, neighbour_cell_i
 
 function parse_latlon_buses(csv: string): LatLonBus[]
 {
-    const raw_rows = d1258v6_parse_csv(csv)
+    const raw_rows = d1258v8_parse_csv(csv)
     if (raw_rows.length === 0) return []
 
     const [headers, ...rows] = raw_rows as [string[], ...(string | number)[][]]
@@ -80,7 +80,7 @@ function parse_latlon_buses(csv: string): LatLonBus[]
 
 function parse_cellular_buses(csv: string): CellularBus[]
 {
-    const raw_rows = d1258v6_parse_csv(csv)
+    const raw_rows = d1258v8_parse_csv(csv)
     if (raw_rows.length === 0) return []
 
     const [headers, ...rows] = raw_rows as [string[], ...(string | number)[][]]
@@ -108,7 +108,7 @@ interface ACLineHeaders
 }
 function parse_ac_line_rows(csv: string): { header_indices: ACLineHeaders, rows: (string | number)[][] }
 {
-    const raw_rows = d1258v6_parse_csv(csv)
+    const raw_rows = d1258v8_parse_csv(csv)
     if (raw_rows.length === 0) return { header_indices: {} as ACLineHeaders, rows: [] }
 
     const [headers, ...rows] = raw_rows as [string[], ...(string | number)[][]]
@@ -199,7 +199,7 @@ interface DCLinkHeaders
 }
 function parse_dc_link_rows(csv: string): { header_indices: DCLinkHeaders, rows: (string | number)[][] }
 {
-    const raw_rows = d1258v6_parse_csv(csv)
+    const raw_rows = d1258v8_parse_csv(csv)
     if (raw_rows.length === 0) return { header_indices: {} as DCLinkHeaders, rows: [] }
 
     const [headers, ...rows] = raw_rows as [string[], ...(string | number)[][]]

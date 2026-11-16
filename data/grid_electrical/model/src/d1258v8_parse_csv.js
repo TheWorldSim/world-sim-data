@@ -1,7 +1,7 @@
-// Copied from https://wikisim.org/wiki/1258v6
-import { d1257v3_parse_number_from_string } from "./d1257v3_parse_number_from_string.js"
+// Copied from https://wikisim.org/wiki/1258v8
+import { d1257v4_parse_number_from_string } from "./d1257v4_parse_number_from_string.js"
 
-export const d1258v6_parse_csv = (csv_data, options = {}) =>
+export const d1258v8_parse_csv = (csv_data, options = {}) =>
 {
     // Set option default values
     const {
@@ -91,7 +91,7 @@ export const d1258v6_parse_csv = (csv_data, options = {}) =>
     {
         rows = rows.map(row => row.map(field =>
         {
-            return d1257v3_parse_number_from_string(field)
+            return d1257v4_parse_number_from_string(field)
         }))
     }
 
