@@ -1,4 +1,3 @@
-from itertools import groupby
 from pathlib import Path
 
 import h3
@@ -53,5 +52,5 @@ def _aggregate_edges(edges_df: pd.DataFrame, merged_bus_id_by_bus_id: pd.Series)
 
 def _linestring_to_cell_ids(linestring_wkt: str) -> str:
     cell_ids = [h3.latlng_to_cell(lat, lon, H3_RESOLUTION) for lon, lat in wkt.loads(linestring_wkt).coords]
-    # Consecutive points in the same cell collapse into one
-    return ", ".join(cell_id for cell_id, _ in groupby(cell_ids))
+    # dict keys are unique and keep first-seen order, so each cell is only listed once
+    return ", ".join(dict.fromkeys(cell_ids))

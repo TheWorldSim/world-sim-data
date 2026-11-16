@@ -38,6 +38,7 @@ def build_lines_df() -> pd.DataFrame:
     0,0,1,200,500,3e-05,"LINESTRING (-2.379 53.426, -2.379 53.427)"
     1,1,2,300,1700,9e-04,"LINESTRING (-2.379 53.427, -2.379 53.426, -0.756 53.598)"
     2,0,2,400,3500,1.31e-05,"LINESTRING (-2.379 53.426, -0.756 53.598)"
+    3,0,2,500,4000,2e-05,"LINESTRING (-2.379 53.426, -0.756 53.598, -2.379 53.426, -0.756 53.598)"
     """)
 
     return pd.read_csv(io.StringIO(csv_text))
@@ -84,6 +85,8 @@ class TestAggregateGridToH3(unittest.TestCase):
                 # line 0 removed as it goes from and to the same cell
                 {"line_id": 1, "bus0": 0, "bus1": 2, "voltage": 300, "s_nom": 1700, "x_pu": 9e-04, GEOMETRY_COLUMN: cells},
                 {"line_id": 2, "bus0": 0, "bus1": 2, "voltage": 400, "s_nom": 3500, "x_pu": 1.31e-05, GEOMETRY_COLUMN: cells},
+                # line 3 revisits both cells, each cell only appears once in its geometry
+                {"line_id": 3, "bus0": 0, "bus1": 2, "voltage": 500, "s_nom": 4000, "x_pu": 2e-05, GEOMETRY_COLUMN: cells},
             ],
         )
 
