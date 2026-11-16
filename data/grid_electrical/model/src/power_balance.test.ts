@@ -6,28 +6,8 @@ import {
     type PoweredCellularElectricalGrid,
 } from "./power_balance.ts"
 import { deep_approximate } from "./utils.ts"
+import { orthogonal_neighbour_cell_ids } from "./utils_test_helpers.ts"
 
-
-// For these tests, we imagine an orthogonal grid where the cell_id is given
-// by letters (horizontal position) and numbers (vertical) i.e.:
-//     a   b   c   d   e   f   g   h
-//  1  a1  b1  c1  d1  e1  f1  g1  h1
-//  2  a2  b2  c2  d2  e2  f2  g2  h2
-//  3  a3  b3  c3  d3  e3  f3  g3  h3
-//  4  a4  b4  c4  d4  e4  f4  g4  h4
-
-const neighbour_cell_ids = (cell_id: string): string[] =>
-{
-    const [, column, row_str] = cell_id.match(/^([a-z])(\d+)$/)!
-    const row = parseInt(row_str!, 10)
-    const column_code = column!.charCodeAt(0)
-    return [
-        `${String.fromCharCode((column_code - 1 + 26 - 97) % 26 + 97)}${row}`,
-        `${String.fromCharCode((column_code + 1 + 26 - 97) % 26 + 97)}${row}`,
-        `${column}${(row - 1 + 10) % 10}`,
-        `${column}${(row + 1 + 10) % 10}`,
-    ]
-}
 
 describe("calculate_power_balance", () =>
 {
@@ -46,7 +26,7 @@ describe("calculate_power_balance", () =>
             dc_links: `
                 link_id,bus0,bus1,voltage,p_nom,geometry
             `,
-        }, neighbour_cell_ids, { hop_capacity_MW: [300, 50] })
+        }, orthogonal_neighbour_cell_ids, { hop_capacity_MW: [300, 50] })
 
         it("returns an empty balance for an empty grid with no supply or demand", () =>
         {
@@ -203,7 +183,7 @@ describe("calculate_power_balance", () =>
                     link_id,bus0,bus1,voltage,p_nom,geometry
                     0,Bus1,Bus4,400,1000,
                 `,
-            }, neighbour_cell_ids, { hop_capacity_MW: [300, 50] })
+            }, orthogonal_neighbour_cell_ids, { hop_capacity_MW: [300, 50] })
 
             const args: PoweredCellularElectricalGrid = {
                 cellular_grid,
@@ -331,7 +311,7 @@ describe("calculate_power_balance", () =>
             dc_links: `
                 link_id,bus0,bus1,voltage,p_nom,geometry
             `,
-        }, neighbour_cell_ids, { hop_capacity_MW: [300, 50] })
+        }, orthogonal_neighbour_cell_ids, { hop_capacity_MW: [300, 50] })
 
         it("should allow supply and demand from nodes to be used by nearest bus", () =>
         {
@@ -445,7 +425,7 @@ describe("calculate_power_balance", () =>
                     link_id,bus0,bus1,voltage,p_nom,geometry
                     0,Bus3,Bus4,400,1000,
                 `,
-            }, neighbour_cell_ids, { hop_capacity_MW: [300, 50] })
+            }, orthogonal_neighbour_cell_ids, { hop_capacity_MW: [300, 50] })
 
             const balance = calculate_power_balance({
                 cellular_grid,
