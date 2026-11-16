@@ -83,6 +83,7 @@ function get_grid_bounding_box(grid: CellularElectricalGrid, cell_id_to_latlon: 
 {
     const all_points: ILatLon[] = [
         ...grid.buses.map(bus => cell_id_to_latlon(bus.cell_id)),
+        ...grid.distribution_grid.buses.map(bus => cell_id_to_latlon(bus.cell_id)),
         ...grid.ac_lines.flatMap(line => line.path_cell_ids.map(cell_id_to_latlon)),
         ...grid.dc_links.flatMap(link => link.path_cell_ids.map(cell_id_to_latlon)),
     ]

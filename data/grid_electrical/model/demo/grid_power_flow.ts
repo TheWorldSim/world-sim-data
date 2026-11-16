@@ -80,7 +80,7 @@ async function render_grid(): Promise<void>
 
 document.getElementById("dataset")?.addEventListener("change", async (event) => {
     const target = event.target as HTMLSelectElement
-    await power_grids.select_grid(target.value as "3ac_1dc" | "7ac_1dc" | "uk" | "europe")
+    await power_grids.select_grid(target.value as "3ac_1dc" | "7ac_1dc" | "uk" | "debug" | "europe")
     render_grid()
 })
 

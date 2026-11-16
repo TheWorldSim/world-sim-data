@@ -134,8 +134,32 @@ async function get_source_uk(): Promise<PoweredGridWithConfig>
 }
 
 
+let source_uk_debug: PoweredGridWithConfig | undefined = undefined
+async function get_source_uk_debug(): Promise<PoweredGridWithConfig>
+{
+    if (source_uk_debug === undefined)
+    {
+        const debug_uk_grid: LatLonElectricalGrid = parse_latlon_grid_csv_data({
+            buses: await (await fetch("data_grids/uk_debug/buses.csv")).text(),
+            ac_lines: await (await fetch("data_grids/uk_debug/lines.csv")).text(),
+            dc_links: await (await fetch("data_grids/uk_debug/links.csv")).text(),
+        })
+
+        source_uk_debug = {
+            name: "UK Debug",
+            spread: 1,
+            latlon_grid: debug_uk_grid,
+            supply_MW_by_bus_id: {},
+            demand_MW_by_bus_id: {},
+            modify_grid,
+        }
+    }
+    return source_uk_debug
+}
+
+
 const distribution_grid_config: DistributionGridConfig = {
-    hop_capacity_MW: [300, 50],
+    hop_capacity_MW: [],
 }
 
 // Cached per source and DGG so that supply and demand edits persist while the same grid and DGG are selected
@@ -182,11 +206,12 @@ let selected_grid_and_config: PoweredGridWithConfig = source_3ac_1dc
 
 
 export const power_grids = {
-    select_grid: async (grid_name: "3ac_1dc" | "7ac_1dc" | "uk" | "europe") =>
+    select_grid: async (grid_name: "3ac_1dc" | "7ac_1dc" | "uk" | "debug" | "europe") =>
     {
         if (grid_name === "3ac_1dc") selected_grid_and_config = source_3ac_1dc
         else if (grid_name === "7ac_1dc") selected_grid_and_config = source_7ac_1dc
         else if (grid_name === "uk") selected_grid_and_config = await get_source_uk()
+        else if (grid_name === "debug") selected_grid_and_config = await get_source_uk_debug()
         else if (grid_name === "europe") selected_grid_and_config = await get_source_europe()
         else return
     },

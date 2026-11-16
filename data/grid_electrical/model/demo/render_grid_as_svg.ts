@@ -1,8 +1,8 @@
-import type { CellularACLine, CellularBus, CellularDCLink, CellularElectricalGrid } from "../src/interface.ts"
 import { flow_level } from "../src/flow_level.ts"
+import type { CellularACLine, CellularBus, CellularDCLink, CellularElectricalGrid } from "../src/interface.ts"
 import type { CellStatus } from "../src/power_balance.ts"
-import type { ProjectCellId, ProjectLatLon } from "./latlon_to_screen.ts"
 import type { CountryOutline } from "./country_outlines.ts"
+import type { ProjectCellId, ProjectLatLon } from "./latlon_to_screen.ts"
 
 
 const SVG_NS = "http://www.w3.org/2000/svg"
@@ -228,6 +228,7 @@ export function make_buses_layer(grid: CellularElectricalGrid, project: ProjectC
         bus: CellularBus
         group: SVGElement
         amount_label: SVGElement
+        title: SVGElement
     }
     const bus_svg_by_cell_id: Record<string, BusSvg> = {}
 
@@ -236,7 +237,7 @@ export function make_buses_layer(grid: CellularElectricalGrid, project: ProjectC
         bus_svg.amount_label.textContent = (MW ? `${MW}` : "")
     }
 
-    // The inner disc shows supply (src) or demand (sink / unmet), the ring shows why supply was curtailed
+    // The inner disc shows supply (src) or demand (sink / unmet), the ring shows why supply was curtailed or demand was limited by the grid
     const status_classes: Record<CellStatus, string[]> = {
         idle: [],
         supplying: ["src"],
@@ -254,17 +255,31 @@ export function make_buses_layer(grid: CellularElectricalGrid, project: ProjectC
         bus_svg.group.classList.add(...status_classes[status])
     }
 
-    for (const bus of grid.buses)
+    function update_title(bus_svg: BusSvg, net_MW: number, status: CellStatus)
+    {
+        const sign = net_MW > 0 ? "+" : ""
+        bus_svg.title.textContent = `${bus_svg.bus.id}: ${status} · net ${sign}${net_MW} MW`
+    }
+
+    // Distribution buses are virtual buses at cells without a grid bus, so they get the same symbol with a dashed ring and no name
+    const buses_to_draw = [
+        ...grid.buses.map(bus => ({ bus, is_distribution: false })),
+        ...grid.distribution_grid.buses.map(bus => ({ bus, is_distribution: true })),
+    ]
+
+    for (const { bus, is_distribution } of buses_to_draw)
     {
         const { x, y } = project(bus.cell_id)
-        const bus_group = make_svg_element("g", { transform: `translate(${x} ${y})` }, `bus debug-bus-id-${bus.id}`)
+        const bus_group = make_svg_element("g", { transform: `translate(${x} ${y})` }, `bus debug-bus-id-${bus.id}${is_distribution ? " distribution" : ""}`)
         const bus_name = make_svg_element("text", { y: -2 }, "bus-name")
-        bus_name.textContent = bus.id
+        bus_name.textContent = is_distribution ? "" : bus.id
         const bus_amount_label = make_svg_element("text", { y: 16 }, "bus-amt")
         bus_amount_label.textContent = ""
 
         // >1</text><text class="bus-amt" y="16">+100</text>
+        const bus_title = make_svg_element("title", {})
         bus_group.append(
+            bus_title,
             make_svg_element("circle", { r: 36 }, "ring"),
             make_svg_element("circle", { r: 30 }, "disc"),
             bus_name,
@@ -281,7 +296,7 @@ export function make_buses_layer(grid: CellularElectricalGrid, project: ProjectC
             change_MW_by_cell(bus.cell_id, -1)
         })
 
-        const bus_svg: BusSvg = { bus, group: bus_group, amount_label: bus_amount_label }
+        const bus_svg: BusSvg = { bus, group: bus_group, amount_label: bus_amount_label, title: bus_title }
         bus_svg_by_cell_id[bus.cell_id] = bus_svg
         update_label(bus_svg)
     }
@@ -291,8 +306,10 @@ export function make_buses_layer(grid: CellularElectricalGrid, project: ProjectC
     {
         for (const [cell_id, bus_svg] of Object.entries(bus_svg_by_cell_id))
         {
+            const status = status_by_cell[cell_id] ?? "idle"
             update_label(bus_svg, MW_by_cell[cell_id])
-            update_status(bus_svg, status_by_cell[cell_id] ?? "idle")
+            update_status(bus_svg, status)
+            update_title(bus_svg, MW_by_cell[cell_id] ?? 0, status)
         }
     }
 

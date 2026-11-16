@@ -117,7 +117,19 @@ describe("calculate_power_balance", () =>
                 demand_MW_by_cell_id: { "a4": 300 },
                 supply_MW_by_cell_id: { "a4": 300 },
             })
+            expect(balance_cancelled.MW_by_cell_id["a4"]).to.be.closeTo(0, 1e-6)
             expect(balance_cancelled.status_by_cell_id).to.deep.equal({ "a4": "demand_met", "b4": "idle" })
+        })
+
+
+        it("flags a cell with zero demand and zero supply as idle, not demand_met", () =>
+        {
+            const balance = calculate_power_balance({
+                cellular_grid: two_bus_grid,
+                demand_MW_by_cell_id: { "a4": 0 },
+                supply_MW_by_cell_id: { "a4": 0 },
+            })
+            expect(balance.status_by_cell_id).to.deep.equal({ "a4": "idle", "b4": "idle" })
         })
 
 

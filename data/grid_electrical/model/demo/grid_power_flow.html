@@ -20,6 +20,7 @@
         <option value="3ac_1dc">3AC 1DC</option>
         <option value="7ac_1dc">7AC 1DC</option>
         <option value="uk">UK</option>
+        <option value="debug">Debug</option>
         <option value="europe">Europe</option>
       </select>
     </label>
@@ -40,7 +41,7 @@
   <div class="layout">
     <section class="card diagram" id="diagram-card" aria-label="Network diagram">
       <svg id="grid-display" role="group" aria-label="Grid network diagram"></svg>
-      <p class="hint">Click a bus to add one step of generation. Right-click removes one step; below zero the bus becomes demand.</p>
+      <p class="hint">Click a bus to add one step of generation. Right-click removes one step; below zero the bus becomes demand. Dashed-ring buses are distribution buses on cells without a grid bus and work the same way.</p>
       <ul class="legend" aria-label="Legend">
         <li><span class="sw src"></span>Source</li>
         <li><span class="sw sink"></span>Sink</li>
@@ -48,6 +49,7 @@
         <li><span class="sw bar" style="background:var(--flow-mid)"></span>70% and over</li>
         <li><span class="sw bar" style="background:var(--flow-max)"></span>At limit</li>
         <li><span class="sw bar dcs"></span>Dashed: DC line (controllable)</li>
+        <li><span class="sw dist"></span>Dashed ring: distribution bus</li>
       </ul>
     </section>
 

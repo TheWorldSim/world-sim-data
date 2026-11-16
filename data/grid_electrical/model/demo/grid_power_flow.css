@@ -169,8 +169,12 @@ select { padding: 7px 28px 7px 10px; min-height: 38px; font-family: var(--font-d
 .bus .ring { fill: none; stroke: var(--focus); stroke-width: 3; opacity: 0; transition: opacity 0.12s; }
 .bus:hover .ring { opacity: 0.4; }
 .bus:focus-visible .ring { opacity: 1; }
-.bus.unmet .disc { fill: var(--bad-soft); stroke: var(--bad); }
-.bus.unmet .bus-amt { fill: var(--bad); }
+/* Distribution buses always show a dashed ring, using the same dash pattern as DC lines */
+.bus.distribution .ring { opacity: 1; stroke: var(--idle-strong); stroke-dasharray: 16 7; }
+/* Demand left unmet: short of supply, or limited by the grid (ring as for curtailed supply) */
+.bus.unmet-by-supply .disc, .bus.unmet-by-grid .disc { fill: var(--bad-soft); stroke: var(--bad); }
+.bus.unmet-by-supply .bus-amt, .bus.unmet-by-grid .bus-amt { fill: var(--bad); }
+.bus.unmet-by-grid .ring { stroke: var(--flow-max); opacity: 1; }
 .bus.curtailed-demand .ring { stroke: var(--flow-mid); opacity: 1; }
 .bus.curtailed-grid .ring { stroke: var(--flow-max); opacity: 1; }
 .bus-name { font: 600 17px var(--font-ui); text-anchor: middle; fill: var(--fg); }
@@ -237,6 +241,7 @@ tr.hot td.load { color: var(--bad); font-weight: 600; }
 /* DC lines and network data panel */
 .ln.dc { stroke-linecap: butt; stroke-dasharray: 16 7; }
 .sw.bar.dcs { background: repeating-linear-gradient(90deg, var(--idle-strong) 0 5px, transparent 5px 8px); }
+.sw.dist { border-style: dashed; border-color: var(--idle-strong); background: transparent; }
 td.name .tag { margin-left: 8px; padding: 1px 6px; border-radius: 999px; font: 600 10px var(--font-data); letter-spacing: 0.05em; color: var(--info); background: var(--info-soft); }
 .msg { margin: 10px 0 0; font-size: 13px; }
 .msg.err { color: var(--bad); }

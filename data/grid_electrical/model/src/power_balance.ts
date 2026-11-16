@@ -30,7 +30,7 @@ export interface PowerBalance
  *   supplying                   all net supply is dispatched
  *   supply_curtailed_by_demand  some net supply is not dispatched, and no demand anywhere is left unmet
  *   supply_curtailed_by_grid    some net supply is not dispatched while demand is left unmet, or the cell has no bus
- *   demand_met                  all net demand is served, including demand exactly matched by the cell's own supply
+ *   demand_met                  all net demand is served, including demand exactly matched by the cell's own supply (but only when there is some demand and supply otherwise the status will be "idle")
  *   demand_unmet_by_supply      some net demand is not served as its connected grid has less supply than demand
  *   demand_unmet_by_grid        some net demand is not served due to lack of transmission grid, with enough supply in its connected grid
  */
