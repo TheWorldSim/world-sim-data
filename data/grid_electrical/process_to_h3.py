@@ -28,29 +28,38 @@ def aggregate_grid_to_h3(buses_df: pd.DataFrame, lines_df: pd.DataFrame, links_d
 
     merged_bus_ids = buses_df.groupby(CELL_ID_COLUMN)["bus_id"].transform("first")
     merged_bus_id_by_bus_id = pd.Series(merged_bus_ids.to_numpy(), index=buses_df["bus_id"])
+    cell_id_by_bus_id = pd.Series(buses_df[CELL_ID_COLUMN].to_numpy(), index=buses_df["bus_id"])
 
     merged_buses_df = buses_df.drop_duplicates(CELL_ID_COLUMN)
     merged_buses_df[BUS_FIELDS].to_csv(output_dir / "buses.csv", index=False)
 
-    aggregated_lines_df = _aggregate_edges(lines_df, merged_bus_id_by_bus_id)
+    aggregated_lines_df = _aggregate_edges(lines_df, merged_bus_id_by_bus_id, cell_id_by_bus_id)
     aggregated_lines_df[LINE_FIELDS].to_csv(output_dir / "lines.csv", index=False, float_format="%.15g")
 
-    aggregated_links_df = _aggregate_edges(links_df, merged_bus_id_by_bus_id)
+    aggregated_links_df = _aggregate_edges(links_df, merged_bus_id_by_bus_id, cell_id_by_bus_id)
     aggregated_links_df[LINK_FIELDS].to_csv(output_dir / "links.csv", index=False, float_format="%.15g")
 
 
-def _aggregate_edges(edges_df: pd.DataFrame, merged_bus_id_by_bus_id: pd.Series) -> pd.DataFrame:
-    """Re-points lines / links at the merged buses, drops those within a single cell and converts geometry to cells."""
+def _aggregate_edges(edges_df: pd.DataFrame, merged_bus_id_by_bus_id: pd.Series, cell_id_by_bus_id: pd.Series) -> pd.DataFrame:
+    """
+    Re-points lines / links at the merged buses, drops those within a single cell and converts geometry to cells.
+    The geometry cells start and end at the cells of the merged buses.
+    """
     # .loc raises a KeyError if an edge references an unknown bus
     edges_df = edges_df.assign(
         bus0=merged_bus_id_by_bus_id.loc[edges_df["bus0"]].to_numpy(),
         bus1=merged_bus_id_by_bus_id.loc[edges_df["bus1"]].to_numpy(),
     )
     edges_df = edges_df[edges_df["bus0"] != edges_df["bus1"]]
-    return edges_df.assign(**{GEOMETRY_COLUMN: edges_df["geometry"].map(_linestring_to_cell_ids)})
+    geometries = [
+        _linestring_to_cell_ids(linestring_wkt, cell_id_by_bus_id.loc[bus0], cell_id_by_bus_id.loc[bus1])
+        for linestring_wkt, bus0, bus1 in zip(edges_df["geometry"], edges_df["bus0"], edges_df["bus1"])
+    ]
+    return edges_df.assign(**{GEOMETRY_COLUMN: geometries})
 
 
-def _linestring_to_cell_ids(linestring_wkt: str) -> str:
+def _linestring_to_cell_ids(linestring_wkt: str, start_cell_id: str, end_cell_id: str) -> str:
     cell_ids = [h3.latlng_to_cell(lat, lon, H3_RESOLUTION) for lon, lat in wkt.loads(linestring_wkt).coords]
-    # dict keys are unique and keep first-seen order, so each cell is only listed once
-    return ", ".join(dict.fromkeys(cell_ids))
+    # Bus cells are only listed at the start and end, so they are removed from the middle
+    middle_cell_ids = dict.fromkeys(cell_id for cell_id in cell_ids if cell_id not in (start_cell_id, end_cell_id))
+    return ", ".join([start_cell_id, *middle_cell_ids, end_cell_id])

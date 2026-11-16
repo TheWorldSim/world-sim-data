@@ -15,6 +15,8 @@ GEOMETRY_COLUMN = "geometry"
 BUS_0 = (53.426, -2.379)
 BUS_1 = (53.427, -2.379)
 BUS_2 = (53.598, -0.756)
+# Midway between BUS_0 and BUS_2, roughly 55km from each so in a different cell to both
+MID_POINT = (53.512, -1.5675)
 
 
 def cell_id(latlon: tuple[float, float]) -> str:
@@ -39,6 +41,7 @@ def build_lines_df() -> pd.DataFrame:
     1,1,2,300,1700,9e-04,"LINESTRING (-2.379 53.427, -2.379 53.426, -0.756 53.598)"
     2,0,2,400,3500,1.31e-05,"LINESTRING (-2.379 53.426, -0.756 53.598)"
     3,0,2,500,4000,2e-05,"LINESTRING (-2.379 53.426, -0.756 53.598, -2.379 53.426, -0.756 53.598)"
+    4,0,2,600,5000,3e-05,"LINESTRING (-0.756 53.598, -1.5675 53.512, -2.379 53.426)"
     """)
 
     return pd.read_csv(io.StringIO(csv_text))
@@ -87,6 +90,17 @@ class TestAggregateGridToH3(unittest.TestCase):
                 {"line_id": 2, "bus0": 0, "bus1": 2, "voltage": 400, "s_nom": 3500, "x_pu": 1.31e-05, GEOMETRY_COLUMN: cells},
                 # line 3 revisits both cells, each cell only appears once in its geometry
                 {"line_id": 3, "bus0": 0, "bus1": 2, "voltage": 500, "s_nom": 4000, "x_pu": 2e-05, GEOMETRY_COLUMN: cells},
+                # line 4 starts and ends away from the bus cells and passes through bus 0's cell in the middle,
+                # so the bus cells are placed at the ends and removed from the middle
+                {
+                    "line_id": 4,
+                    "bus0": 0,
+                    "bus1": 2,
+                    "voltage": 600,
+                    "s_nom": 5000,
+                    "x_pu": 3e-05,
+                    GEOMETRY_COLUMN: f"{cell_id(BUS_0)}, {cell_id(MID_POINT)}, {cell_id(BUS_2)}",
+                },
             ],
         )
 
