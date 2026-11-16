@@ -2,7 +2,7 @@ import { aggregate_grid_to_cells } from "../src/aggregate_grid_to_cells.ts"
 import type { CellularElectricalGrid, ConvertLatLonToFromCell, DistributionGridConfig, LatLonElectricalGrid } from "../src/interface.ts"
 import { latlon_to_from_cell_1dp, latlon_to_from_cell_h3r4, latlon_to_from_cell_raw } from "../src/latlon_to_from_cell.ts"
 import { modify_grid } from "../src/modify_grid.ts"
-import { parse_latlon_grid_csv_data } from "../src/parse_data.ts"
+import { parse_cellular_grid_csv_data, parse_latlon_grid_csv_data } from "../src/parse_data.ts"
 import type { PoweredCellularElectricalGrid, PoweredLatLonElectricalGrid } from "../src/power_balance.ts"
 
 
@@ -19,6 +19,8 @@ interface PoweredGridWithConfig extends PoweredLatLonElectricalGrid
     name: string
     spread: number
     modify_grid?: (cellular_grid: CellularElectricalGrid) => CellularElectricalGrid
+    // Already aggregated to H3 resolution 4 cells, so used instead of aggregating latlon_grid for that DGG
+    h3r4_cellular_grid?: CellularElectricalGrid
 }
 
 const _3ac_1dc_grid: LatLonElectricalGrid = parse_latlon_grid_csv_data({
@@ -121,10 +123,17 @@ async function get_source_uk(): Promise<PoweredGridWithConfig>
             dc_links: await (await fetch("data_grids/uk/links.csv")).text(),
         })
 
+        const uk_h3r4_grid: CellularElectricalGrid = parse_cellular_grid_csv_data({
+            buses: await (await fetch("data_grids/uk/h3r4/buses.csv")).text(),
+            ac_lines: await (await fetch("data_grids/uk/h3r4/lines.csv")).text(),
+            dc_links: await (await fetch("data_grids/uk/h3r4/links.csv")).text(),
+        }, dgg_converters.h3r4.neighbour_cell_ids, distribution_grid_config)
+
         source_uk = {
             name: "UK",
             spread: 12,
             latlon_grid: uk_grid,
+            h3r4_cellular_grid: uk_h3r4_grid,
             supply_MW_by_bus_id: {},
             demand_MW_by_bus_id: {},
             modify_grid,
@@ -176,7 +185,9 @@ function get_powered_grid(source: PoweredGridWithConfig, dgg: DGG): PoweredCellu
     const existing = powered_by_dgg[dgg]
     if (existing !== undefined) return existing
 
-    let cellular_grid = aggregate_grid_to_cells(source.latlon_grid, dgg_converters[dgg], distribution_grid_config)
+    let cellular_grid = dgg === "h3r4" && source.h3r4_cellular_grid !== undefined
+        ? source.h3r4_cellular_grid
+        : aggregate_grid_to_cells(source.latlon_grid, dgg_converters[dgg], distribution_grid_config)
     cellular_grid = source.modify_grid?.(cellular_grid) || cellular_grid
 
     powered_by_dgg[dgg] = {
