@@ -6,17 +6,22 @@ from pathlib import Path
 
 import h3
 import pandas as pd
-from process_to_h3 import H3_RESOLUTION, aggregate_grid_to_h3
+from process_to_h3 import MAX_CELL_STEP, H3_RESOLUTION, aggregate_grid_to_h3, insert_intermediate_cells
 
 CELL_ID_COLUMN = "cell_id"
 GEOMETRY_COLUMN = "geometry"
 
 # Buses 0 and 1 are 100m apart so share a cell, bus 2 is ~110km away
-BUS_0 = (53.426, -2.379)
-BUS_1 = (53.427, -2.379)
-BUS_2 = (53.598, -0.756)
-# Midway between BUS_0 and BUS_2, roughly 55km from each so in a different cell to both
-MID_POINT = (53.512, -1.5675)
+BUS_0 = (54.059, -2.304)
+BUS_1 = (54.059, -2.305)
+BUS_2 = (54.430, -2.544)
+# Adjacent to BUS0 and BUS_2 but in a different resolution 4 cell to both
+BUS_3 = (54.334, -1.900)
+
+BUS_0_str = f"{BUS_0[1]} {BUS_0[0]}"
+BUS_1_str = f"{BUS_1[1]} {BUS_1[0]}"
+BUS_2_str = f"{BUS_2[1]} {BUS_2[0]}"
+BUS_3_str = f"{BUS_3[1]} {BUS_3[0]}"
 
 
 def cell_id(latlon: tuple[float, float]) -> str:
@@ -29,6 +34,7 @@ def build_buses_df() -> pd.DataFrame:
     0,220,{BUS_0[1]},{BUS_0[0]}
     1,300,{BUS_1[1]},{BUS_1[0]}
     2,300,{BUS_2[1]},{BUS_2[0]}
+    3,400,{BUS_3[1]},{BUS_3[0]}
     """)
 
     return pd.read_csv(io.StringIO(csv_text))
@@ -37,11 +43,11 @@ def build_buses_df() -> pd.DataFrame:
 def build_lines_df() -> pd.DataFrame:
     csv_text = textwrap.dedent(f"""
     line_id,bus0,bus1,voltage,s_nom,x_pu,geometry
-    0,0,1,200,500,3e-05,"LINESTRING (-2.379 53.426, -2.379 53.427)"
-    1,1,2,300,1700,9e-04,"LINESTRING (-2.379 53.427, -2.379 53.426, -0.756 53.598)"
-    2,0,2,400,3500,1.31e-05,"LINESTRING (-2.379 53.426, -0.756 53.598)"
-    3,0,2,500,4000,2e-05,"LINESTRING (-2.379 53.426, -0.756 53.598, -2.379 53.426, -0.756 53.598)"
-    4,0,2,600,5000,3e-05,"LINESTRING (-0.756 53.598, -1.5675 53.512, -2.379 53.426)"
+    0,0,1,200,500,3e-05,"LINESTRING ({BUS_0_str}, {BUS_1_str})"
+    1,1,2,300,1700,9e-04,"LINESTRING ({BUS_1_str}, {BUS_0_str}, {BUS_2_str})"
+    2,0,2,400,3500,1.31e-05,"LINESTRING ({BUS_0_str}, {BUS_2_str})"
+    3,0,2,500,4000,2e-05,"LINESTRING ({BUS_0_str}, {BUS_2_str}, {BUS_0_str}, {BUS_2_str})"
+    4,0,2,600,5000,3e-05,"LINESTRING ({BUS_2_str}, {BUS_3_str}, {BUS_0_str})"
     """)
 
     return pd.read_csv(io.StringIO(csv_text))
@@ -50,9 +56,9 @@ def build_lines_df() -> pd.DataFrame:
 def build_links_df() -> pd.DataFrame:
     csv_text = textwrap.dedent(f"""
     link_id,bus0,bus1,voltage,p_nom,geometry
-    0,0,1,200,1000,"LINESTRING (-2.379 53.426, -2.379 53.427)"
-    1,1,2,300,2000,"LINESTRING (-2.379 53.427, -0.756 53.598)"
-    2,0,2,400,3000,"LINESTRING (-2.379 53.426, -0.756 53.598)"
+    0,0,1,200,1000,"LINESTRING ({BUS_0_str}, {BUS_1_str})"
+    1,1,2,300,2000,"LINESTRING ({BUS_1_str}, {BUS_2_str})"
+    2,0,2,400,3000,"LINESTRING ({BUS_0_str}, {BUS_2_str})"
     """)
 
     return pd.read_csv(io.StringIO(csv_text))
@@ -76,6 +82,7 @@ class TestAggregateGridToH3(unittest.TestCase):
             [
                 {"bus_id": 0, "voltage": 220, CELL_ID_COLUMN: cell_id(BUS_0)},
                 {"bus_id": 2, "voltage": 300, CELL_ID_COLUMN: cell_id(BUS_2)},
+                {"bus_id": 3, "voltage": 400, CELL_ID_COLUMN: cell_id(BUS_3)},
             ],
         )
 
@@ -99,7 +106,7 @@ class TestAggregateGridToH3(unittest.TestCase):
                     "voltage": 600,
                     "s_nom": 5000,
                     "x_pu": 3e-05,
-                    GEOMETRY_COLUMN: f"{cell_id(BUS_0)}, {cell_id(MID_POINT)}, {cell_id(BUS_2)}",
+                    GEOMETRY_COLUMN: f"{cell_id(BUS_0)}, {cell_id(BUS_3)}, {cell_id(BUS_2)}",
                 },
             ],
         )
@@ -119,6 +126,36 @@ class TestAggregateGridToH3(unittest.TestCase):
     def test_cell_ids_have_the_expected_h3_resolution(self):
         for record in self.read_records("buses.csv"):
             self.assertEqual(h3.get_resolution(record[CELL_ID_COLUMN]), H3_RESOLUTION)
+
+
+class TestInsertIntermediateCells(unittest.TestCase):
+    def test_cells_at_most_max_step_apart_are_unchanged(self):
+        cells = ["8419553ffffffff", "8419551ffffffff", "8419555ffffffff", "841955dffffffff"]
+
+        self.assertEqual(insert_intermediate_cells(cells), cells)
+
+    def test_cell_three_steps_away_gets_one_intermediate_cell(self):
+        # 8419551 and 8419557 are both one step from 8419553 and on a shortest path to 8419543, 8419551 sorts first
+        self.assertEqual(
+            insert_intermediate_cells(["8419553ffffffff", "8419543ffffffff"]),
+            ["8419553ffffffff", "8419555ffffffff", "8419543ffffffff"],
+        )
+
+    def test_cell_five_steps_away_gets_two_intermediate_cells(self):
+        self.assertEqual(
+            insert_intermediate_cells(["8419553ffffffff", "8419403ffffffff"]),
+            ["8419553ffffffff", "8419421ffffffff", "8419407ffffffff", "8419403ffffffff"],
+        )
+
+    def test_every_step_is_at_most_max_step_apart_and_end_cells_are_kept(self):
+        cells = ["8419553ffffffff", "8419551ffffffff", "8419555ffffffff", "841955dffffffff", "8419543ffffffff", "8419403ffffffff"]
+
+        result = insert_intermediate_cells(cells)
+
+        self.assertEqual(result[0], cells[0])
+        self.assertEqual(result[-1], cells[-1])
+        for start, end in zip(result, result[1:]):
+            self.assertLessEqual(h3.grid_distance(start, end), MAX_CELL_STEP)
 
 
 if __name__ == "__main__":

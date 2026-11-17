@@ -5,6 +5,7 @@ import pandas as pd
 from shapely import wkt
 
 H3_RESOLUTION = 4
+MAX_CELL_STEP = 2
 CELL_ID_COLUMN = "cell_id"
 GEOMETRY_COLUMN = "geometry"
 
@@ -20,6 +21,7 @@ def aggregate_grid_to_h3(buses_df: pd.DataFrame, lines_df: pd.DataFrame, links_d
     Buses in the same cell are merged into the first bus seen in that cell.
     Lines and links are re-pointed at the merged buses, those starting and ending
     in the same cell are dropped, and their geometry becomes the cells they pass through.
+    Consecutive geometry cells are at most MAX_CELL_STEP grid steps apart, with intermediate cells inserted where needed.
     """
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -62,4 +64,29 @@ def _linestring_to_cell_ids(linestring_wkt: str, start_cell_id: str, end_cell_id
     cell_ids = [h3.latlng_to_cell(lat, lon, H3_RESOLUTION) for lon, lat in wkt.loads(linestring_wkt).coords]
     # Bus cells are only listed at the start and end, so they are removed from the middle
     middle_cell_ids = dict.fromkeys(cell_id for cell_id in cell_ids if cell_id not in (start_cell_id, end_cell_id))
-    return ", ".join([start_cell_id, *middle_cell_ids, end_cell_id])
+    return ", ".join(insert_intermediate_cells([start_cell_id, *middle_cell_ids, end_cell_id]))
+
+
+def insert_intermediate_cells(cell_ids: list[str]) -> list[str]:
+    """Inserts cells so that consecutive cells are at most MAX_CELL_STEP grid steps apart."""
+    result = [cell_ids[0]]
+    for start_cell_id, end_cell_id in zip(cell_ids, cell_ids[1:]):
+        path = _shortest_grid_path(start_cell_id, end_cell_id)
+        # Keeping every MAX_CELL_STEP-th cell along the path keeps each step within MAX_CELL_STEP
+        result.extend(path[MAX_CELL_STEP:-1:MAX_CELL_STEP])
+        result.append(end_cell_id)
+    return result
+
+
+def _shortest_grid_path(start_cell_id: str, end_cell_id: str) -> list[str]:
+    path = [start_cell_id]
+    while path[-1] != end_cell_id:
+        remaining_steps = h3.grid_distance(path[-1], end_cell_id)
+        # Where several neighbours are equally close to the end, the alphanumerically first is chosen
+        next_cell_id = min(
+            cell_id
+            for cell_id in h3.grid_ring(path[-1], 1)
+            if h3.grid_distance(cell_id, end_cell_id) == remaining_steps - 1
+        )
+        path.append(next_cell_id)
+    return path
