@@ -1,6 +1,7 @@
 import { flow_level } from "../src/flow_level.ts"
-import type { CellularACLine, CellularBus, CellularDCLink, CellularElectricalGrid } from "../src/interface.ts"
-import type { CellStatus } from "../src/power_balance.ts"
+import type { CellularBus, CellularElectricalGrid, CellularLynk } from "../src/interface.ts"
+import { lynk_flow_MW } from "../src/lynk_flow.ts"
+import type { CellStatus, PowerBalance } from "../src/power_balance.ts"
 import type { CountryOutline } from "./country_outlines.ts"
 import type { ProjectCellId, ProjectLatLon } from "./latlon_to_screen.ts"
 
@@ -30,13 +31,18 @@ export function make_countries_layer(countries: CountryOutline[], project_latlon
 }
 
 
-export function make_lines_and_links_layer(grid: CellularElectricalGrid, project: ProjectCellId)
+export function make_lynks_layer(lynks: CellularLynk[], project: ProjectCellId)
 {
-    const lines_layer = make_svg_element("g", {}, "lines")
+    const lynks_by_id: Record<string, CellularLynk> = lynks.reduce((acc, lynk) => {
+        acc[lynk.lynk_id] = lynk
+        return acc
+    }, {} as Record<string, CellularLynk>)
 
-    interface LineSvg
+    const lynks_layer = make_svg_element("g", {}, "lines")
+
+    interface LynkSvg
     {
-        line_id: string
+        lynk_id: number
         points: Point[]
         capacity_MW: number
         flow_MW: number
@@ -46,12 +52,11 @@ export function make_lines_and_links_layer(grid: CellularElectricalGrid, project
         arrow: SVGElement
         hit: SVGElement
     }
-    const ac_line_svg_by_id: Record<string, LineSvg> = {}
-    const dc_link_svg_by_id: Record<string, LineSvg> = {}
+    const lynk_svg_by_id: Record<string, LynkSvg> = {}
 
     // A pinned line (pressed) takes precedence over the hovered line. Hover only applies to mouse / trackpad.
-    let hovered_line: LineSvg | null = null
-    let pinned_line: LineSvg | null = null
+    let hovered_line: LynkSvg | null = null
+    let pinned_line: LynkSvg | null = null
     // After unpinning with a mouse the pointer is still over the line, so the label stays hidden until it leaves
     let hover_suppressed = false
 
@@ -61,85 +66,92 @@ export function make_lines_and_links_layer(grid: CellularElectricalGrid, project
     label_group.append(label_MW, label_percent)
 
 
-    function add_line(line: CellularACLine | CellularDCLink, kind: "ac" | "dc", line_svg_by_id: Record<string, LineSvg>)
+    function add_lynk(lynk: CellularLynk)
     {
-        const points = line.path_cell_ids.map(cell_id => project(cell_id))
-        const base = make_svg_element("path", {}, `ln ${kind} debug-line-id-${line.id}-bus0-${line.from_bus_id}-bus1-${line.to_bus_id}`)
-        const flow = make_svg_element("path", { visibility: "hidden" }, "ln-flow")
+        const points = lynk.path_cell_ids.map(cell_id => project(cell_id))
+        const kind = lynk.dc_links.length ? (lynk.ac_lines.length ? "type-both" : "type-dc") : "type-ac"
+        const base = make_svg_element("path", {}, `lynk ${kind} debug-lynk-id-${lynk.lynk_id}`)
+        const flow = make_svg_element("path", { visibility: "hidden" }, "lynk-flow")
         const arrow = make_svg_element("path", { d: "M -6 -6 L 8 0 L -6 6 L -2 0 Z", visibility: "hidden" }, "arrow")
-        const hit = make_svg_element("path", {}, "ln-hit")
+        const hit = make_svg_element("path", {}, "lynk-hit")
         const group = make_svg_element("g", {})
         group.append(base, flow, arrow, hit)
-        lines_layer.append(group)
+        lynks_layer.append(group)
 
         const label_position = label_position_along_path(points)
-        const line_svg: LineSvg = { line_id: line.id, points, capacity_MW: line.capacity_mw, flow_MW: 0, label_position, base, flow, arrow, hit }
-        line_svg_by_id[line.id] = line_svg
-        update_line_svg(line_svg, 0, 1)
+        const lynk_svg: LynkSvg = {
+            lynk_id: lynk.lynk_id,
+            points,
+            capacity_MW: lynk.capacity_mw,
+            flow_MW: 0,
+            label_position,
+            base,
+            flow,
+            arrow,
+            hit,
+        }
+        lynk_svg_by_id[lynk.lynk_id] = lynk_svg
+        update_lynk_svg(lynk_svg)
 
         hit.addEventListener("pointerenter", (event: PointerEvent) => {
             if (event.pointerType !== "mouse") return
-            hovered_line = line_svg
+            hovered_line = lynk_svg
             hover_suppressed = false
             refresh_label()
         })
         hit.addEventListener("pointerleave", (event: PointerEvent) => {
             if (event.pointerType !== "mouse") return
-            if (hovered_line === line_svg) hovered_line = null
+            if (hovered_line === lynk_svg) hovered_line = null
             hover_suppressed = false
             refresh_label()
         })
         hit.addEventListener("pointerdown", (event: PointerEvent) => {
-            if (pinned_line === line_svg)
+            if (pinned_line === lynk_svg)
             {
                 pinned_line = null
                 hover_suppressed = event.pointerType === "mouse"
             }
-            else pinned_line = line_svg
+            else pinned_line = lynk_svg
             refresh_label()
         })
     }
 
-    grid.ac_lines.forEach(line => add_line(line, "ac", ac_line_svg_by_id))
-    grid.dc_links.forEach(link => add_line(link, "dc", dc_link_svg_by_id))
-
-    const reference_capacity_MW = Math.max(100, ...grid.ac_lines.map(line => line.capacity_mw), ...grid.dc_links.map(link => link.capacity_mw))
+    lynks.forEach(add_lynk)
 
     /** Positive flow goes from the first to the last point of the path, negative flow the reverse */
-    function update_line_svg(line_svg: LineSvg, flow_MW: number, reference_MW: number)
+    function update_lynk_svg(lynk_svg: LynkSvg)
     {
+        const { flow_MW, capacity_MW } = lynk_svg
         const magnitude_MW = Math.abs(flow_MW)
-        const level = flow_level(flow_MW, line_svg.capacity_MW)
+        const level = flow_level(flow_MW, capacity_MW)
         const is_moving = level !== "idle"
 
-        const points = flow_MW >= 0 ? line_svg.points : line_svg.points.slice().reverse()
+        const points = flow_MW >= 0 ? lynk_svg.points : lynk_svg.points.slice().reverse()
         const d = points.map(({ x, y }, i) => `${i ? "L" : "M"}${x} ${y}`).join(" ")
-        line_svg.base.setAttribute("d", d)
-        line_svg.flow.setAttribute("d", d)
-        line_svg.hit.setAttribute("d", d)
-        line_svg.flow_MW = flow_MW
+        lynk_svg.base.setAttribute("d", d)
+        lynk_svg.flow.setAttribute("d", d)
+        lynk_svg.hit.setAttribute("d", d)
 
-        line_svg.base.style.strokeWidth = `${is_moving ? 5 + 5 * Math.min(1, magnitude_MW / reference_MW) : 3}px`
-        line_svg.base.style.stroke = is_moving ? `var(--flow-${level})` : "var(--idle)"
+        lynk_svg.base.style.strokeWidth = `${is_moving ? 5 + 5 * Math.min(1, magnitude_MW / capacity_MW) : 3}px`
+        lynk_svg.base.style.stroke = is_moving ? `var(--flow-${level})` : "var(--idle)"
 
         const visibility = is_moving ? "visible" : "hidden"
-        line_svg.flow.setAttribute("visibility", visibility)
-        line_svg.flow.style.animationDuration = `${Math.max(0.45, 1.6 - magnitude_MW / 120).toFixed(2)}s`
+        lynk_svg.flow.setAttribute("visibility", visibility)
+        lynk_svg.flow.style.animationDuration = `${Math.max(0.45, 1.6 - magnitude_MW / 120).toFixed(2)}s`
 
-        line_svg.arrow.setAttribute("visibility", visibility)
+        lynk_svg.arrow.setAttribute("visibility", visibility)
         const { x, y, angle_degrees } = point_along_path(points, 0.5)
-        line_svg.arrow.setAttribute("transform", `translate(${x.toFixed(1)},${y.toFixed(1)}) rotate(${angle_degrees.toFixed(1)})`)
+        lynk_svg.arrow.setAttribute("transform", `translate(${x.toFixed(1)},${y.toFixed(1)}) rotate(${angle_degrees.toFixed(1)})`)
     }
 
-    function update_MW_by_line(MW_by_line: {[line_id: string]: number}, MW_by_link: {[link_id: string]: number})
+    function update_MW_by_lynk(power_balance: Pick<PowerBalance, "MW_by_line_id" | "MW_by_link_id">)
     {
-        for (const [id, line_svg] of Object.entries(ac_line_svg_by_id))
+        for (const [id, lynk_svg] of Object.entries(lynk_svg_by_id))
         {
-            update_line_svg(line_svg, MW_by_line[id] ?? 0, reference_capacity_MW)
-        }
-        for (const [id, line_svg] of Object.entries(dc_link_svg_by_id))
-        {
-            update_line_svg(line_svg, MW_by_link[id] ?? 0, reference_capacity_MW)
+            const lynk = lynks_by_id[id]!
+            lynk_svg.flow_MW = lynk_flow_MW(lynk, power_balance)
+
+            update_lynk_svg(lynk_svg)
         }
         refresh_label()
     }
@@ -160,14 +172,14 @@ export function make_lines_and_links_layer(grid: CellularElectricalGrid, project
         label_group.setAttribute("visibility", "visible")
     }
 
-    function clear_pinned_line()
+    function clear_pinned_lynk()
     {
         pinned_line = null
         refresh_label()
     }
 
-    lines_layer.append(label_group)
-    return { svg: lines_layer, update_MW_by_line, clear_pinned_line }
+    lynks_layer.append(label_group)
+    return { svg: lynks_layer, update_MW_by_lynk, clear_pinned_lynk }
 }
 
 

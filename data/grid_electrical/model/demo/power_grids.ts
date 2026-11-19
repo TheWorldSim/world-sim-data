@@ -1,4 +1,5 @@
 import { aggregate_grid_to_cells } from "../src/aggregate_grid_to_cells.ts"
+import { bus_MW_to_cell_MW, get_net_MW_by_cell } from "../src/cell_MW.ts"
 import type { CellularElectricalGrid, ConvertLatLonToFromCell, DistributionGridConfig, LatLonElectricalGrid } from "../src/interface.ts"
 import { latlon_to_from_cell_1dp, latlon_to_from_cell_h3r4, latlon_to_from_cell_raw } from "../src/latlon_to_from_cell.ts"
 import { modify_grid } from "../src/modify_grid.ts"
@@ -34,12 +35,14 @@ const _3ac_1dc_grid: LatLonElectricalGrid = parse_latlon_grid_csv_data({
     ac_lines: `
         line_id,bus0,bus1,voltage,s_nom,x_pu,geometry
         0,0,1,400,1000,1e-4,
-        1,1,2,400,1000,1e-4,
-        2,2,3,400,1000,1e-4,
+        1,2,1,400,1000,1e-4,
+        2,2,1,400,1000,1e-4,
+        3,2,3,400,1000,1e-4,
     `,
     dc_links: `
         link_id,bus0,bus1,voltage,p_nom,geometry
-        0,0,3,400,100,
+        0,0,3,400,50,
+        1,0,3,400,50,
     `,
 })
 
@@ -199,19 +202,6 @@ function get_powered_grid(source: PoweredGridWithConfig, dgg: DGG): PoweredCellu
     return powered_by_dgg[dgg]
 }
 
-// Several buses can share a cell after aggregation, so their MW are summed
-function bus_MW_to_cell_MW(MW_by_bus: {[bus_id: string]: number}, cellular_grid: CellularElectricalGrid): {[cell_id: string]: number}
-{
-    const MW_by_cell: {[cell_id: string]: number} = {}
-    for (const [bus_id, MW] of Object.entries(MW_by_bus))
-    {
-        const cell_id = cellular_grid.bus_id_to_cell_id(bus_id)
-        MW_by_cell[cell_id] = (MW_by_cell[cell_id] ?? 0) + MW
-    }
-    return MW_by_cell
-}
-
-
 let selected_dgg: DGG = "1dp"
 let selected_grid_and_config: PoweredGridWithConfig = source_3ac_1dc
 
@@ -244,16 +234,4 @@ export const power_grids = {
     {
         selected_dgg = dgg
     }
-}
-
-
-function get_net_MW_by_cell(grid: PoweredCellularElectricalGrid)
-{
-    return Array.from(new Set(Object.keys(grid.demand_MW_by_cell_id).concat(Object.keys(grid.supply_MW_by_cell_id))))
-        .reduce((acc, cell_id) =>
-        {
-            const net = (grid.supply_MW_by_cell_id[cell_id] || 0) - (grid.demand_MW_by_cell_id[cell_id] || 0)
-            acc[cell_id] = net
-            return acc
-        }, {} as Record<string, number>)
 }
