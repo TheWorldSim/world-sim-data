@@ -16,6 +16,22 @@
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Python: Run one test",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "args": ["-k", "${input:testName}"],
+            "console": "integratedTerminal",
+            "justMyCode": false
+        }
+    ],
+    "inputs": [
+        {
+            "id": "testName",
+            "type": "promptString",
+            "description": "Test name, e.g. TestInsertIntermediateCells.test_cell_five_steps_away_gets_three_intermediate_cells_including_a_diagonal"
         }
     ]
 }
