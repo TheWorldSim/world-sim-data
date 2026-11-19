@@ -103,3 +103,12 @@ export interface DistributionGridConfig
     /** Capacity in MW of each hop outwards from a bus: the first entry is the hop next to a bus, the second the hop after that, and so on.  Cells further away are not connected. */
     hop_capacity_MW: number[]
 }
+
+export interface CellularLynk
+{
+    lynk_id: number
+    path_cell_ids: string[]
+    capacity_mw: number
+    ac_lines: { id: string, direction: 1 | -1 }[]
+    dc_links: { id: string, direction: 1 | -1 }[]
+}
