@@ -1,3 +1,4 @@
+from collections import deque
 from pathlib import Path
 
 import h3
@@ -5,7 +6,6 @@ import pandas as pd
 from shapely import wkt
 
 H3_RESOLUTION = 4
-MAX_CELL_STEP = 2
 CELL_ID_COLUMN = "cell_id"
 GEOMETRY_COLUMN = "geometry"
 
@@ -21,7 +21,7 @@ def aggregate_grid_to_h3(buses_df: pd.DataFrame, lines_df: pd.DataFrame, links_d
     Buses in the same cell are merged into the first bus seen in that cell.
     Lines and links are re-pointed at the merged buses, those starting and ending
     in the same cell are dropped, and their geometry becomes the cells they pass through.
-    Consecutive geometry cells are at most MAX_CELL_STEP grid steps apart, with intermediate cells inserted where needed.
+    Consecutive geometry cells are adjacent or diagonal to each other, with intermediate cells inserted where needed.
     """
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -68,25 +68,39 @@ def _linestring_to_cell_ids(linestring_wkt: str, start_cell_id: str, end_cell_id
 
 
 def insert_intermediate_cells(cell_ids: list[str]) -> list[str]:
-    """Inserts cells so that consecutive cells are at most MAX_CELL_STEP grid steps apart."""
+    """Inserts cells so that consecutive cells are adjacent or diagonal to each other (see _is_allowed_step)."""
     result = [cell_ids[0]]
     for start_cell_id, end_cell_id in zip(cell_ids, cell_ids[1:]):
-        path = _shortest_grid_path(start_cell_id, end_cell_id)
-        # Keeping every MAX_CELL_STEP-th cell along the path keeps each step within MAX_CELL_STEP
-        result.extend(path[MAX_CELL_STEP:-1:MAX_CELL_STEP])
-        result.append(end_cell_id)
+        result.extend(_fewest_steps_path(start_cell_id, end_cell_id)[1:])
     return result
 
 
-def _shortest_grid_path(start_cell_id: str, end_cell_id: str) -> list[str]:
-    path = [start_cell_id]
-    while path[-1] != end_cell_id:
-        remaining_steps = h3.grid_distance(path[-1], end_cell_id)
-        # Where several neighbours are equally close to the end, the alphanumerically first is chosen
-        next_cell_id = min(
-            cell_id
-            for cell_id in h3.grid_ring(path[-1], 1)
-            if h3.grid_distance(cell_id, end_cell_id) == remaining_steps - 1
-        )
-        path.append(next_cell_id)
-    return path
+def _is_allowed_step(start_cell_id: str, end_cell_id: str) -> bool:
+    """Returns True if the cells are adjacent or diagonal to each other."""
+    distance = h3.grid_distance(start_cell_id, end_cell_id)
+    if distance == 1:
+        return True
+    if distance == 2:
+        # A straight pair two steps apart share one neighbour, the cell centre on the line between them.
+        # A diagonal pair share two neighbours, so the line between them passes between cell centres.
+        common_neighbour_ids = set(h3.grid_ring(start_cell_id, 1)) & set(h3.grid_ring(end_cell_id, 1))
+        return len(common_neighbour_ids) == 2
+    return False
+
+
+def _fewest_steps_path(start_cell_id: str, end_cell_id: str) -> list[str]:
+    parent_by_cell_id = {start_cell_id: None}
+    queue = deque([start_cell_id])
+    while queue:
+        cell_id = queue.popleft()
+        if cell_id == end_cell_id:
+            break
+        for next_cell_id in sorted(h3.grid_disk(cell_id, 2)):
+            if next_cell_id not in parent_by_cell_id and _is_allowed_step(cell_id, next_cell_id):
+                parent_by_cell_id[next_cell_id] = cell_id
+                queue.append(next_cell_id)
+
+    path = [end_cell_id]
+    while path[-1] != start_cell_id:
+        path.append(parent_by_cell_id[path[-1]])
+    return path[::-1]

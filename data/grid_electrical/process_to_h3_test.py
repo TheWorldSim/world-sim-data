@@ -6,17 +6,18 @@ from pathlib import Path
 
 import h3
 import pandas as pd
-from process_to_h3 import MAX_CELL_STEP, H3_RESOLUTION, aggregate_grid_to_h3, insert_intermediate_cells
+from process_to_h3 import (H3_RESOLUTION, aggregate_grid_to_h3,
+                           insert_intermediate_cells)
 
 CELL_ID_COLUMN = "cell_id"
 GEOMETRY_COLUMN = "geometry"
 
-# Buses 0 and 1 are 100m apart so share a cell, bus 2 is ~110km away
-BUS_0 = (54.059, -2.304)
+# Buses 0 and 1 are 70m apart so share a cell, bus 2 is ~60km away
+BUS_0 = (54.059, -2.304)  # 8419553ffffffff
 BUS_1 = (54.059, -2.305)
-BUS_2 = (54.430, -2.544)
+BUS_2 = (54.430, -2.544)  # 8419551ffffffff
 # Adjacent to BUS0 and BUS_2 but in a different resolution 4 cell to both
-BUS_3 = (54.334, -1.900)
+BUS_3 = (54.334, -1.900)  # 841955bffffffff
 
 BUS_0_str = f"{BUS_0[1]} {BUS_0[0]}"
 BUS_1_str = f"{BUS_1[1]} {BUS_1[0]}"
@@ -134,20 +135,34 @@ class TestInsertIntermediateCells(unittest.TestCase):
 
         self.assertEqual(insert_intermediate_cells(cells), cells)
 
-    def test_cell_three_steps_away_gets_one_intermediate_cell(self):
-        # 8419551 and 8419557 are both one step from 8419553 and on a shortest path to 8419543, 8419551 sorts first
+    def test_cell_two_steps_away_on_diagonal_is_unchanged(self):
+        # 8419553 and 8419555 are "diagonal" from each other, i.e. not adjacent
+        # but have common neighbours and no intervening cell centres near the
+        # line connecting them
         self.assertEqual(
-            insert_intermediate_cells(["8419553ffffffff", "8419543ffffffff"]),
-            ["8419553ffffffff", "8419555ffffffff", "8419543ffffffff"],
+            # https://h3geo.org/#hex=8419553ffffffff%2C+8419555ffffffff
+            insert_intermediate_cells(["8419553ffffffff", "8419555ffffffff"]),
+            ["8419553ffffffff", "8419555ffffffff"],
         )
 
-    def test_cell_five_steps_away_gets_two_intermediate_cells(self):
+    def test_cell_two_steps_away_with_intervening_cell_centre_gets_one_intermediate_cell(self):
+        # 8419551 is in between from 8419553 and 841955d
         self.assertEqual(
+            # https://h3geo.org/#hex=8419553ffffffff%2C+841955dffffffff
+            insert_intermediate_cells(["8419553ffffffff", "841955dffffffff"]),
+            ["8419553ffffffff", "8419551ffffffff", "841955dffffffff"],
+        )
+
+    def test_cell_five_steps_away_gets_three_intermediate_cells_including_a_diagonal(self):
+        self.assertEqual(
+            # https://h3geo.org/#hex=8419553ffffffff%2C+8419403ffffffff
             insert_intermediate_cells(["8419553ffffffff", "8419403ffffffff"]),
-            ["8419553ffffffff", "8419421ffffffff", "8419407ffffffff", "8419403ffffffff"],
+            # https://h3geo.org/#hex=8419553ffffffff%2C+8419421ffffffff%2C+8419405ffffffff%2C+8419403ffffffff
+            ["8419553ffffffff", "8419421ffffffff", "8419405ffffffff", "8419403ffffffff"],
         )
 
     def test_every_step_is_at_most_max_step_apart_and_end_cells_are_kept(self):
+        # https://h3geo.org/#hex=8419553ffffffff%2C+8419551ffffffff%2C+8419555ffffffff%2C+841955dffffffff%2C+8419543ffffffff%2C+8419403ffffffff
         cells = ["8419553ffffffff", "8419551ffffffff", "8419555ffffffff", "841955dffffffff", "8419543ffffffff", "8419403ffffffff"]
 
         result = insert_intermediate_cells(cells)
@@ -155,7 +170,7 @@ class TestInsertIntermediateCells(unittest.TestCase):
         self.assertEqual(result[0], cells[0])
         self.assertEqual(result[-1], cells[-1])
         for start, end in zip(result, result[1:]):
-            self.assertLessEqual(h3.grid_distance(start, end), MAX_CELL_STEP)
+            self.assertLessEqual(h3.grid_distance(start, end), 2)
 
 
 if __name__ == "__main__":
