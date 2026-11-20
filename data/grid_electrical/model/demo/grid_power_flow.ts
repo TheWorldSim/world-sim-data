@@ -1,3 +1,5 @@
+import * as h3 from "h3-js"
+
 import { aggregate_lynks_by_path } from "../src/aggregate_lynks_by_path.ts"
 import { change_cell_MW } from "../src/cell_MW.ts"
 import { calculate_power_balance } from "../src/power_balance.ts"
@@ -5,7 +7,7 @@ import { load_europe_country_outlines, type CountryOutline } from "./country_out
 import { grid_to_screen } from "./latlon_to_screen.ts"
 import { manage_svg_view } from "./manage_svg_view.ts"
 import { power_grids } from "./power_grids.ts"
-import { make_buses_layer, make_countries_layer, make_lynks_layer } from "./render_grid_as_svg.ts"
+import { make_buses_layer, make_countries_layer, make_h3r4_cells_layer, make_lynks_layer } from "./render_grid_as_svg.ts"
 
 
 const svg_view = manage_svg_view(document.getElementById("grid-display") as unknown as SVGSVGElement)
@@ -46,8 +48,11 @@ async function render_grid(): Promise<void>
     const lynks_layer = make_lynks_layer(lynks, project)
     const buses = make_buses_layer(grid, project, handle_change_cell_MW)
     const countries = make_countries_layer(country_outlines, project_latlon_to_xy)
+    // Bus cell IDs are only H3 indices when the H3 resolution 4 DGG is selected
+    const h3r4_cells = make_h3r4_cells_layer(get_uk_cell_ids(), project_latlon_to_xy)
 
     svg_grid_display.append(countries)
+    svg_grid_display.append(h3r4_cells)
     svg_grid_display.append(lynks_layer.svg)
     svg_grid_display.append(buses.svg)
 
@@ -82,3 +87,30 @@ async function initial_render()
     document.getElementById("dgg")?.dispatchEvent(new Event("change"))
 }
 initial_render()
+
+
+function get_uk_cell_ids(): string[]
+{
+    const h3r3_cell_ids = [
+        "82190ffffffffff",
+        "821977fffffffff",
+        "821957fffffffff",
+        "821827fffffffff",
+        "82182ffffffffff",
+        "82195ffffffffff",
+        "821877fffffffff",
+        "82194ffffffffff",
+        "821947fffffffff",
+        "82196ffffffffff",
+        "821f37fffffffff",
+        "820997fffffffff",
+        "821967fffffffff",
+        "8209b7fffffffff",
+        "820987fffffffff",
+        "8209a7fffffffff",
+        "82192ffffffffff",
+        "821907fffffffff",
+    ]
+    const h3r4_cell_ids = h3r3_cell_ids.map(h3r3 => h3.cellToChildren(h3r3, 4)).flat()
+    return h3r4_cell_ids
+}

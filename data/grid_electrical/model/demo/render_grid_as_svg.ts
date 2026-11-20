@@ -1,3 +1,5 @@
+import { cellToBoundary } from "h3-js"
+
 import { flow_level } from "../src/flow_level.ts"
 import type { CellularBus, CellularElectricalGrid, CellularLynk } from "../src/interface.ts"
 import { lynk_flow_MW } from "../src/lynk_flow.ts"
@@ -28,6 +30,21 @@ export function make_countries_layer(countries: CountryOutline[], project_latlon
         countries_layer.append(make_svg_element("path", { d }, "country"))
     }
     return countries_layer
+}
+
+
+export function make_h3r4_cells_layer(cell_ids: string[], project_latlon_to_xy: ProjectLatLon): SVGElement
+{
+    const h3_cells_layer = make_svg_element("g", {}, "h3-cells")
+    for (const cell_id of cell_ids)
+    {
+        const d = cellToBoundary(cell_id).map(([lat, lon], index) => {
+            const point = project_latlon_to_xy({ lat, lon })
+            return `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`
+        }).join(" ") + " Z"
+        h3_cells_layer.append(make_svg_element("path", { d }, "h3-cell"))
+    }
+    return h3_cells_layer
 }
 
 
@@ -69,8 +86,8 @@ export function make_lynks_layer(lynks: CellularLynk[], project: ProjectCellId)
     function add_lynk(lynk: CellularLynk)
     {
         const points = lynk.path_cell_ids.map(cell_id => project(cell_id))
-        const kind = lynk.dc_links.length ? (lynk.ac_lines.length ? "type-both" : "type-dc") : "type-ac"
-        const base = make_svg_element("path", {}, `lynk ${kind} debug-lynk-id-${lynk.lynk_id}`)
+        const kind = lynk.dc_links.length ? (lynk.ac_lines.length ? "type-acdc" : "type-dc") : "type-ac"
+        const base = make_svg_element("path", {}, `lynk ${kind} debug-lynk-id-${lynk.lynk_id} debug-first-line-${lynk.ac_lines[0]?.id ?? "none"} debug-first-link-${lynk.dc_links[0]?.id ?? "none"}`)
         const flow = make_svg_element("path", { visibility: "hidden" }, "lynk-flow")
         const arrow = make_svg_element("path", { d: "M -6 -6 L 8 0 L -6 6 L -2 0 Z", visibility: "hidden" }, "arrow")
         const hit = make_svg_element("path", {}, "lynk-hit")
