@@ -128,6 +128,47 @@ class TestAggregateGridToH3(unittest.TestCase):
         for record in self.read_records("buses.csv"):
             self.assertEqual(h3.get_resolution(record[CELL_ID_COLUMN]), H3_RESOLUTION)
 
+    def test_loops_are_trimmed(self):
+        # The DC link from UK to Denmark goes through the cell 8419403, briefly
+        # enters 8419407, before passing back through 8419403.  Due to culling
+        # repeated cells, this results in a very distorted path (most lines and
+        # links are unsurprisingly straight-ish)
+        bus_0 = { "lat": 53.28, "lon": 0.43 }  # Centre of 8419403ffffffff
+        bus_1 = { "lat": 53.38, "lon": -0.19 } # Centre of 8419407ffffffff
+        bus_2 = { "lat": 53.54, "lon": 0.83 }  # Centre of 841940bffffffff
+
+        bus0str = f"{bus_0["lon"]} {bus_0["lat"]}"
+        bus1str = f"{bus_1["lon"]} {bus_1["lat"]}"
+        bus2str = f"{bus_2["lon"]} {bus_2["lat"]}"
+
+        buses_df = pd.read_csv(io.StringIO(textwrap.dedent(f"""
+        bus_id,voltage,lon,lat
+        0,300,{bus_0["lon"]},{bus_0["lat"]}
+        1,300,{bus_1["lon"]},{bus_1["lat"]}
+        2,300,{bus_2["lon"]},{bus_2["lat"]}
+        """)))
+
+        lines_df = pd.read_csv(io.StringIO(textwrap.dedent(f"""
+        line_id,bus0,bus1,voltage,s_nom,x_pu,geometry
+        """)))
+
+        links_df = pd.read_csv(io.StringIO(textwrap.dedent(f"""
+        link_id,bus0,bus1,voltage,p_nom,geometry
+        0,0,2,300,1000,"LINESTRING ({bus0str}, {bus1str}, {bus0str}, {bus2str})"
+        1,0,2,300,1000,"LINESTRING ({bus0str}, {bus1str}, {bus0str}, {bus1str}, {bus2str})"
+        """)))
+
+        aggregate_grid_to_h3(buses_df, lines_df, links_df, self.output_dir)
+
+        expected_cells = "8419403ffffffff, 841940bffffffff"
+        self.assertEqual(
+            self.read_records("links.csv"),
+            [
+                {"link_id": 0, "bus0": 0, "bus1": 2, "voltage": 300, "p_nom": 1000, GEOMETRY_COLUMN: expected_cells},
+                {"link_id": 1, "bus0": 0, "bus1": 2, "voltage": 300, "p_nom": 1000, GEOMETRY_COLUMN: expected_cells},
+            ],
+        )
+
 
 class TestInsertIntermediateCells(unittest.TestCase):
     def test_cells_at_most_max_step_apart_are_unchanged(self):
@@ -171,6 +212,15 @@ class TestInsertIntermediateCells(unittest.TestCase):
         self.assertEqual(result[-1], cells[-1])
         for start, end in zip(result, result[1:]):
             self.assertLessEqual(h3.grid_distance(start, end), 2)
+
+    def test_more_direct_path_insertion_made(self):
+        # The cells 8419561, 8419505  https://h3geo.org/#hex=8419561ffffffff%2C+8419505ffffffff
+        # have a more direct path through 8419563  https://h3geo.org/#hex=8419561ffffffff%2C+8419505ffffffff%2C+8419563ffffffff
+        # instead of 841950d  https://h3geo.org/#hex=8419561ffffffff%2C+8419505ffffffff%2C+841950dffffffff
+        self.assertEqual(
+            insert_intermediate_cells(["8419561ffffffff", "8419505ffffffff"]),
+            ["8419561ffffffff", "8419563ffffffff", "8419505ffffffff"],
+        )
 
 
 if __name__ == "__main__":

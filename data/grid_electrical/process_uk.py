@@ -83,5 +83,3 @@ def process_uk_links(uk_bus_ids: set[str], eur_links_df: pd.DataFrame):
     # Return the bus IDs that are connected to the UK EEZ
     related_bus_ids = set(uk_links_df["bus0"]).union(set(uk_links_df["bus1"])) - uk_bus_ids
     return (related_bus_ids, uk_links_df)
-    return (related_bus_ids, uk_links_df)
-    return (related_bus_ids, uk_links_df)
