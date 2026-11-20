@@ -40,7 +40,21 @@ def aggregate_grid_to_h3(buses_df: pd.DataFrame, lines_df: pd.DataFrame, links_d
     aggregated_lines_df[LINE_FIELDS].to_csv(output_dir / "lines.csv", index=False, float_format="%.15g")
 
     aggregated_links_df = _aggregate_edges(links_df, merged_bus_id_by_bus_id, cell_id_by_bus_id)
+    fudge_fix_uk_links(aggregated_links_df)
     aggregated_links_df[LINK_FIELDS].to_csv(output_dir / "links.csv", index=False, float_format="%.15g")
+
+
+def fudge_fix_uk_links(links_df: pd.DataFrame):
+    """
+    Temporary fudge to fix to UK link geometries.  TODO: achieve this result
+    through better processing code
+    """
+    # Replace the geometry substring of `8419439ffffffff, 8419407ffffffff, 841940bffffffff, 8419409ffffffff` with `8419439ffffffff, 8419403ffffffff, 841940bffffffff`
+    links_df[GEOMETRY_COLUMN] = links_df[GEOMETRY_COLUMN].str.replace(
+        "8419439ffffffff, 8419407ffffffff, 841940bffffffff, 8419409ffffffff",
+        "8419439ffffffff, 8419403ffffffff, 841940bffffffff",
+        regex=False
+    )
 
 
 def _aggregate_edges(edges_df: pd.DataFrame, merged_bus_id_by_bus_id: pd.Series, cell_id_by_bus_id: pd.Series) -> pd.DataFrame:
