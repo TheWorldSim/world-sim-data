@@ -2,6 +2,7 @@ import * as h3 from "h3-js"
 
 import { aggregate_lynks_by_path } from "../src/aggregate_lynks_by_path.ts"
 import { change_cell_MW } from "../src/cell_MW.ts"
+import type { CellularLynk } from "../src/interface.ts"
 import { calculate_power_balance } from "../src/power_balance.ts"
 import { load_europe_country_outlines, type CountryOutline } from "./country_outlines.ts"
 import { grid_to_screen } from "./latlon_to_screen.ts"
@@ -23,7 +24,7 @@ async function render_grid(): Promise<void>
     const { cellular_grid: grid } = powered_grid
 
     const lynks = aggregate_lynks_by_path(grid)
-    // show_lynk_capacity_distribution(lynks)
+    show_lynk_capacity_distribution(lynks)
 
     const svg_grid_display = svg_view.svg
     svg_grid_display.replaceChildren()
@@ -114,4 +115,42 @@ function get_uk_cell_ids(): string[]
     ]
     const h3r4_cell_ids = h3r3_cell_ids.map(h3r3 => h3.cellToChildren(h3r3, 4)).flat()
     return h3r4_cell_ids
+}
+
+
+function show_lynk_capacity_distribution(lynks: CellularLynk[])
+{
+    let min_capacity = Infinity
+    let max_capacity = -Infinity
+    for (const lynk of lynks)
+    {
+        if (lynk.capacity_mw < min_capacity) min_capacity = lynk.capacity_mw
+        if (lynk.capacity_mw > max_capacity) max_capacity = lynk.capacity_mw
+    }
+
+    const capacity_mw_distribution: { from_mw: number, to_mw: number, lynk_ids: number[] }[] = []
+
+    for (const lynk of lynks)
+    {
+        const bin_index = Math.floor(lynk.capacity_mw / 1e3)
+        if (!capacity_mw_distribution[bin_index]) capacity_mw_distribution[bin_index] = { from_mw: bin_index * 1e3, to_mw: (bin_index + 1) * 1e3, lynk_ids: [] }
+        capacity_mw_distribution[bin_index].lynk_ids.push(lynk.lynk_id)
+    }
+    // Fill in any empty bins between the minimum and maximum capacity
+    const min_bin_index = Math.floor(min_capacity / 1e3)
+    const max_bin_index = Math.floor(max_capacity / 1e3)
+    for (let i = min_bin_index; i <= max_bin_index; ++i)
+    {
+        if (!capacity_mw_distribution[i]) capacity_mw_distribution[i] = { from_mw: i * 1e3, to_mw: (i + 1) * 1e3, lynk_ids: [] }
+    }
+
+    const lynk_capacity_list = document.getElementById("lynk-capacity-list")
+    if (!lynk_capacity_list) return
+    lynk_capacity_list.innerHTML = ""
+    for (const group of capacity_mw_distribution)
+    {
+        const dt = document.createElement("dt")
+        dt.textContent = `${group.from_mw / 1e3} to <${group.to_mw / 1e3} GW: ${group.lynk_ids.length} lynks`
+        lynk_capacity_list.appendChild(dt)
+    }
 }
