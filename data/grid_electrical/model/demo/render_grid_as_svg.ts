@@ -149,7 +149,7 @@ export function make_lynks_layer(lynks: CellularLynk[], project: ProjectCellId)
         lynk_svg.flow.setAttribute("d", d)
         lynk_svg.hit.setAttribute("d", d)
 
-        lynk_svg.base.style.strokeWidth = `${is_moving ? 5 + 5 * Math.min(1, magnitude_MW / capacity_MW) : 3}px`
+        lynk_svg.base.style.strokeWidth = `${5 + 2 * (capacity_MW / 1e3)}px`
         lynk_svg.base.style.stroke = is_moving ? `var(--flow-${level})` : "var(--idle)"
 
         const visibility = is_moving ? "visible" : "hidden"
