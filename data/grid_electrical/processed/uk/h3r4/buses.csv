@@ -84,7 +84,7 @@ bus_id,voltage,cell_id
 2866,275,841972dffffffff
 2891,275,8419545ffffffff
 2907,275,84190d5ffffffff
-2932,270,8419481ffffffff
+2932,270,841948bffffffff
 2933,400,8419485ffffffff
 3028,275,8419099ffffffff
 3083,275,8419293ffffffff
@@ -125,7 +125,7 @@ bus_id,voltage,cell_id
 5359,400,8419431ffffffff
 5388,220,841943bffffffff
 5448,275,8418251ffffffff
-5724,400,84194ddffffffff
+5724,400,84194d1ffffffff
 5816,275,84195cbffffffff
 5818,400,84195a9ffffffff
 5842,400,84194c5ffffffff
@@ -143,6 +143,6 @@ bus_id,voltage,cell_id
 6596,400,84194a9ffffffff
 6597,400,8419091ffffffff
 6599,400,84194a5ffffffff
-6615,450,84196b1ffffffff
+6615,450,84196bbffffffff
 6706,400,841958bffffffff
 6785,320,8409a47ffffffff

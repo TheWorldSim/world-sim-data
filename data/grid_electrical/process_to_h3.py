@@ -34,6 +34,7 @@ def aggregate_grid_to_h3(buses_df: pd.DataFrame, lines_df: pd.DataFrame, links_d
     cell_id_by_bus_id = pd.Series(buses_df[CELL_ID_COLUMN].to_numpy(), index=buses_df["bus_id"])
 
     merged_buses_df = buses_df.drop_duplicates(CELL_ID_COLUMN)
+    merged_buses_df = merged_buses_df.assign(**{CELL_ID_COLUMN: merged_buses_df[CELL_ID_COLUMN].map(fudge_cell_id)})
     merged_buses_df[BUS_FIELDS].to_csv(output_dir / "buses.csv", index=False)
 
     aggregated_lines_df = _aggregate_edges(lines_df, merged_bus_id_by_bus_id, cell_id_by_bus_id)
@@ -44,11 +45,25 @@ def aggregate_grid_to_h3(buses_df: pd.DataFrame, lines_df: pd.DataFrame, links_d
     aggregated_links_df[LINK_FIELDS].to_csv(output_dir / "links.csv", index=False, float_format="%.15g")
 
 
+# Temporary fudge to map cells in France, Belgium and the Netherlands to be on land instead of in the sea
+FUDGE_CELL_ID_MAP = {
+    "8419481ffffffff": "841948bffffffff",
+    "84194ddffffffff": "84194d1ffffffff",
+    "84196b1ffffffff": "84196bbffffffff",
+}
+def fudge_cell_id(cell_id: str) -> str:
+    return FUDGE_CELL_ID_MAP.get(cell_id, cell_id)
+
+
 def fudge_fix_uk_links(links_df: pd.DataFrame):
     """
     Temporary fudge to fix to UK link geometries.  TODO: achieve this result
     through better processing code
     """
+    # If no links_df rows, the links_df[GEOMETRY_COLUMN].str will error
+    if links_df.empty:
+        return
+
     # Replace the geometry substring of `8419439ffffffff, 8419407ffffffff, 841940bffffffff, 8419409ffffffff` with `8419439ffffffff, 8419403ffffffff, 841940bffffffff`
     links_df[GEOMETRY_COLUMN] = links_df[GEOMETRY_COLUMN].str.replace(
         "8419439ffffffff, 8419407ffffffff, 841940bffffffff, 8419409ffffffff",
@@ -91,7 +106,10 @@ def _linestring_to_cell_ids(linestring_wkt: str, start_cell_id: str, end_cell_id
         # but keep any repeats of start/end cells in the middle
         middle_cells = cell_ids[1:-1]
         path_cells = [start_cell_id, *middle_cells, end_cell_id]
-    return ", ".join(insert_intermediate_cells(path_cells))
+
+    path_cells = insert_intermediate_cells(path_cells)
+    path_cells = [fudge_cell_id(cell_id) for cell_id in path_cells]
+    return ", ".join(path_cells)
 
 
 def insert_intermediate_cells(cell_ids: list[str]) -> list[str]:

@@ -128,6 +128,34 @@ class TestAggregateGridToH3(unittest.TestCase):
         for record in self.read_records("buses.csv"):
             self.assertEqual(h3.get_resolution(record[CELL_ID_COLUMN]), H3_RESOLUTION)
 
+    def test_fudge_cell_ids_are_mapped_for_buses_and_line_geometry(self):
+        sea_cell_id = "8419481ffffffff"
+        land_cell_id = "841948bffffffff"
+        neighbour_cell_id = next(cell for cell in h3.grid_ring(sea_cell_id, 1) if cell != land_cell_id)
+        sea_lat, sea_lon = h3.cell_to_latlng(sea_cell_id)
+        neighbour_lat, neighbour_lon = h3.cell_to_latlng(neighbour_cell_id)
+
+        buses_df = pd.DataFrame({"bus_id": [0, 1], "voltage": [400, 400], "lon": [sea_lon, neighbour_lon], "lat": [sea_lat, neighbour_lat]})
+        lines_df = pd.DataFrame({
+            "line_id": [0], "bus0": [0], "bus1": [1], "voltage": [400], "s_nom": [1000], "x_pu": [1e-4],
+            GEOMETRY_COLUMN: [f"LINESTRING ({sea_lon} {sea_lat}, {neighbour_lon} {neighbour_lat})"],
+        })
+        links_df = pd.DataFrame(columns=["link_id", "bus0", "bus1", "voltage", "p_nom", GEOMETRY_COLUMN])
+
+        aggregate_grid_to_h3(buses_df, lines_df, links_df, self.output_dir)
+
+        self.assertEqual(
+            self.read_records("buses.csv"),
+            [
+                {"bus_id": 0, "voltage": 400, CELL_ID_COLUMN: land_cell_id},
+                {"bus_id": 1, "voltage": 400, CELL_ID_COLUMN: neighbour_cell_id},
+            ],
+        )
+        self.assertEqual(
+            self.read_records("lines.csv")[0][GEOMETRY_COLUMN],
+            f"{land_cell_id}, {neighbour_cell_id}",
+        )
+
     def test_loops_are_trimmed(self):
         # The DC link from UK to Denmark goes through the cell 8419403, briefly
         # enters 8419407, before passing back through 8419403.  Due to culling
