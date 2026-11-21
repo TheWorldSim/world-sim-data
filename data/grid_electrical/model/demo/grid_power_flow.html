@@ -33,7 +33,6 @@
       </select>
     </label>
   </div>
-  <p class="sub" id="sub">Some description of the grid here</p>
 
   <p class="msg err" id="net-error" role="alert" hidden></p>
   <p class="msg warn" id="net-warn" hidden></p>
@@ -43,33 +42,20 @@
       <svg id="grid-display" role="group" aria-label="Grid network diagram"></svg>
       <p class="hint">Click a bus to add one step of generation. Right-click removes one step; below zero the bus becomes demand. Dashed-ring buses are distribution buses on cells without a grid bus and work the same way.</p>
       <ul class="legend" aria-label="Legend">
-        <li><span class="sw src"></span>Source</li>
-        <li><span class="sw sink"></span>Sink</li>
-        <li><span class="sw bar" style="background:var(--flow-low)"></span>Under 70% of limit</li>
-        <li><span class="sw bar" style="background:var(--flow-mid)"></span>70% and over</li>
-        <li><span class="sw bar" style="background:var(--flow-max)"></span>At limit</li>
-        <li><span class="sw bar dcs"></span>Dashed: DC line (controllable)</li>
-        <li><span class="sw dist"></span>Dashed ring: distribution bus</li>
+        <li><span class="legend-bus src"></span>Source</li>
+        <li><span class="legend-bus sink"></span>Sink</li>
+        <li><span class="legend-line" style="background:var(--flow-low)"></span>Under 70% of limit</li>
+        <li><span class="legend-line" style="background:var(--flow-mid)"></span>70% and over</li>
+        <li><span class="legend-line" style="background:var(--flow-max)"></span>At limit</li>
+        <li><span class="legend-line dc"></span>Dashed: DC line</li>
       </ul>
     </section>
 
-    <div class="side">
+    <div class="below">
       <section class="card status tone-ok" id="status" aria-live="polite">
-        <h2 id="st-title">All power transferred</h2>
-        <p id="st-body"></p>
-        <dl class="stats">
-          <div>
-            <dt>Supply</dt>
-            <dd><span id="stat-supply">0.0</span> <small>MW</small></dd>
-          </div>
-          <div>
-            <dt>Demand</dt>
-            <dd><span id="stat-demand">0.0</span> <small>MW</small></dd>
-          </div>
-          <div>
-            <dt id="stat-diff-label">Surplus/Shortage</dt>
-            <dd><span id="stat-diff">0.0</span> <small>MW</small></dd>
-          </div>
+        <h2>Lynk capacity MW</h2>
+        <dl id="lynk-capacity-list">
+
         </dl>
       </section>
     </div>

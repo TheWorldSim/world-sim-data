@@ -23,6 +23,7 @@ async function render_grid(): Promise<void>
     const { cellular_grid: grid } = powered_grid
 
     const lynks = aggregate_lynks_by_path(grid)
+    // show_lynk_capacity_distribution(lynks)
 
     const svg_grid_display = svg_view.svg
     svg_grid_display.replaceChildren()
